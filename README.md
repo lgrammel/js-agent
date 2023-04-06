@@ -1,4 +1,4 @@
-## GPTAgent.js
+# GPTAgent.js: Write automated GPT-4 agents using TypeScript and Docker.
 
 An automated agent working in a Docker container. Extensible and written in TypeScript.
 
