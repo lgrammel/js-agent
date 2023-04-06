@@ -1,6 +1,6 @@
 ## Autodev
 
-An automated software developing working in a Docker container.
+An automated software developer working in a Docker container.
 
 It acts as a JavaScript/TypeScript developer right now, but can be extended to other languages.
 
