@@ -1,6 +1,6 @@
 ## GPTAgent.js
 
-An automated agent working in a Docker container. Extensible and written in avaScript/TypeScript.
+An automated agent working in a Docker container. Extensible and written in TypeScript.
 
 It acts as a JavaScript/TypeScript developer right now, but can be extended to other languages.
 
