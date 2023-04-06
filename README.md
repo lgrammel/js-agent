@@ -1,6 +1,6 @@
-## Autodev
+## GPTAgent.js
 
-An automated software developer working in a Docker container.
+An automated agent working in a Docker container. Extensible and written in avaScript/TypeScript.
 
 It acts as a JavaScript/TypeScript developer right now, but can be extended to other languages.
 
@@ -22,7 +22,7 @@ It acts as a JavaScript/TypeScript developer right now, but can be extended to o
 export OPENAI_API_KEY=sk-...
 
 pnpm nx run build-docker-image-arm64
-bin/run-docker-container-arm64.sh /Users/lgrammel/repositories/autodev/example/helloworld/volume
+bin/run-docker-container-arm64.sh /Users/lgrammel/repositories/gptagent.js/example/helloworld/volume
 
 npx ts-node src/ControllerCLI.ts `cat example/helloworld/task.txt`
 ```
