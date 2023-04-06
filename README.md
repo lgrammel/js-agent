@@ -4,9 +4,7 @@ An automated software developer working in a Docker container.
 
 It acts as a JavaScript/TypeScript developer right now, but can be extended to other languages.
 
-## Setup
-
-Only works for Mac (arm64) at the moment. I would appreciate any help to get this to work on Windows or other Mac Models.
+![autodev-001](https://github.com/lgrammel/autodev/raw/main/screenshot/autodev-001.png)
 
 ### Requirements
 
@@ -16,7 +14,7 @@ Only works for Mac (arm64) at the moment. I would appreciate any help to get thi
 
 ## How to run
 
-### Example:
+### Example
 
 (Use an absolute path to set up the shared volume)
 
