@@ -1,8 +1,8 @@
 import { commandSchema } from "./Command";
 import {
-  createChatCompletion,
   OpenAIChatMessage,
-} from "./createChatCompletion";
+  createChatCompletion,
+} from "./ai/openai/createChatCompletion";
 import { retryWithExponentialBackoff } from "./retryWithExponentialBackoff";
 import { sendCommand } from "./sendCommand";
 
