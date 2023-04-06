@@ -1,0 +1,1 @@
+Change the existing HelloWorld program to TypeScript and make sure it has the correct output.

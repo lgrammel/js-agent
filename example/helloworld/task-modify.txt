@@ -1,0 +1,3 @@
+Change the existing "Hello, World" program such that a name can be entered through a command line parameter.
+
+The output should include the name, e.g. "Hello, Peter!".

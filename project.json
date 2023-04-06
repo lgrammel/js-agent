@@ -1,0 +1,25 @@
+{
+  "root": "developer-ai",
+  "targets": {
+    "compile": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc"
+      }
+    },
+    "bundle-executor": {
+      "dependsOn": ["compile"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "rm -f .build/executor && npx esbuild .build/tsc/executor/ExecutorService.js --bundle --platform=node --outfile=.build/ExecutorService.js"
+      }
+    },
+    "build-docker-image-arm64": {
+      "dependsOn": ["bundle-executor"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker build --platform linux/arm64 -t developer-ai-arm64 ."
+      }
+    }
+  }
+}
