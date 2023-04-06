@@ -1,0 +1,29 @@
+{
+  "root": "package/executor",
+  "targets": {
+    "build": {
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "package/executor",
+        "command": "tsc"
+      }
+    },
+    "bundle": {
+      "dependsOn": ["build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "package/executor",
+        "command": "rm -f .build/executor && npx esbuild .build/js/ExecutorService.js --bundle --platform=node --outfile=.build/ExecutorService.js"
+      }
+    },
+    "build-docker-image-arm64": {
+      "dependsOn": ["bundle"],
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "package/executor",
+        "command": "docker build --platform linux/arm64 -t gptagent-arm64 ."
+      }
+    }
+  }
+}

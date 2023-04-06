@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { commandSchema } from "../Command";
+import { commandSchema } from "./Command";
 import { readFileContent } from "./readFileContent";
 
 import { editFileContent } from "./editFileContent";

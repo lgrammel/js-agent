@@ -1,9 +1,9 @@
 import Fastify from "fastify";
 import hyperid from "hyperid";
 import pino from "pino";
-import { commandPluginFactory } from "./commandPlugin";
-import { gracefullyShutdownOnSigTermAndSigInt } from "../util/gracefullyShutdownOnSigTermAndSigInt";
 import zod from "zod";
+import { commandPluginFactory } from "./commandPlugin";
+import { gracefullyShutdownOnSigTermAndSigInt } from "./gracefullyShutdownOnSigTermAndSigInt";
 
 const environmentSchema = zod.object({
   WORKSPACE: zod.string(),

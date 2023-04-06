@@ -3,17 +3,15 @@
     "strict": true,
     "declaration": true,
     "sourceMap": true,
-    "strictNullChecks": true,
     "target": "es2020",
-    "lib": ["es2020"],
+    "lib": ["es2020", "dom"],
     "module": "commonjs",
     "types": ["node"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "rootDir": "./src",
-    "outDir": "./.build/tsc",
-    "resolveJsonModule": true
+    "outDir": "./.build/js"
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.ts"]
 }

@@ -6,7 +6,6 @@ import { Logger } from "pino";
  * This ensures that running requests, database connections and other operations
  * are finished before the process is terminated.
  */
-
 export function gracefullyShutdownOnSigTermAndSigInt({
   logger,
   shutdown,

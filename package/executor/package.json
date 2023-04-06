@@ -1,0 +1,15 @@
+{
+  "name": "@gptagent/executor",
+  "version": "0.0.0",
+  "private": true,
+  "main": ".build/js/index.js",
+  "devDependencies": {},
+  "dependencies": {
+    "axios": "1.3.4",
+    "fastify": "4.14.1",
+    "hyperid": "3.1.1",
+    "nx": "15.8.7",
+    "pino": "8.11.0",
+    "zod": "3.21.4"
+  }
+}

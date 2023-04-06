@@ -21,8 +21,8 @@ It acts as a JavaScript/TypeScript developer right now, but can be extended to o
 ```sh
 export OPENAI_API_KEY=sk-...
 
-pnpm nx run build-docker-image-arm64
+pnpm nx run executor:build-docker-image-arm64
 bin/run-docker-container-arm64.sh /Users/lgrammel/repositories/gptagent.js/example/helloworld/volume
 
-npx ts-node src/ControllerCLI.ts `cat example/helloworld/task.txt`
+npx ts-node package/agent/src/ControllerCLI.ts `cat example/helloworld/task.txt`
 ```

@@ -1,0 +1,13 @@
+{
+  "root": "package/agent",
+  "targets": {
+    "build": {
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "package/agent",
+        "command": "tsc"
+      }
+    }
+  }
+}

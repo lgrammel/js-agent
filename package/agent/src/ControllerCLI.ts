@@ -1,4 +1,4 @@
-import { commandSchema } from "./Command";
+import { commandSchema } from "@gptagent/executor";
 import {
   createChatCompletion,
   OpenAIChatMessage,
