@@ -10,9 +10,9 @@ USER node
 
 WORKDIR /home/service
 
-COPY --chown=node:node .build/ExecutorService.js /home/service
+COPY --chown=node:node .build/gptagent-executor.js /home/service
 
 WORKDIR /home/service/repository
 
 # Use dumb-init to enable response to SIGTERM and SIGINT.
-CMD ["dumb-init", "node", "../ExecutorService.js"]
+CMD ["dumb-init", "node", "../gptagent-executor.js"]

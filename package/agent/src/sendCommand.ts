@@ -1,5 +1,5 @@
-import { Command } from "@gptagent/executor";
 import axios from "axios";
+import { Command } from "./Command";
 
 export async function sendCommand(command: Command) {
   try {

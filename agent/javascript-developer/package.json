@@ -1,0 +1,15 @@
+{
+  "name": "@gptagent/example-javascript-developer",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "bin/build-executor-arm64.sh",
+    "run-executor": "bin/run-executor-arm64.sh",
+    "run-agent": "node ./agent.mjs"
+  },
+  "private": true,
+  "dependencies": {
+    "@gptagent/agent": "*"
+  },
+  "devDependencies": {}
+}

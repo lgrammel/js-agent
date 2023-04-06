@@ -1,4 +1,4 @@
-import { commandSchema } from "@gptagent/executor";
+import { commandSchema } from "./Command";
 import {
   createChatCompletion,
   OpenAIChatMessage,
@@ -136,11 +136,14 @@ async function run({ instructions }: { instructions: string }) {
     counter++;
   }
 }
-run({
-  instructions: process.argv.slice(2).join(" "),
-}).catch((error) => {
-  console.error("Error running instructions:", error);
-});
+
+export const runAgent = () => {
+  run({
+    instructions: process.argv.slice(2).join(" "),
+  }).catch((error) => {
+    console.error("Error running instructions:", error);
+  });
+};
 
 function printCost(totalPromptTokens: number, totalCompletionTokens: number) {
   const cost = (

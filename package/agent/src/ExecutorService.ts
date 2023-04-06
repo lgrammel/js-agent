@@ -5,15 +5,15 @@ import zod from "zod";
 import { commandPluginFactory } from "./commandPlugin";
 import { gracefullyShutdownOnSigTermAndSigInt } from "./gracefullyShutdownOnSigTermAndSigInt";
 
-const environmentSchema = zod.object({
-  WORKSPACE: zod.string(),
-  HOST: zod.string(),
-  PORT: zod.string(),
-});
+export const runExecutor = async () => {
+  const environmentSchema = zod.object({
+    WORKSPACE: zod.string(),
+    HOST: zod.string(),
+    PORT: zod.string(),
+  });
 
-const environment = environmentSchema.parse(process.env);
+  const environment = environmentSchema.parse(process.env);
 
-(async () => {
   const logger = pino({
     level: "debug",
     messageKey: "message",
@@ -45,4 +45,4 @@ const environment = environmentSchema.parse(process.env);
       await server.close(); // wait for requests to be finished
     },
   });
-})();
+};
