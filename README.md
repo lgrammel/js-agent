@@ -4,7 +4,7 @@ GPTAgent is a framework for creating automated agents that can perform tasks in 
 
 Example agents:
 
-- [JavaScript/TypeScript developer](agent/javascript-developer/README.md)
+- [JavaScript/TypeScript developer](agent/javascript-developer)
 
 ![autodev-001](https://github.com/lgrammel/autodev/raw/main/screenshot/autodev-001.png)
 
