@@ -24,7 +24,7 @@ OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 pnpm install
 pnpm nx run-many --target=build
 
-# in agent/wikipedia-qa folder:
+# in example/wikipedia-qa folder:
 pnpm run-agent "which town is bigger, Gummersbach or Bergneustadt?"
 ```
 

@@ -21,7 +21,7 @@ export OPENAI_API_KEY=sk-...
 pnpm install
 pnpm nx run-many --target=build
 
-# in agent/javascript-developer folder:
+# in example/javascript-developer folder:
 pnpm build
 pnpm run-executor
 
