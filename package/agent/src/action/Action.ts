@@ -1,10 +1,7 @@
 import zod from "zod";
 import { ActionParameters } from "./ActionParameters";
 
-export interface Action<
-  INPUT extends ActionParameters,
-  OUTPUT extends Record<string, string | undefined>
-> {
+export interface Action<INPUT extends ActionParameters, OUTPUT> {
   readonly type: string;
   readonly description: string;
 

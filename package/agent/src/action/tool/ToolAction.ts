@@ -4,7 +4,7 @@ import { ToolExecutor } from "./ToolExecutor.js";
 
 export class ToolAction<
   INPUT extends Record<string, string | undefined>,
-  OUTPUT extends Record<string, string | undefined>
+  OUTPUT
 > implements Action<INPUT, OUTPUT>
 {
   readonly type: string;
