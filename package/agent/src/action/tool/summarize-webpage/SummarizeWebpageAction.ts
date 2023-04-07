@@ -2,32 +2,32 @@ import zod from "zod";
 import { ToolAction } from "../ToolAction";
 import { ToolExecutor } from "../ToolExecutor";
 
-export type SummarizeWebsiteInput = {
+export type SummarizeWebpageInput = {
   topic: string;
   url: string;
 };
 
-export type SummarizeWebsiteOutput = {
+export type SummarizeWebpageOutput = {
   summary: string;
 };
 
-export class SummarizeWebsiteAction extends ToolAction<
-  SummarizeWebsiteInput,
-  SummarizeWebsiteOutput
+export class SummarizeWebpageAction extends ToolAction<
+  SummarizeWebpageInput,
+  SummarizeWebpageOutput
 > {
   constructor({
     type = "tool.summarize-website",
-    description = "Summarize a website considering a topic.",
+    description = "Summarize a webpage considering a topic.",
     inputExample = {
-      topic: "{information that I want to extract from the article}",
+      topic: "{information that I want to extract from the website}",
       url: "{https://www.example.com}",
     },
     executor,
   }: {
     type?: string;
     description?: string;
-    inputExample?: SummarizeWebsiteInput;
-    executor: ToolExecutor<SummarizeWebsiteInput, SummarizeWebsiteOutput>;
+    inputExample?: SummarizeWebpageInput;
+    executor: ToolExecutor<SummarizeWebpageInput, SummarizeWebpageOutput>;
   }) {
     super({
       type,

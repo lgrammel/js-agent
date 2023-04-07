@@ -10,11 +10,11 @@ function createSystemPrompt({ agent }: { agent: Agent }) {
   return `## ROLE
 ${agent.role}
 
-## AVAILABLE ACTIONS
-${agent.actionRegistry.getAvailableActionInstructions()}
-
 ## CONSTRAINTS
-${agent.constraints};`;
+${agent.constraints};
+
+## AVAILABLE ACTIONS
+${agent.actionRegistry.getAvailableActionInstructions()}`;
 }
 
 async function calculateCompletion(messages: Array<OpenAIChatMessage>) {
@@ -31,7 +31,7 @@ async function calculateCompletion(messages: Array<OpenAIChatMessage>) {
   const promptTokenCount = response.usage.prompt_tokens;
   const completionTokenCount = response.usage.completion_tokens;
 
-  printCost(promptTokenCount, completionTokenCount);
+  // printCost(promptTokenCount, completionTokenCount);
 
   return {
     completion: response.choices[0].message.content,
@@ -47,8 +47,6 @@ async function run({
   agent: Agent;
   instructions: string;
 }) {
-  console.log("INSTRUCTIONS");
-  console.log();
   console.log(instructions);
 
   const messages: Array<OpenAIChatMessage> = [
@@ -71,7 +69,7 @@ async function run({
 
   while (counter < maxSteps) {
     console.log("========================================");
-    console.log("COMPLETION");
+    // console.log("COMPLETION");
 
     // console.log(messages);
 

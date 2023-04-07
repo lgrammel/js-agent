@@ -2,11 +2,11 @@ import zod from "zod";
 import { ToolAction } from "../ToolAction";
 import { ToolExecutor } from "../ToolExecutor";
 
-export type CustomGoogleSearchEngineInput = {
+export type ProgrammableGoogleSearchEngineInput = {
   query: string;
 };
 
-export type CustomGoogleSearchEngineOutput = {
+export type ProgrammableGoogleSearchEngineOutput = {
   results: Array<{
     title: string;
     link: string;
@@ -14,13 +14,13 @@ export type CustomGoogleSearchEngineOutput = {
   }>;
 };
 
-export class CustomGoogleSearchEngineAction extends ToolAction<
-  CustomGoogleSearchEngineInput,
-  CustomGoogleSearchEngineOutput
+export class ProgrammableGoogleSearchEngineAction extends ToolAction<
+  ProgrammableGoogleSearchEngineInput,
+  ProgrammableGoogleSearchEngineOutput
 > {
   constructor({
-    type = "tool.google-custom-search-engine",
-    description = "Search custom Google Search Engine.",
+    type = "tool.programmable-google-search-engine",
+    description = "Search programmable Google search engine.",
     inputExample = {
       query: "{search query}",
     },
@@ -28,10 +28,10 @@ export class CustomGoogleSearchEngineAction extends ToolAction<
   }: {
     type?: string;
     description?: string;
-    inputExample?: CustomGoogleSearchEngineInput;
+    inputExample?: ProgrammableGoogleSearchEngineInput;
     executor: ToolExecutor<
-      CustomGoogleSearchEngineInput,
-      CustomGoogleSearchEngineOutput
+      ProgrammableGoogleSearchEngineInput,
+      ProgrammableGoogleSearchEngineOutput
     >;
   }) {
     super({

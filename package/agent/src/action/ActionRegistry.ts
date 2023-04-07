@@ -58,9 +58,19 @@ export class ActionRegistry {
 
 ${this.describeActions()}
 
-You need to also use one of the above commands with the outlined syntax.
-You must use exactly one action per response. 
-Explain each action that you perform.`;
+## RESPONSE FORMAT (ALWAYS USE THIS FORMAT)
+
+Explain and describe your reasoning step by step.
+Then use the following format to specify the action you want to perform next:
+
+${this.format.format({
+  action: "an action",
+  param1: "a parameter value",
+  param2: "another parameter value",
+})}
+
+You must always use exactly one action with the correct syntax per response.
+Each response must precisely follow the action syntax.`;
   }
 
   private get availableActionTypesMessage() {

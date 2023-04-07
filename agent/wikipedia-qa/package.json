@@ -1,0 +1,14 @@
+{
+  "name": "@gptagent/example-wikipedia-qa",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "run-agent": "node ./agent.mjs"
+  },
+  "private": true,
+  "dependencies": {
+    "@gptagent/agent": "*",
+    "dotenv": "16.0.3"
+  },
+  "devDependencies": {}
+}

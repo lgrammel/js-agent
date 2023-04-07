@@ -2,13 +2,16 @@ import axios from "axios";
 import { Action } from "../../Action.js";
 import { ToolExecutor } from "../ToolExecutor.js";
 import {
-  CustomGoogleSearchEngineInput,
-  CustomGoogleSearchEngineOutput,
-} from "./CustomGoogleSearchEngineAction.js";
+  ProgrammableGoogleSearchEngineInput,
+  ProgrammableGoogleSearchEngineOutput as ProgrammableGoogleSearchEngineOutput,
+} from "./ProgrammableGoogleSearchEngineAction.js";
 
-export class GoogleCustomSearchEngineExecutor
+export class ProgrammableGoogleSearchEngineExecutor
   implements
-    ToolExecutor<CustomGoogleSearchEngineInput, CustomGoogleSearchEngineOutput>
+    ToolExecutor<
+      ProgrammableGoogleSearchEngineInput,
+      ProgrammableGoogleSearchEngineOutput
+    >
 {
   private readonly key: string;
   private readonly cx: string;
@@ -24,10 +27,10 @@ export class GoogleCustomSearchEngineExecutor
     results?: number;
   }) {
     if (key == undefined) {
-      throw new Error("Missing Google Custom Search Engine key");
+      throw new Error("Missing Google Programmable  Search Engine key");
     }
     if (cx == undefined) {
-      throw new Error("Missing Google Custom Search Engine cx");
+      throw new Error("Missing Google Programmable Search Engine cx");
     }
     if (results < 1) {
       throw new Error("Results must be at least 1");
@@ -41,10 +44,10 @@ export class GoogleCustomSearchEngineExecutor
   async execute({
     input: { query },
   }: {
-    input: CustomGoogleSearchEngineInput;
+    input: ProgrammableGoogleSearchEngineInput;
     action: Action<
-      CustomGoogleSearchEngineInput,
-      CustomGoogleSearchEngineOutput
+      ProgrammableGoogleSearchEngineInput,
+      ProgrammableGoogleSearchEngineOutput
     >;
     workspacePath: string;
   }) {

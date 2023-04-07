@@ -5,18 +5,18 @@ import { retryWithExponentialBackoff } from "../../../util/retryWithExponentialB
 import { Action } from "../../Action.js";
 import { ToolExecutor } from "../ToolExecutor.js";
 import {
-  SummarizeWebsiteInput,
-  SummarizeWebsiteOutput,
-} from "./SummarizeWebsiteAction.js";
+  SummarizeWebpageInput,
+  SummarizeWebpageOutput,
+} from "./SummarizeWebpageAction.js";
 
-export class SummarizeWebsiteExecutor
-  implements ToolExecutor<SummarizeWebsiteInput, SummarizeWebsiteOutput>
+export class SummarizeWebpageExecutor
+  implements ToolExecutor<SummarizeWebpageInput, SummarizeWebpageOutput>
 {
   async execute({
     input: { topic, url },
   }: {
-    input: SummarizeWebsiteInput;
-    action: Action<SummarizeWebsiteInput, SummarizeWebsiteOutput>;
+    input: SummarizeWebpageInput;
+    action: Action<SummarizeWebpageInput, SummarizeWebpageOutput>;
     workspacePath: string;
   }) {
     const result = await axios.get(url);
