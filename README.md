@@ -4,10 +4,10 @@ GPTAgent.js is a framework for creating automated AI agents. It uses OpenAI GPT-
 
 ## Examples
 
-- [JavaScript/TypeScript developer](agent/javascript-developer)
-- [Wikipedia Question-Answering](agent/wikipedia-qa)
+- [JavaScript/TypeScript developer](example/javascript-developer)
+- [Wikipedia Question-Answering](example/wikipedia-qa)
 
-![autodev-001](https://github.com/lgrammel/autodev/raw/main/screenshot/autodev-001.png)
+![autodev-001](https://github.com/lgrammel/gptagent.js/raw/main/screenshot/autodev-001.png)
 
 ### Requirements
 
