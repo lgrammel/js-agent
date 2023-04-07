@@ -14,4 +14,3 @@ GPTAgent.js is a framework for creating automated AI agents. It uses OpenAI GPT-
 - **GPT-4 access**
 - node 18
 - pnpm
-- Docker
