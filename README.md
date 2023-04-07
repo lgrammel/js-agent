@@ -1,10 +1,11 @@
 # GPTAgent.js: Automatic AI Agents with TS/JS
 
-GPTAgent is a framework for creating automated agents that can perform tasks in a Docker container.
+GPTAgent.js is a framework for creating automated AI agents. It uses OpenAI GPT-4 to generate the completions.
 
-Example agents:
+## Examples
 
 - [JavaScript/TypeScript developer](agent/javascript-developer)
+- [Wikipedia Question-Answering](agent/wikipedia-qa)
 
 ![autodev-001](https://github.com/lgrammel/autodev/raw/main/screenshot/autodev-001.png)
 
