@@ -1,8 +1,20 @@
 {
   "name": "@gptagent/agent",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.0.1",
+  "private": false,
+  "homepage": "https://github.com/lgrammel/gptagent.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lgrammel/gptagent.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lgrammel/gptagent.js/issues"
+  },
+  "license": "MIT",
   "main": ".build/js/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
   "devDependencies": {
     "@types/html-to-text": "^9.0.0"
   },
