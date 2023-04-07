@@ -6,6 +6,12 @@ import { ToolExecutor } from "./ToolExecutor";
 export class RemoteToolExecutor<INPUT extends ActionParameters, OUTPUT>
   implements ToolExecutor<INPUT, OUTPUT>
 {
+  private readonly baseUrl: string;
+
+  constructor({ baseUrl }: { baseUrl: string }) {
+    this.baseUrl = baseUrl;
+  }
+
   async execute({
     input,
     action,
@@ -17,7 +23,7 @@ export class RemoteToolExecutor<INPUT extends ActionParameters, OUTPUT>
       const parametersJson = JSON.stringify(input);
 
       const response = await axios.post(
-        `http://localhost:3001/tool/${action.type}`, // TODO flexible location
+        `${this.baseUrl}/tool/${action.type}`, // TODO flexible location
         parametersJson,
         {
           headers: {
