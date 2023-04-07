@@ -40,6 +40,9 @@ importers:
       pino:
         specifier: 8.11.0
         version: 8.11.0
+      secure-json-parse:
+        specifier: 2.7.0
+        version: 2.7.0
       zod:
         specifier: 3.21.4
         version: 3.21.4

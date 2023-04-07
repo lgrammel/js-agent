@@ -1,39 +1,21 @@
-import { commandSchema } from "./Command";
+import { ToolAction } from "../action/tool/ToolAction";
 import {
   OpenAIChatMessage,
   createChatCompletion,
-} from "./ai/openai/createChatCompletion";
-import { retryWithExponentialBackoff } from "./retryWithExponentialBackoff";
-import { sendCommand } from "./sendCommand";
+} from "../ai/openai/createChatCompletion";
+import { retryWithExponentialBackoff } from "../util/retryWithExponentialBackoff";
+import { Agent } from "./Agent";
 
-const prompt = `
-You are a software developer that creates and modifies JavaScript programs.
-You are working in a Linux environment.
-You have access to a GitHub repository (current folder).
+function createSystemPrompt({ agent }: { agent: Agent }) {
+  return `## ROLE
+${agent.role}
 
-You can perform the following actions using JSON syntax:
+## AVAILABLE ACTIONS
+${agent.actionRegistry.getAvailableActionInstructions()}
 
-{ "type": "read-file", "filepath": "{filepath}" }
-Read the content of the file {filepath}.
-
-{ "type": "edit-file", "filepath": "{filepath}", "content": "{content}" }
-Replace the content of {filepath} with {content}.
-
-{ "type": "run-command", "command": "{command}" }
-Run a shell command. The output is shown. Useful commands include:
-- ls: list files
-- npx: run a command from a package
-
-{ "type": "done" }
-Indicate that you are done with the task.
-
-You need to also use one of the above commands with the outlined syntax.
-You must use exactly one action per response. 
-You must verify that the changes that you make are working.
-Explain each action that you perform.
-
-Your task is the following:
-`;
+## CONSTRAINTS
+${agent.constraints};`;
+}
 
 async function calculateCompletion(messages: Array<OpenAIChatMessage>) {
   const response = await retryWithExponentialBackoff(() =>
@@ -58,7 +40,13 @@ async function calculateCompletion(messages: Array<OpenAIChatMessage>) {
   };
 }
 
-async function run({ instructions }: { instructions: string }) {
+async function run({
+  agent,
+  instructions,
+}: {
+  agent: Agent;
+  instructions: string;
+}) {
   console.log("INSTRUCTIONS");
   console.log();
   console.log(instructions);
@@ -66,11 +54,11 @@ async function run({ instructions }: { instructions: string }) {
   const messages: Array<OpenAIChatMessage> = [
     {
       role: "system",
-      content: prompt,
+      content: createSystemPrompt({ agent }),
     },
     {
       role: "user",
-      content: instructions,
+      content: `## TASK\n${instructions}`,
     },
   ];
 
@@ -84,6 +72,8 @@ async function run({ instructions }: { instructions: string }) {
   while (counter < maxSteps) {
     console.log("========================================");
     console.log("COMPLETION");
+
+    // console.log(messages);
 
     const { completion, promptTokenCount, completionTokenCount } =
       await calculateCompletion(messages);
@@ -107,7 +97,10 @@ async function run({ instructions }: { instructions: string }) {
         console.log(jsonObject);
         console.log();
 
-        if (jsonObject.type === "done") {
+        const actionType = jsonObject.action;
+        const action = agent.actionRegistry.getAction(actionType);
+
+        if (action === agent.actionRegistry.doneAction) {
           printCost(totalPromptTokens, totalCompletionTokens);
           const endTime = new Date().getTime();
           const duration = endTime - startTime;
@@ -115,14 +108,21 @@ async function run({ instructions }: { instructions: string }) {
           return;
         }
 
-        const command = commandSchema.parse(jsonObject);
+        // TODO introduce tasks
+        const toolAction = action as ToolAction<any, any>;
 
-        const commandResult = await sendCommand(command);
+        const executionResult = await toolAction.executor.execute({
+          input: jsonObject,
+          action: toolAction,
+          workspacePath: process.cwd(), // TODO cleanup
+        });
 
-        console.log(commandResult);
+        // TODO better formatter for output / result
+
+        console.log(executionResult);
         messages.push({
           role: "user",
-          content: JSON.stringify(commandResult),
+          content: JSON.stringify(executionResult),
         });
       } catch (error: any) {
         console.log(error?.message);
@@ -137,8 +137,9 @@ async function run({ instructions }: { instructions: string }) {
   }
 }
 
-export const runAgent = () => {
+export const runAgent = ({ agent }: { agent: Agent }) => {
   run({
+    agent,
     instructions: process.argv.slice(2).join(" "),
   }).catch((error) => {
     console.error("Error running instructions:", error);

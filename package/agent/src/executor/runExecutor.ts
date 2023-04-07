@@ -2,10 +2,11 @@ import Fastify from "fastify";
 import hyperid from "hyperid";
 import pino from "pino";
 import zod from "zod";
-import { commandPluginFactory } from "./commandPlugin";
-import { gracefullyShutdownOnSigTermAndSigInt } from "./gracefullyShutdownOnSigTermAndSigInt";
+import { createToolPlugin } from "./toolPlugin";
+import { gracefullyShutdownOnSigTermAndSigInt } from "../util/gracefullyShutdownOnSigTermAndSigInt";
+import { ToolRegistry } from "../action/tool";
 
-export const runExecutor = async () => {
+export const runExecutor = async ({ tools }: { tools: ToolRegistry }) => {
   const environmentSchema = zod.object({
     WORKSPACE: zod.string(),
     HOST: zod.string(),
@@ -25,7 +26,12 @@ export const runExecutor = async () => {
     requestIdLogLabel: "requestId",
   });
 
-  server.register(commandPluginFactory(environment.WORKSPACE));
+  server.register(
+    createToolPlugin({
+      workspacePath: environment.WORKSPACE,
+      toolRegistry: tools,
+    })
+  );
 
   await server.listen({
     host: environment.HOST,
