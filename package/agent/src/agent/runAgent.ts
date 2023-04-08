@@ -116,13 +116,13 @@ async function run({
         console.log(formattedResult);
 
         messages.push({
-          role: "user",
+          role: "system",
           content: formattedResult,
         });
       } catch (error: any) {
         console.log(error?.message);
         messages.push({
-          role: "user",
+          role: "system",
           content: error?.message,
         });
       }
