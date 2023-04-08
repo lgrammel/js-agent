@@ -1,4 +1,11 @@
 {
   "editor.formatOnSave": true,
-  "cSpell.words": ["Fastify", "gptagent", "hyperid", "pino"]
+  "cSpell.words": [
+    "Backoff",
+    "Fastify",
+    "gptagent",
+    "hyperid",
+    "openai",
+    "pino"
+  ]
 }
