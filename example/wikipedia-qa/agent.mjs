@@ -32,6 +32,8 @@ runAgent({
             topic: "{query that you are answering}",
           },
           executor: new $.action.tool.SummarizeWebpageExecutor({
+            webpageTextExtractor:
+              new $.component.webpageTextExtractor.BasicWebpageTextExtractor(),
             summarizer:
               new $.component.textSummarizer.SingleLevelSplitSummarizer({
                 splitter: new $.component.splitter.RecursiveCharacterSplitter({
