@@ -20,6 +20,8 @@ pnpm install
 pnpm nx run-many --target=build
 
 # in example/javascript-developer folder:
+mkdir drive
+
 pnpm build
 pnpm run-executor
 
