@@ -1,10 +1,7 @@
 import { ToolAction } from "../action/tool/ToolAction";
-import {
-  OpenAIChatMessage,
-  createChatCompletion,
-} from "../ai/openai/createChatCompletion";
-import { retryWithExponentialBackoff } from "../util/retryWithExponentialBackoff";
+import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
 import { Agent } from "./Agent";
+import { createGenerateGpt4Completion } from "./generateGpt4Completion";
 
 function createSystemPrompt({ agent }: { agent: Agent }) {
   return `## ROLE
@@ -17,29 +14,6 @@ ${agent.constraints};
 ${agent.actionRegistry.getAvailableActionInstructions()}`;
 }
 
-async function calculateCompletion(messages: Array<OpenAIChatMessage>) {
-  const response = await retryWithExponentialBackoff(() =>
-    createChatCompletion({
-      apiKey: process.env.OPENAI_API_KEY ?? "",
-      messages,
-      model: "gpt-4",
-      temperature: 0,
-      maxTokens: 4096,
-    })
-  );
-
-  const promptTokenCount = response.usage.prompt_tokens;
-  const completionTokenCount = response.usage.completion_tokens;
-
-  // printCost(promptTokenCount, completionTokenCount);
-
-  return {
-    completion: response.choices[0].message.content,
-    promptTokenCount,
-    completionTokenCount,
-  };
-}
-
 async function run({
   agent,
   instructions,
@@ -47,6 +21,10 @@ async function run({
   agent: Agent;
   instructions: string;
 }) {
+  const generateText = createGenerateGpt4Completion({
+    openaiApiKey: process.env.OPENAI_API_KEY ?? "",
+  });
+
   console.log(instructions);
 
   const messages: Array<OpenAIChatMessage> = [
@@ -64,19 +42,24 @@ async function run({
   const maxSteps = 100;
   const startTime = new Date().getTime();
 
-  let totalPromptTokens = 0;
-  let totalCompletionTokens = 0;
+  let totalCostInMillCent = 0;
 
   while (counter < maxSteps) {
     console.log("========================================");
-    // console.log("COMPLETION");
 
-    // console.log(messages);
+    const generatedTextResult = await generateText({ messages });
 
-    const { completion, promptTokenCount, completionTokenCount } =
-      await calculateCompletion(messages);
-    totalPromptTokens += promptTokenCount;
-    totalCompletionTokens += completionTokenCount;
+    if (!generatedTextResult.success) {
+      console.log("Error generating text:", generatedTextResult.error);
+      return;
+    }
+
+    const {
+      generatedText: completion,
+      metadata: { costInMilliCent },
+    } = generatedTextResult;
+
+    totalCostInMillCent += costInMilliCent;
 
     console.log();
     console.log(completion);
@@ -99,7 +82,9 @@ async function run({
         const action = agent.actionRegistry.getAction(actionType);
 
         if (action === agent.actionRegistry.doneAction) {
-          printCost(totalPromptTokens, totalCompletionTokens);
+          const costInDollar = (totalCostInMillCent / (1000 * 100)).toFixed(2);
+          console.log(`Cost: $${costInDollar}`);
+
           const endTime = new Date().getTime();
           const duration = endTime - startTime;
           console.log(`Duration: ${duration} ms`);
@@ -143,14 +128,3 @@ export const runAgent = ({ agent }: { agent: Agent }) => {
     console.error("Error running instructions:", error);
   });
 };
-
-function printCost(totalPromptTokens: number, totalCompletionTokens: number) {
-  const cost = (
-    ((totalPromptTokens * 3) / 1000 + (totalCompletionTokens * 6) / 1000) /
-    100
-  ).toFixed(2);
-
-  console.log(
-    `Prompt tokens: ${totalPromptTokens} Completion tokens:${totalCompletionTokens} Cost: $${cost}`
-  );
-}
