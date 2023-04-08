@@ -9,7 +9,8 @@
   },
   "private": true,
   "dependencies": {
-    "@gptagent/agent": "*"
+    "@gptagent/agent": "*",
+    "dotenv": "16.0.3"
   },
   "devDependencies": {}
 }

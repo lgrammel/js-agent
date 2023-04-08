@@ -1,6 +1,5 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { Action } from "../../Action";
 import { ToolExecutor } from "../ToolExecutor";
 import { ReadFileInput, ReadFileOutput } from "./ReadFileAction";
 
@@ -12,7 +11,6 @@ export class ReadFileExecutor
     context: { workspacePath },
   }: {
     input: ReadFileInput;
-    action: Action<ReadFileInput, ReadFileOutput>;
     context: {
       workspacePath: string;
     };

@@ -1,9 +1,8 @@
 import axios from "axios";
-import { Action } from "../../Action.js";
 import { ToolExecutor } from "../ToolExecutor.js";
 import {
   ProgrammableGoogleSearchEngineInput,
-  ProgrammableGoogleSearchEngineOutput as ProgrammableGoogleSearchEngineOutput,
+  ProgrammableGoogleSearchEngineOutput,
 } from "./ProgrammableGoogleSearchEngineAction.js";
 
 export class ProgrammableGoogleSearchEngineExecutor
@@ -45,10 +44,6 @@ export class ProgrammableGoogleSearchEngineExecutor
     input: { query },
   }: {
     input: ProgrammableGoogleSearchEngineInput;
-    action: Action<
-      ProgrammableGoogleSearchEngineInput,
-      ProgrammableGoogleSearchEngineOutput
-    >;
   }) {
     const result = await axios.get(
       `https://www.googleapis.com/customsearch/v1/siterestrict?key=${this.key}&cx=${this.cx}&q=${query}`

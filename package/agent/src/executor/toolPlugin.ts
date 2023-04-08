@@ -21,9 +21,6 @@ export function createToolPlugin({
             action: tool,
             context: {
               workspacePath,
-              generateText: async () => {
-                throw new Error("Not implemented");
-              },
             },
           });
 

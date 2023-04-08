@@ -3,6 +3,10 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+const textGenerator = new $.ai.openai.Gpt4ChatTextGenerator({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
 runAgent({
   agent: new Agent({
     name: "Wikipedia QA",
@@ -27,10 +31,15 @@ runAgent({
             url: "https://en.wikipedia.org/wiki/Artificial_intelligence",
             topic: "{query that you are answering}",
           },
-          executor: new $.action.tool.SummarizeWebpageExecutor(),
+          executor: new $.action.tool.SummarizeWebpageExecutor({
+            summarizer: new $.component.textSummarizer.ChatTextSummarizer({
+              chatTextGenerator: textGenerator,
+            }),
+          }),
         }),
       ],
       format: new $.action.format.JsonActionFormat(),
     }),
+    textGenerator,
   }),
 });

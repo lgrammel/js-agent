@@ -1,6 +1,5 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { Action } from "../../Action";
 import { ToolExecutor } from "../ToolExecutor";
 import { WriteFileInput, WriteFileOutput } from "./WriteFileAction";
 
@@ -12,7 +11,6 @@ export class WriteFileExecutor
     context: { workspacePath },
   }: {
     input: WriteFileInput;
-    action: Action<WriteFileInput, WriteFileOutput>;
     context: {
       workspacePath: string;
     };

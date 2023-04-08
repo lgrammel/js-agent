@@ -1,4 +1,11 @@
 import $, { ActionRegistry, Agent, runAgent } from "@gptagent/agent";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const textGenerator = new $.ai.openai.Gpt4ChatTextGenerator({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 const remoteToolExecutor = new $.action.tool.RemoteToolExecutor({
   baseUrl: "http://localhost:3001",
@@ -19,5 +26,6 @@ You have access to a GitHub repository (current folder).`,
       ],
       format: new $.action.format.JsonActionFormat(),
     }),
+    textGenerator,
   }),
 });

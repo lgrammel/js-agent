@@ -20,13 +20,16 @@ importers:
         specifier: 5.0.2
         version: 5.0.2
 
-  agent/javascript-developer:
+  example/javascript-developer:
     dependencies:
       '@gptagent/agent':
         specifier: '*'
         version: link:../../package/agent
+      dotenv:
+        specifier: 16.0.3
+        version: 16.0.3
 
-  agent/wikipedia-qa:
+  example/wikipedia-qa:
     dependencies:
       '@gptagent/agent':
         specifier: '*'

@@ -1,5 +1,4 @@
 import { exec } from "child_process";
-import { Action } from "../../Action";
 import { ToolExecutor } from "../ToolExecutor";
 import { RunCommandInput, RunCommandOutput } from "./RunCommandAction";
 
@@ -11,7 +10,6 @@ export class RunCommandExecutor
     context: { workspacePath },
   }: {
     input: RunCommandInput;
-    action: Action<RunCommandInput, RunCommandOutput>;
     context: {
       workspacePath: string;
     };

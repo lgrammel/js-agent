@@ -1,7 +1,7 @@
 import axios from "axios";
+import { ToolExecutor } from "./ToolExecutor";
 import { Action } from "../Action";
 import { ActionParameters } from "../ActionParameters";
-import { ToolExecutor } from "./ToolExecutor";
 
 export class RemoteToolExecutor<INPUT extends ActionParameters, OUTPUT>
   implements ToolExecutor<INPUT, OUTPUT>
