@@ -8,11 +8,13 @@ export class RunCommandExecutor
 {
   async execute({
     input: { command },
-    workspacePath,
+    context: { workspacePath },
   }: {
     input: RunCommandInput;
     action: Action<RunCommandInput, RunCommandOutput>;
-    workspacePath: string;
+    context: {
+      workspacePath: string;
+    };
   }) {
     const { stdout, stderr } = await new Promise<{
       stdout: string;

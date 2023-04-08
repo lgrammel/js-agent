@@ -9,11 +9,13 @@ export class ReadFileExecutor
 {
   async execute({
     input: { filePath },
-    workspacePath,
+    context: { workspacePath },
   }: {
     input: ReadFileInput;
     action: Action<ReadFileInput, ReadFileOutput>;
-    workspacePath: string;
+    context: {
+      workspacePath: string;
+    };
   }) {
     // TODO try-catch
     const fullPath = path.join(workspacePath, filePath);

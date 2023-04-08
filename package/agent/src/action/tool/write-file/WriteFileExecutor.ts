@@ -9,11 +9,13 @@ export class WriteFileExecutor
 {
   async execute({
     input: { filePath, content },
-    workspacePath,
+    context: { workspacePath },
   }: {
     input: WriteFileInput;
     action: Action<WriteFileInput, WriteFileOutput>;
-    workspacePath: string;
+    context: {
+      workspacePath: string;
+    };
   }) {
     // TODO try-catch
     const fullPath = path.join(workspacePath, filePath);

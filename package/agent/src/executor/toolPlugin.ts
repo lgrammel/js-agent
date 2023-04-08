@@ -19,7 +19,12 @@ export function createToolPlugin({
           const output = await tool.executor.execute({
             input,
             action: tool,
-            workspacePath,
+            context: {
+              workspacePath,
+              generateText: async () => {
+                throw new Error("Not implemented");
+              },
+            },
           });
 
           const textOutput = JSON.stringify(output);

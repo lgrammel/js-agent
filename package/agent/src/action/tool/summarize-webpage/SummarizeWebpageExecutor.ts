@@ -1,7 +1,6 @@
 import axios from "axios";
 import { convert } from "html-to-text";
-import { createChatCompletion } from "../../../ai/openai/createChatCompletion.js";
-import { retryWithExponentialBackoff } from "../../../util/retryWithExponentialBackoff.js";
+import { GenerateTextFunction } from "../../../agent/generateGpt4Completion.js";
 import { Action } from "../../Action.js";
 import { ToolExecutor } from "../ToolExecutor.js";
 import {
@@ -14,10 +13,13 @@ export class SummarizeWebpageExecutor
 {
   async execute({
     input: { topic, url },
+    context: { generateText },
   }: {
     input: SummarizeWebpageInput;
     action: Action<SummarizeWebpageInput, SummarizeWebpageOutput>;
-    workspacePath: string;
+    context: {
+      generateText: GenerateTextFunction;
+    };
   }) {
     const result = await axios.get(url);
 
@@ -28,7 +30,11 @@ export class SummarizeWebpageExecutor
 
     // TODO true map reduce that takes chunk summaries and combines them
     const chunks = splitRecursively(text, 4096 * 4);
-    const chunkSummaries = await getChunkSummaries(chunks, topic);
+    const chunkSummaries = await getChunkSummaries({
+      chunks,
+      query: topic,
+      generateText,
+    });
 
     // TODO additional summarization pass to get final summary
 
@@ -59,37 +65,41 @@ function splitRecursively(text: string, maxLength: number): Array<string> {
   ];
 }
 
-async function getChunkSummaries(
-  chunks: Array<string>,
-  query: string
-): Promise<Array<string>> {
+async function getChunkSummaries({
+  chunks,
+  query,
+  generateText,
+}: {
+  chunks: Array<string>;
+  query: string;
+  generateText: GenerateTextFunction;
+}): Promise<Array<string>> {
   const chunkSummaries = [];
   for (const chunk of chunks) {
-    const response = await retryWithExponentialBackoff(() =>
-      createChatCompletion({
-        apiKey: process.env.OPENAI_API_KEY ?? "",
-        model: "gpt-4",
-        messages: [
-          {
-            role: "system",
-            content: `You are an assistant that summarizes articles.
+    const response = await generateText({
+      messages: [
+        {
+          role: "system",
+          content: `You are an assistant that summarizes articles.
 You have a specific query to answer and you want to keep all the information you need to answer it.`,
-          },
-          {
-            role: "user",
-            content: `## Query\n${query}`,
-          },
-          {
-            role: "user",
-            content: `## Article\n${chunk}`,
-          },
-        ],
-        temperature: 0,
-        maxTokens: 512,
-      })
-    );
+        },
+        {
+          role: "user",
+          content: `## Query\n${query}`,
+        },
+        {
+          role: "user",
+          content: `## Article\n${chunk}`,
+        },
+      ],
+      maxTokens: 512,
+    });
 
-    chunkSummaries.push(response.choices[0].message.content);
+    if (response.success) {
+      chunkSummaries.push(response.generatedText);
+    }
+
+    // TODO handle failure
   }
   return chunkSummaries;
 }

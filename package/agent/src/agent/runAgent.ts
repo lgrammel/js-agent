@@ -97,7 +97,10 @@ async function run({
         const executionResult = await toolAction.executor.execute({
           input: jsonObject,
           action: toolAction,
-          workspacePath: process.cwd(), // TODO cleanup
+          context: {
+            workspacePath: process.cwd(), // TODO cleanup
+            generateText,
+          },
         });
 
         // TODO better formatter for output / result

@@ -49,7 +49,6 @@ export class ProgrammableGoogleSearchEngineExecutor
       ProgrammableGoogleSearchEngineInput,
       ProgrammableGoogleSearchEngineOutput
     >;
-    workspacePath: string;
   }) {
     const result = await axios.get(
       `https://www.googleapis.com/customsearch/v1/siterestrict?key=${this.key}&cx=${this.cx}&q=${query}`

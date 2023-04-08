@@ -3,6 +3,11 @@ import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
 import { retryWithExponentialBackoff } from "../util/retryWithExponentialBackoff";
 import { calculateCallCostInMillicent } from "./calculateCallCostInMillicent";
 
+export type GenerateTextFunction = ({}: {
+  messages: Array<OpenAIChatMessage>;
+  maxTokens?: number;
+}) => Promise<TextGenerationResult>;
+
 export type TextGenerationResult =
   | {
       success: true;
