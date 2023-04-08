@@ -4,15 +4,13 @@ An automated agent working in a Docker container.
 
 It acts as a JavaScript/TypeScript developer right now, but can be extended to other languages.
 
-![autodev-001](https://github.com/lgrammel/autodev/raw/main/screenshot/autodev-001.png)
-
-### Requirements
+## Requirements
 
 - **GPT-4 access**
 - pnpm
 - Docker
 
-## How to run
+## Usage
 
 ```sh
 export OPENAI_API_KEY=sk-...
@@ -29,3 +27,7 @@ pnpm run-agent `cat example/helloworld/task.txt` # or any other instruction
 ```
 
 The `drive` folder contains the shared files between the host and the docker container.
+
+## Example Output
+
+![autodev-001](https://github.com/lgrammel/gptagent.js/raw/main/example/javascript-developer/screenshot/autodev-001.png)

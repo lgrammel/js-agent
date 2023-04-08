@@ -2,12 +2,12 @@
 
 Answers questions using Wikipedia articles. It searches using a Programmable Search Engine set up for en.wikipedia.org and reads (summarizes) articles to find the answer.
 
-### Requirements
+## Requirements
 
 - **GPT-4 access**
 - pnpm
 
-## How to run
+## Usage
 
 1. Create a [Programmable Search Engine](https://programmablesearchengine.google.com/about/) for en.wikipedia.org and get the key and cx.
 
