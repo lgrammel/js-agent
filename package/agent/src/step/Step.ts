@@ -1,6 +1,10 @@
 import { Controller } from "./Controller";
 import { StepState } from "./StepState";
 
+export type StepResult = StepState & {
+  type: "aborted" | "failed" | "succeeded"; // no pending or running any more
+};
+
 export abstract class Step {
   readonly id: string;
   readonly type: string;
@@ -23,18 +27,24 @@ export abstract class Step {
     this.state = { type: "pending" };
   }
 
-  protected abstract _run({ controller }: { controller: Controller }): Promise<
-    StepState & {
-      type: "aborted" | "failed" | "succeeded"; // no pending or running any more
-    }
-  >;
+  protected abstract _run({
+    controller,
+  }: {
+    controller: Controller;
+  }): Promise<StepResult>;
 
-  async run({ controller }: { controller: Controller }) {
+  async run({ controller }: { controller: Controller }): Promise<StepResult> {
     if (this.state.type !== "pending") {
       throw new Error(`Task ${this.id} is already running`);
     }
 
     this.state = { type: "running" };
-    this.state = await this._run({ controller });
+    const result = await this._run({ controller });
+    this.state = result;
+    return result;
+  }
+
+  isDoneStep() {
+    return false;
   }
 }
