@@ -1,4 +1,5 @@
 import { ToolAction } from "../action/tool/ToolAction";
+import { RunCommandResultFormatter } from "../action/tool/run-command/RunCommandResultFormatter";
 import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
 import { Agent } from "./Agent";
 import { createGenerateGpt4Completion } from "./generateGpt4Completion";
@@ -104,11 +105,19 @@ async function run({
         });
 
         // TODO better formatter for output / result
+        let formattedResult = JSON.stringify(executionResult);
 
-        console.log(executionResult);
+        if (toolAction.type === "tool.run-command") {
+          formattedResult = new RunCommandResultFormatter().formatResult({
+            result: executionResult,
+          });
+        }
+
+        console.log(formattedResult);
+
         messages.push({
           role: "user",
-          content: JSON.stringify(executionResult),
+          content: formattedResult,
         });
       } catch (error: any) {
         console.log(error?.message);
