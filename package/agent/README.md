@@ -29,9 +29,6 @@ See examples for details on how to implement and run an agent.
 
 ```js
 import $, { ActionRegistry, Agent, runAgent } from "@gptagent/agent";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 const textGenerator = new $.ai.openai.Gpt4ChatTextGenerator({
   apiKey: process.env.OPENAI_API_KEY,
@@ -62,6 +59,8 @@ runAgent({
             topic: "{query that you are answering}",
           },
           executor: new $.action.tool.SummarizeWebpageExecutor({
+            webpageTextExtractor:
+              new $.component.webpageTextExtractor.BasicWebpageTextExtractor(),
             summarizer:
               new $.component.textSummarizer.SingleLevelSplitSummarizer({
                 splitter: new $.component.splitter.RecursiveCharacterSplitter({
