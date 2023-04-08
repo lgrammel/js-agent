@@ -32,9 +32,15 @@ runAgent({
             topic: "{query that you are answering}",
           },
           executor: new $.action.tool.SummarizeWebpageExecutor({
-            summarizer: new $.component.textSummarizer.ChatTextSummarizer({
-              chatTextGenerator: textGenerator,
-            }),
+            summarizer:
+              new $.component.textSummarizer.SingleLevelSplitSummarizer({
+                splitter: new $.component.splitter.RecursiveCharacterSplitter({
+                  maxCharactersByChunk: 4096 * 4,
+                }),
+                summarizer: new $.component.textSummarizer.ChatTextSummarizer({
+                  chatTextGenerator: textGenerator,
+                }),
+              }),
           }),
         }),
       ],
