@@ -5,6 +5,15 @@ export class RunCommandResultFormatter
   implements ResultFormatter<RunCommandOutput>
 {
   readonly outputSchema = RunCommandAction.OUTPUT_SCHEMA;
+  readonly type: string;
+
+  constructor({
+    type = RunCommandAction.TYPE,
+  }: {
+    type?: string;
+  } = {}) {
+    this.type = type;
+  }
 
   formatResult({
     result: {

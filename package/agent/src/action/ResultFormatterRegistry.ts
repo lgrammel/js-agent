@@ -6,12 +6,7 @@ export class ResultFormatterRegistry {
     ResultFormatter<unknown>
   >();
 
-  constructor(
-    formatters: Array<{
-      type: string;
-      formatter: ResultFormatter<unknown>;
-    }> = []
-  ) {
+  constructor(formatters: Array<ResultFormatter<unknown>> = []) {
     if (formatters != null) {
       for (const formatter of formatters) {
         this.registerResultFormatter(formatter);
@@ -19,14 +14,8 @@ export class ResultFormatterRegistry {
     }
   }
 
-  registerResultFormatter({
-    type,
-    formatter,
-  }: {
-    type: string;
-    formatter: ResultFormatter<unknown>;
-  }) {
-    this.resultFormatters.set(type, formatter);
+  registerResultFormatter(formatter: ResultFormatter<unknown>) {
+    this.resultFormatters.set(formatter.type, formatter);
   }
 
   getResultFormatter(type: string) {

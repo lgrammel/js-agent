@@ -35,10 +35,7 @@ You have access to a GitHub repository (current folder).`,
           format: new $.action.format.JsonActionFormat(),
         }),
         resultFormatterRegistry: new $.action.ResultFormatterRegistry([
-          {
-            type: $.action.tool.RunCommandAction.TYPE,
-            formatter: new $.action.tool.RunCommandResultFormatter(),
-          },
+          new $.action.tool.RunCommandResultFormatter(),
         ]),
         textGenerator,
       }),
