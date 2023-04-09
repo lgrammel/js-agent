@@ -15,13 +15,20 @@ export class RunCommandAction extends ToolAction<
   RunCommandInput,
   RunCommandOutput
 > {
+  static readonly TYPE = "tool.run-command";
+
+  static readonly OUTPUT_SCHEMA = zod.object({
+    stdout: zod.string(),
+    stderr: zod.string(),
+  });
+
   constructor({
     executor,
   }: {
     executor: ToolExecutor<RunCommandInput, RunCommandOutput>;
   }) {
     super({
-      type: "tool.run-command",
+      type: RunCommandAction.TYPE,
       description: `Run a shell command. The output is shown. Useful commands include:
 - ls: list files
 - mv: move and rename files`,
@@ -31,10 +38,7 @@ export class RunCommandAction extends ToolAction<
       inputExample: {
         command: "{command}",
       },
-      outputSchema: zod.object({
-        stdout: zod.string(),
-        stderr: zod.string(),
-      }),
+      outputSchema: RunCommandAction.OUTPUT_SCHEMA,
       executor,
     });
   }

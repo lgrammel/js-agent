@@ -1,9 +1,11 @@
 import { ResultFormatter } from "../../result-formatter/ResultFormatter";
-import { RunCommandInput, RunCommandOutput } from "./RunCommandAction";
+import { RunCommandAction, RunCommandOutput } from "./RunCommandAction";
 
 export class RunCommandResultFormatter
-  implements ResultFormatter<RunCommandInput, RunCommandOutput>
+  implements ResultFormatter<RunCommandOutput>
 {
+  readonly outputSchema = RunCommandAction.OUTPUT_SCHEMA;
+
   formatResult({
     result: {
       summary,

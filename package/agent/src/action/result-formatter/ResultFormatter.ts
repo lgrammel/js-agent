@@ -1,6 +1,6 @@
-export interface ResultFormatter<INPUT, OUTPUT> {
-  formatResult({}: {
-    input: INPUT;
-    result: { output: OUTPUT; summary: string };
-  }): string;
+import zod from "zod";
+
+export interface ResultFormatter<OUTPUT> {
+  readonly outputSchema: zod.Schema<OUTPUT>;
+  formatResult({}: { result: { output: OUTPUT; summary: string } }): string;
 }

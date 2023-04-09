@@ -1,28 +1,34 @@
+import zod from "zod";
 import { ActionRegistry } from "../action/ActionRegistry";
+import { ResultFormatter } from "../action/result-formatter/ResultFormatter";
+import { ResultFormatterRegistry } from "../action/result-formatter/ResultFormatterRegistry";
+import { AgentRun } from "../agent/AgentRun";
 import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
 import { ChatTextGenerator } from "../component/text-generator/ChatTextGenerator";
 import { ErrorStep } from "./ErrorStep";
 import { NextStepGenerator } from "./NextStepGenerator";
 import { NoopStep } from "./NoopStep";
 import { Step } from "./Step";
-import { AgentRun } from "../agent/AgentRun";
 
 export class BasicNextStepGenerator implements NextStepGenerator {
   readonly role: string;
   readonly constraints: string;
   readonly actionRegistry: ActionRegistry;
   readonly textGenerator: ChatTextGenerator;
+  readonly resultFormatterRegistry: ResultFormatterRegistry;
 
   constructor({
     role,
     constraints,
     actionRegistry,
     textGenerator,
+    resultFormatterRegistry = new ResultFormatterRegistry(),
   }: {
     role: string;
     constraints: string;
     actionRegistry: ActionRegistry;
     textGenerator: ChatTextGenerator;
+    resultFormatterRegistry?: ResultFormatterRegistry;
   }) {
     if (role == null) {
       throw new Error("role is required");
@@ -41,6 +47,7 @@ export class BasicNextStepGenerator implements NextStepGenerator {
     this.constraints = constraints;
     this.actionRegistry = actionRegistry;
     this.textGenerator = textGenerator;
+    this.resultFormatterRegistry = resultFormatterRegistry;
   }
 
   generateMessages({
@@ -65,8 +72,8 @@ ${this.actionRegistry.getAvailableActionInstructions()}`,
       { role: "user", content: `## TASK\n${run.instructions}` },
     ];
 
-    // TODO result formatting etc. (more complex prompt generator)
     for (const step of completedSteps) {
+      // repeat the original agent response to reinforce the action format and keep the conversation going:
       if (step.generatedText != null) {
         messages.push({
           role: "assistant",
@@ -74,13 +81,12 @@ ${this.actionRegistry.getAvailableActionInstructions()}`,
         });
       }
 
+      let content: string | undefined = undefined;
+
       const stepState = step.state;
       switch (stepState.type) {
         case "failed": {
-          messages.push({
-            role: "system",
-            content: `ERROR:\n${stepState.summary}`,
-          });
+          content = `ERROR:\n${stepState.summary}`;
           break;
         }
         case "succeeded": {
@@ -88,16 +94,52 @@ ${this.actionRegistry.getAvailableActionInstructions()}`,
             break;
           }
 
-          messages.push({
-            role: "system",
-            content: JSON.stringify(stepState.output),
+          const resultFormatter =
+            this.resultFormatterRegistry.getResultFormatter(step.type);
+
+          if (resultFormatter == null) {
+            content = JSON.stringify(stepState.output);
+            break;
+          }
+
+          content = this.formatOutput({
+            resultFormatter,
+            result: stepState,
           });
-          break;
         }
+      }
+
+      if (content != null) {
+        messages.push({
+          role: "system",
+          content,
+        });
       }
     }
 
     return messages;
+  }
+
+  private formatOutput<OUTPUT>({
+    resultFormatter,
+    result,
+  }: {
+    result: unknown;
+    resultFormatter: ResultFormatter<OUTPUT>;
+  }) {
+    const schema = zod.object({
+      output: resultFormatter.outputSchema,
+      summary: zod.string(),
+    });
+
+    const parsedResult = schema.parse(result);
+
+    return resultFormatter.formatResult({
+      result: {
+        summary: parsedResult.summary,
+        output: parsedResult.output as any, // TODO fix type issue
+      },
+    });
   }
 
   async generateNextStep({
