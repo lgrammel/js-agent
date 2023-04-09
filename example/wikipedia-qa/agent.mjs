@@ -1,4 +1,4 @@
-import $, { ActionRegistry, Agent, runAgent } from "@gptagent/agent";
+import $, { ActionRegistry, Agent, runCLIAgent } from "@gptagent/agent";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -7,7 +7,7 @@ const textGenerator = new $.ai.openai.Gpt4ChatTextGenerator({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-runAgent({
+runCLIAgent({
   agent: new Agent({
     name: "Wikipedia QA",
     role: `You are an knowledge worker that answers questions using Wikipedia content.`,

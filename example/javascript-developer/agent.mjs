@@ -1,4 +1,4 @@
-import $, { ActionRegistry, Agent, runAgent } from "@gptagent/agent";
+import $, { ActionRegistry, Agent, runCLIAgent } from "@gptagent/agent";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -11,7 +11,7 @@ const remoteToolExecutor = new $.action.tool.RemoteToolExecutor({
   baseUrl: "http://localhost:3001",
 });
 
-runAgent({
+runCLIAgent({
   agent: new Agent({
     name: "JavaScript Developer",
     role: `You are a software developer that creates and modifies JavaScript programs.
