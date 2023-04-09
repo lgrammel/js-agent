@@ -80,6 +80,10 @@ runAgent({
 });
 ```
 
+## Example Output
+
+![wikipedia-qa](https://github.com/lgrammel/gptagent.js/raw/main/example/wikipedia-qa/screenshot/wikipedia-qa-001.png)
+
 ## Requirements
 
 - **GPT-4 access**

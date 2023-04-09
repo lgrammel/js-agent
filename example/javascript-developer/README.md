@@ -40,4 +40,4 @@ git clone https://github.com/lgrammel/gptagent.js.git drive
 
 ## Example Output
 
-![autodev-001](https://github.com/lgrammel/gptagent.js/raw/main/example/javascript-developer/screenshot/autodev-001.png)
+![javascript-developer](https://github.com/lgrammel/gptagent.js/raw/main/example/javascript-developer/screenshot/autodev-001.png)

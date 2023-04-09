@@ -30,6 +30,8 @@ pnpm run-agent "which town is bigger, Gummersbach or Bergneustadt?"
 
 ## Example Output
 
+![wikipedia-qa](https://github.com/lgrammel/gptagent.js/raw/main/example/wikipedia-qa/screenshot/wikipedia-qa-001.png)
+
 ```sh
 > node ./agent.mjs "which town is bigger, Gummersbach or Bergneustadt?"
 

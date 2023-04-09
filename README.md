@@ -1,5 +1,7 @@
 # GPTAgent.js: Automatic AI Agents with TS/JS
 
+![Twitter Follow](https://img.shields.io/twitter/follow/lgrammel?style=social)
+
 GPTAgent.js is a composable and extensible framework for creating AI agents with TypeScript/JavaScript.
 
 Creating AI agents requires a lot of experimentation.
@@ -79,6 +81,10 @@ runAgent({
   }),
 });
 ```
+
+## Example Output
+
+![wikipedia-qa](https://github.com/lgrammel/gptagent.js/raw/main/example/wikipedia-qa/screenshot/wikipedia-qa-001.png)
 
 ## Requirements
 
