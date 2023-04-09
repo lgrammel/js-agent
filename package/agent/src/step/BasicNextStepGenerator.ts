@@ -43,13 +43,13 @@ export class BasicNextStepGenerator implements NextStepGenerator {
     this.textGenerator = textGenerator;
   }
 
-  async generateNextStep({
+  generateMessages({
     completedSteps,
     run,
   }: {
     completedSteps: Array<Step>;
     run: AgentRun;
-  }): Promise<Step> {
+  }): Array<OpenAIChatMessage> {
     const messages: Array<OpenAIChatMessage> = [
       {
         role: "system",
@@ -67,8 +67,6 @@ ${this.actionRegistry.getAvailableActionInstructions()}`,
 
     // TODO result formatting etc. (more complex prompt generator)
     for (const step of completedSteps) {
-      const stepState = step.state;
-
       if (step.generatedText != null) {
         messages.push({
           role: "assistant",
@@ -76,6 +74,7 @@ ${this.actionRegistry.getAvailableActionInstructions()}`,
         });
       }
 
+      const stepState = step.state;
       switch (stepState.type) {
         case "failed": {
           messages.push({
@@ -98,10 +97,19 @@ ${this.actionRegistry.getAvailableActionInstructions()}`,
       }
     }
 
-    run.observer?.onStepGenerationStarted({
-      run,
-      messages,
-    });
+    return messages;
+  }
+
+  async generateNextStep({
+    completedSteps,
+    run,
+  }: {
+    completedSteps: Array<Step>;
+    run: AgentRun;
+  }): Promise<Step> {
+    const messages = this.generateMessages({ completedSteps, run });
+
+    run.observer?.onStepGenerationStarted({ run, messages });
 
     const generatedText = await this.textGenerator.generateText(
       { messages },
@@ -133,11 +141,7 @@ ${this.actionRegistry.getAvailableActionInstructions()}`,
       }
     }
 
-    run.observer?.onStepGenerationFinished({
-      run,
-      generatedText,
-      step,
-    });
+    run.observer?.onStepGenerationFinished({ run, generatedText, step });
 
     return step;
   }
