@@ -11,11 +11,22 @@ export class DoneAction
       {}
     >
 {
-  type = "done";
-  description = "Indicate that you are done with the task.";
+  readonly type: string;
+  readonly description: string;
 
-  inputSchema = zod.object({});
-  outputSchema = zod.object({});
+  readonly inputSchema = zod.object({});
+  readonly outputSchema = zod.object({});
+
+  constructor({
+    type = "done",
+    description = "Indicate that you are done with the task.",
+  }: {
+    type?: string;
+    description?: string;
+  } = {}) {
+    this.type = type;
+    this.description = description;
+  }
 
   async createStep({
     input,

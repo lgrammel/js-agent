@@ -27,6 +27,10 @@ You have access to a GitHub repository (current folder).`,
             new $.action.tool.RunCommandAction({
               executor: remoteToolExecutor,
             }),
+            new $.action.DoneAction({
+              type: "user-action",
+              text: "Indicate that the user needs to take an action.",
+            }),
           ],
           format: new $.action.format.JsonActionFormat(),
         }),
