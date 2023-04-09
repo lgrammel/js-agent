@@ -3,10 +3,10 @@ import { DoneAction } from "./DoneAction";
 import { ActionFormat } from "./format/ActionFormat";
 
 export class ActionRegistry {
+  readonly format: ActionFormat;
   readonly doneAction: Action<any, any>;
 
   private readonly actions: Map<string, Action<any, any>> = new Map();
-  private readonly format: ActionFormat;
 
   constructor({
     actions,

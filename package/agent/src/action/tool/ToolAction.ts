@@ -1,6 +1,7 @@
 import zod from "zod";
 import { Action } from "../Action.js";
 import { ToolExecutor } from "./ToolExecutor.js";
+import { ToolStep } from "./ToolStep.js";
 
 export class ToolAction<
   INPUT extends Record<string, string | undefined>,
@@ -38,5 +39,19 @@ export class ToolAction<
     this.inputExample = inputExample;
     this.outputSchema = outputSchema;
     this.executor = executor;
+  }
+
+  async createStep({
+    input,
+    generatedText,
+  }: {
+    generatedText?: string;
+    input: INPUT;
+  }): Promise<ToolStep<INPUT, OUTPUT>> {
+    return new ToolStep({
+      action: this,
+      input,
+      generatedText,
+    });
   }
 }

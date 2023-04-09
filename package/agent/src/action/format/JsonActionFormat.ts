@@ -10,9 +10,20 @@ export class JsonActionFormat implements ActionFormat {
   }
 
   parse(text: string): ActionParameters {
+    if (!text.trim().endsWith("}")) {
+      return { _freeText: text };
+    }
+
     try {
-      const parsedJson = SecureJSON.parse(text);
-      return actionParametersSchema.parse(parsedJson);
+      const firstOpeningBraceIndex = text.indexOf("{");
+      const freeText = text.slice(0, firstOpeningBraceIndex);
+      const jsonText = text.slice(firstOpeningBraceIndex);
+      const jsonObject = SecureJSON.parse(jsonText);
+
+      return {
+        ...actionParametersSchema.parse(jsonObject),
+        _freeText: freeText.trim(),
+      };
     } catch (error: any) {
       throw new Error(
         `${text} could not be parsed as JSON: ${error?.message ?? error}`

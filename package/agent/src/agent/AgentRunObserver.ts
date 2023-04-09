@@ -1,34 +1,26 @@
 import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
-import { Agent } from "./Agent";
+import { Step } from "../step/Step";
+import { StepResult } from "../step/StepResult";
+import { AgentRun } from "./AgentRun";
 
 export interface AgentRunObserver {
-  onAgentRunStarted({}: { agent: Agent; instructions: string }): void;
-  onAgentRunFinished({}: { agent: Agent; result: unknown }): void;
+  onAgentRunStarted({}: { run: AgentRun }): void;
+  onAgentRunFinished({}: { run: AgentRun; result: unknown }): void;
 
   onStepGenerationStarted({}: {
-    agent: Agent;
+    run: AgentRun;
     messages: Array<OpenAIChatMessage>;
   }): void;
-  onStepGenerated({}: { agent: Agent; completion: string }): void;
+  onStepGenerationFinished({}: {
+    run: AgentRun;
+    generatedText: string;
+    step: Step;
+  }): void;
 
-  onActionExecutionStarted({}: {
-    agent: Agent;
-    actionType: string;
-    action: unknown;
-  }): void;
-  onActionExecutionFinished({}: {
-    agent: Agent;
-    actionType: string;
-    action: unknown;
-    result: {
-      summary: string;
-      output: unknown;
-    };
-  }): void;
-  onActionExecutionFailed({}: {
-    agent: Agent;
-    actionType: string;
-    action: unknown;
-    error: unknown;
+  onStepExecutionStarted({}: { run: AgentRun; step: Step }): void;
+  onStepExecutionFinished({}: {
+    run: AgentRun;
+    step: Step;
+    result: StepResult;
   }): void;
 }

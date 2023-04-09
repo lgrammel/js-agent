@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import { ToolStep } from "../action/tool/ToolStep";
 import { Agent } from "./Agent";
 
 const log = console.log;
@@ -8,9 +9,9 @@ export const runCLIAgent = ({ agent }: { agent: Agent }) => {
     .run({
       instructions: process.argv.slice(2).join(" "),
       observer: {
-        onAgentRunStarted({ instructions }) {
+        onAgentRunStarted({ run }) {
           log(chalk.green(`### ${agent.name} ###`));
-          log(instructions);
+          log(run.instructions);
           log();
         },
 
@@ -19,22 +20,51 @@ export const runCLIAgent = ({ agent }: { agent: Agent }) => {
         },
 
         onStepGenerationStarted({ messages }) {
-          log(chalk.gray("Thinking..."));
+          log(chalk.gray("Thinking…"));
         },
-        onStepGenerated({ completion }) {
-          log(chalk.cyanBright(completion));
+
+        onStepGenerationFinished({ generatedText }) {
+          log(chalk.cyanBright(generatedText));
           log();
         },
-        onActionExecutionStarted({ actionType, action }) {
-          log(chalk.gray(`Execute action ${actionType}`));
+
+        onStepExecutionStarted({ step }) {
+          if (step instanceof ToolStep) {
+            log(chalk.gray(`Executing ${step.type}…`));
+            return;
+          }
         },
-        onActionExecutionFinished({ actionType, action, result }) {
-          log(chalk.green(result.summary));
-          log();
-        },
-        onActionExecutionFailed({ actionType, action, error }) {
-          log(chalk.red("Error"));
-          log(chalk.red(error));
+
+        onStepExecutionFinished({ step, result }) {
+          if (step instanceof ToolStep) {
+            const resultType = result.type;
+
+            switch (resultType) {
+              case "succeeded": {
+                log(chalk.green(result.summary));
+                log();
+                break;
+              }
+
+              case "aborted": {
+                log(chalk.yellow("Aborted"));
+                log();
+                break;
+              }
+
+              case "failed": {
+                log(chalk.red(`ERROR: ${result.error}`));
+                log();
+                break;
+              }
+
+              default: {
+                const _exhaustiveCheck: never = resultType;
+                throw new Error(`Unhandled result type: ${resultType}`);
+              }
+            }
+            return;
+          }
         },
       },
     })

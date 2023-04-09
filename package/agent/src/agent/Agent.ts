@@ -1,8 +1,12 @@
 import { ActionRegistry } from "../action/ActionRegistry";
-import { ToolAction } from "../action/tool/ToolAction";
-import { RunCommandResultFormatter } from "../action/tool/run-command/RunCommandResultFormatter";
 import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
 import { ChatTextGenerator } from "../component/text-generator/ChatTextGenerator";
+import { DynamicCompositeStep } from "../step/DynamicCompositeStep";
+import { ErrorStep } from "../step/ErrorStep";
+import { MaxStepAbortController } from "../step/MaxStepAbortController";
+import { NoopStep } from "../step/NoopStep";
+import { Step } from "../step/Step";
+import { AgentRun } from "./AgentRun";
 import { AgentRunObserver } from "./AgentRunObserver";
 
 export class Agent {
@@ -55,105 +59,114 @@ export class Agent {
     instructions: string;
     observer?: AgentRunObserver;
   }) {
-    observer?.onAgentRunStarted({ agent: this, instructions });
+    const controller = new MaxStepAbortController({ maxSteps: 100 });
+
+    const run = new AgentRun({
+      agent: this,
+      controller,
+      observer,
+      instructions,
+    });
+
+    observer?.onAgentRunStarted({ run });
+
+    const textGenerator = this.textGenerator;
+    const actionRegistry = this.actionRegistry;
 
     const messages: Array<OpenAIChatMessage> = [
       { role: "system", content: createSystemPrompt({ agent: this }) },
       { role: "user", content: `## TASK\n${instructions}` },
     ];
 
-    let stepCounter = 0;
-    const maxSteps = 100;
+    const result = await run.executeStep(
+      new DynamicCompositeStep({
+        nextStepGenerator: {
+          async generateNextStep({ completedSteps, run }) {
+            const inputMessages = messages.slice(0);
 
-    while (stepCounter < maxSteps) {
-      observer?.onStepGenerationStarted({ agent: this, messages });
+            // TODO result formatting etc. (more complex prompt generator)
+            for (const step of completedSteps) {
+              const stepState = step.state;
 
-      const completion = await this.textGenerator.generateText(
-        { messages },
-        undefined // TODO context = agent run // TODO context = agent run
-      );
+              if (step.generatedText != null) {
+                inputMessages.push({
+                  role: "assistant",
+                  content: step.generatedText,
+                });
+              }
 
-      observer?.onStepGenerated({ agent: this, completion });
+              switch (stepState.type) {
+                case "failed": {
+                  inputMessages.push({
+                    role: "system",
+                    content: `ERROR:\n${stepState.summary}`,
+                  });
+                  break;
+                }
+                case "succeeded": {
+                  if (stepState.output == null) {
+                    break;
+                  }
 
-      messages.push({
-        role: "assistant",
-        content: completion,
-      });
+                  inputMessages.push({
+                    role: "system",
+                    content: JSON.stringify(stepState.output),
+                  });
+                  break;
+                }
+              }
+            }
 
-      if (completion.trim().endsWith("}")) {
-        try {
-          const firstOpeningBraceIndex = completion.indexOf("{");
-          const jsonObject = JSON.parse(
-            completion.slice(firstOpeningBraceIndex)
-          );
-
-          const actionType = jsonObject.action;
-          const action = this.actionRegistry.getAction(actionType);
-
-          observer?.onActionExecutionStarted({
-            agent: this,
-            actionType,
-            action,
-          });
-
-          if (action === this.actionRegistry.doneAction) {
-            observer?.onAgentRunFinished({
-              agent: this,
-              result: jsonObject,
+            run.observer?.onStepGenerationStarted({
+              run,
+              messages: inputMessages,
             });
-            return;
-          }
 
-          // TODO introduce tasks
-          const toolAction = action as ToolAction<any, any>;
+            const generatedText = await textGenerator.generateText(
+              { messages: inputMessages },
+              undefined // TODO context = agent run
+            );
 
-          const executionResult = await toolAction.executor.execute({
-            input: jsonObject,
-            action: toolAction,
-            context: {
-              workspacePath: process.cwd(), // TODO cleanup
-            },
-          });
+            const actionParameters = actionRegistry.format.parse(generatedText);
 
-          // TODO better formatter for output / result
-          let formattedResult = JSON.stringify(executionResult);
+            let step: Step;
+            if (actionParameters.action == null) {
+              step = new NoopStep({
+                type: "thought",
+                generatedText,
+                summary: actionParameters._freeText,
+              });
+            } else {
+              try {
+                const action = actionRegistry.getAction(
+                  actionParameters.action
+                );
 
-          if (toolAction.type === "tool.run-command") {
-            formattedResult = new RunCommandResultFormatter().formatResult({
-              result: executionResult,
+                step = await action.createStep({
+                  generatedText,
+                  input: actionParameters,
+                });
+              } catch (error: any) {
+                step = new ErrorStep({
+                  generatedText,
+                  error,
+                });
+              }
+            }
+
+            run.observer?.onStepGenerationFinished({
+              run,
+              generatedText,
+              step,
             });
-          }
 
-          observer?.onActionExecutionFinished({
-            agent: this,
-            actionType,
-            action,
-            result: executionResult,
-          });
+            return step;
+          },
+        },
+      })
+    );
 
-          messages.push({
-            role: "system",
-            content: formattedResult,
-          });
-        } catch (error: any) {
-          observer?.onActionExecutionFailed({
-            agent: this,
-            actionType: "unknown",
-            action: "unknown",
-            error,
-          });
-
-          messages.push({
-            role: "system",
-            content: error?.message,
-          });
-        }
-      }
-
-      stepCounter++;
-    }
-
-    observer?.onAgentRunFinished({ agent: this, result: undefined });
+    observer?.onAgentRunFinished({ run, result });
   }
 }
 
