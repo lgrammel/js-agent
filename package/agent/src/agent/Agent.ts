@@ -1,52 +1,22 @@
-import { ActionRegistry } from "../action/ActionRegistry";
-import { ChatTextGenerator } from "../component/text-generator/ChatTextGenerator";
-import { DynamicCompositeStep } from "../step/DynamicCompositeStep";
 import { MaxStepAbortController } from "../step/MaxStepAbortController";
+import { Step } from "../step/Step";
 import { AgentRun } from "./AgentRun";
 import { AgentRunObserver } from "./AgentRunObserver";
-import { BasicNextStepGenerator } from "./BasicNextStepGenerator";
 
 export class Agent {
   readonly name: string;
-  readonly role: string;
-  readonly constraints: string;
-  readonly actionRegistry: ActionRegistry;
-  readonly textGenerator: ChatTextGenerator;
+  readonly rootStep: Step;
 
-  constructor({
-    name,
-    role,
-    constraints,
-    actionRegistry,
-    textGenerator,
-  }: {
-    name: string;
-    role: string;
-    constraints: string;
-    actionRegistry: ActionRegistry;
-    textGenerator: ChatTextGenerator;
-  }) {
+  constructor({ name, rootStep }: { name: string; rootStep: Step }) {
     if (name == null) {
       throw new Error("name is required");
     }
-    if (role == null) {
-      throw new Error("role is required");
-    }
-    if (constraints == null) {
-      throw new Error("constraints is required");
-    }
-    if (actionRegistry == null) {
-      throw new Error("actionRegistry is required");
-    }
-    if (textGenerator == null) {
-      throw new Error("textGenerator is required");
+    if (rootStep == null) {
+      throw new Error("rootStep is required");
     }
 
     this.name = name;
-    this.role = role;
-    this.constraints = constraints;
-    this.actionRegistry = actionRegistry;
-    this.textGenerator = textGenerator;
+    this.rootStep = rootStep;
   }
 
   async run({
@@ -67,17 +37,7 @@ export class Agent {
 
     observer?.onAgentRunStarted({ run });
 
-    const textGenerator = this.textGenerator;
-    const actionRegistry = this.actionRegistry;
-
-    const result = await run.executeStep(
-      new DynamicCompositeStep({
-        nextStepGenerator: new BasicNextStepGenerator({
-          actionRegistry,
-          textGenerator,
-        }),
-      })
-    );
+    const result = await run.executeStep(this.rootStep);
 
     observer?.onAgentRunFinished({ run, result });
   }
