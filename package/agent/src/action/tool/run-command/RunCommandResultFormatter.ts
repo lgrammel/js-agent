@@ -1,4 +1,4 @@
-import { ResultFormatter } from "../../result-formatter/ResultFormatter";
+import { ResultFormatter } from "../../ResultFormatter";
 import { RunCommandAction, RunCommandOutput } from "./RunCommandAction";
 
 export class RunCommandResultFormatter

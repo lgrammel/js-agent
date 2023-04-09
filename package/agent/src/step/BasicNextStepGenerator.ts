@@ -1,7 +1,7 @@
 import zod from "zod";
 import { ActionRegistry } from "../action/ActionRegistry";
-import { ResultFormatter } from "../action/result-formatter/ResultFormatter";
-import { ResultFormatterRegistry } from "../action/result-formatter/ResultFormatterRegistry";
+import { ResultFormatter } from "../action/ResultFormatter";
+import { ResultFormatterRegistry } from "../action/ResultFormatterRegistry";
 import { AgentRun } from "../agent/AgentRun";
 import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
 import { ChatTextGenerator } from "../component/text-generator/ChatTextGenerator";

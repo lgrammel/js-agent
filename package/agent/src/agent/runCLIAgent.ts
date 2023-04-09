@@ -21,6 +21,7 @@ export const runCLIAgent = ({ agent }: { agent: Agent }) => {
 
         onStepGenerationStarted({ messages }) {
           log(chalk.gray("Thinking…"));
+          log(messages);
         },
 
         onStepGenerationFinished({ generatedText }) {

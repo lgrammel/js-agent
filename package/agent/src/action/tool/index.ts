@@ -8,6 +8,7 @@ export * from "./read-file/ReadFileAction";
 export * from "./read-file/ReadFileExecutor";
 export * from "./run-command/RunCommandAction";
 export * from "./run-command/RunCommandExecutor";
+export * from "./run-command/RunCommandResultFormatter";
 export * from "./summarize-webpage/SummarizeWebpageAction";
 export * from "./summarize-webpage/SummarizeWebpageExecutor";
 export * from "./write-file/WriteFileAction";
