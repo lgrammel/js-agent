@@ -2,6 +2,7 @@ export * from "./AbortController";
 export * from "./BasicNextStepGenerator";
 export * from "./DynamicCompositeStep";
 export * from "./ErrorStep";
+export * from "./FixedCompositeStep";
 export * from "./GenerateChatCompletionFunction";
 export * from "./MaxStepAbortController";
 export * from "./NextStepGenerator";
