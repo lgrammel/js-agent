@@ -9,8 +9,13 @@ GPTAgent.js makes the agent configuration explicit, so you can easily understand
 
 ## Examples
 
-- [JavaScript/TypeScript developer](https://github.com/lgrammel/gptagent.js/tree/main/examples/javascript-developer)
-- [Wikipedia Question-Answering](https://github.com/lgrammel/gptagent.js/tree/main/examples/wikipedia-qa)
+**[JavaScript/TypeScript developer](https://github.com/lgrammel/gptagent.js/tree/main/examples/javascript-developer)**:
+An automated developer agent that works in a docker container.
+It can read files, write files and execute commands.
+You can use it to document code, write tests, update tests and features, etc.
+
+**[Wikipedia Question-Answering](https://github.com/lgrammel/gptagent.js/tree/main/examples/wikipedia-qa)**:
+An agent that has access to a wikipedia search engine and can read wikipedia articles. You can use it to answer questions about wikipedia content.
 
 ## Usage
 
