@@ -9,32 +9,27 @@ import { ErrorStep } from "./ErrorStep";
 import { NextStepGenerator } from "./NextStepGenerator";
 import { NoopStep } from "./NoopStep";
 import { Step } from "./Step";
+import { InstructionSection } from "./InstructionSection";
 
 export class BasicNextStepGenerator implements NextStepGenerator {
-  readonly role: string;
-  readonly constraints: string;
+  readonly instructionSections: Array<InstructionSection>;
   readonly actionRegistry: ActionRegistry;
   readonly textGenerator: ChatTextGenerator;
   readonly resultFormatterRegistry: ResultFormatterRegistry;
 
   constructor({
-    role,
-    constraints,
+    instructionSections,
     actionRegistry,
     textGenerator,
     resultFormatterRegistry = new ResultFormatterRegistry(),
   }: {
-    role: string;
-    constraints: string;
+    instructionSections: Array<InstructionSection>;
     actionRegistry: ActionRegistry;
     textGenerator: ChatTextGenerator;
     resultFormatterRegistry?: ResultFormatterRegistry;
   }) {
-    if (role == null) {
-      throw new Error("role is required");
-    }
-    if (constraints == null) {
-      throw new Error("constraints is required");
+    if (instructionSections == null) {
+      throw new Error("sections is required");
     }
     if (actionRegistry == null) {
       throw new Error("actionRegistry is required");
@@ -43,8 +38,7 @@ export class BasicNextStepGenerator implements NextStepGenerator {
       throw new Error("textGenerator is required");
     }
 
-    this.role = role;
-    this.constraints = constraints;
+    this.instructionSections = instructionSections;
     this.actionRegistry = actionRegistry;
     this.textGenerator = textGenerator;
     this.resultFormatterRegistry = resultFormatterRegistry;
@@ -60,14 +54,13 @@ export class BasicNextStepGenerator implements NextStepGenerator {
     const messages: Array<OpenAIChatMessage> = [
       {
         role: "system",
-        content: `## ROLE
-${this.role}
-
-## CONSTRAINTS
-${this.constraints};
-
-## AVAILABLE ACTIONS
-${this.actionRegistry.getAvailableActionInstructions()}`,
+        content: this.instructionSections
+          .map((section) => `## ${section.title}\n${section.content}`)
+          .join("\n\n"),
+      },
+      {
+        role: "system",
+        content: `## AVAILABLE ACTIONS\n${this.actionRegistry.getAvailableActionInstructions()}`,
       },
       { role: "user", content: `## TASK\n${run.instructions}` },
     ];

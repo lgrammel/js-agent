@@ -45,8 +45,16 @@ runCLIAgent({
     name: "Wikipedia QA",
     rootStep: new $.step.DynamicCompositeStep({
       nextStepGenerator: new $.step.BasicNextStepGenerator({
-        role: `You are an knowledge worker that answers questions using Wikipedia content.`,
-        constraints: `Make sure all facts for your answer are from Wikipedia articles that you have read.`,
+        instructionSections: [
+          {
+            title: "ROLE",
+            content: `You are an knowledge worker that answers questions using Wikipedia content.`,
+          },
+          {
+            title: "CONSTRAINTS",
+            content: `Make sure all facts for your answer are from Wikipedia articles that you have read.`,
+          },
+        ],
         actionRegistry: new ActionRegistry({
           actions: [searchWikipediaAction, summarizeWebpageAction],
           format: new $.action.format.JsonActionFormat(),

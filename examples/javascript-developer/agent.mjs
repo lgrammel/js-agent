@@ -1,5 +1,6 @@
 import $, { ActionRegistry, Agent, runCLIAgent } from "@gptagent/agent";
 import dotenv from "dotenv";
+import fs from "node:fs";
 
 dotenv.config();
 
@@ -17,15 +18,25 @@ const resultFormatters = new $.action.ResultFormatterRegistry([
   new $.action.tool.WriteFileResultFormatter(),
 ]);
 
+// load json file "project.json" from the current folder with node:
+const project = JSON.parse(fs.readFileSync("project.json", "utf8"));
+
 runCLIAgent({
   agent: new Agent({
     name: "JavaScript Developer",
     rootStep: new $.step.DynamicCompositeStep({
       nextStepGenerator: new $.step.BasicNextStepGenerator({
-        role: `You are a software developer that creates and modifies JavaScript programs.
-You are working in a Linux environment.
-You have access to a GitHub repository (current folder).`,
-        constraints: `You must verify that the changes that you make are working.`,
+        instructionSections: [
+          {
+            title: "ROLE",
+            content: `You are a software developer that creates and modifies JavaScript programs.
+You are working in a Linux environment.`,
+          },
+          {
+            title: "CONSTRAINTS",
+            content: `You must verify that the changes that you make are working.`,
+          },
+        ],
         actionRegistry: new ActionRegistry({
           actions: [
             new $.action.tool.ReadFileAction({ executor: remoteToolExecutor }),
