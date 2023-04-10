@@ -33,105 +33,70 @@ pnpm run-agent "which town is bigger, Gummersbach or Bergneustadt?"
 ![wikipedia-qa](https://github.com/lgrammel/gptagent.js/raw/main/examples/wikipedia-qa/screenshot/wikipedia-qa-001.png)
 
 ```sh
-> node ./agent.mjs "which town is bigger, Gummersbach or Bergneustadt?"
+> node ./agent.mjs which town is bigger, Gummersbach or Bergneustadt?
 
+### Wikipedia QA ###
 which town is bigger, Gummersbach or Bergneustadt?
-========================================
 
+Thinking…
 To find out which town is bigger, I will first search for information on Gummersbach and Bergneustadt on Wikipedia.
-========================================
 
+Thinking…
 {
   "action": "tool.search-wikipedia",
   "query": "Gummersbach"
 }
-========================================
-EXECUTE
-{ action: 'tool.search-wikipedia', query: 'Gummersbach' }
 
-{
-  summary: 'Found 5 search results.',
-  output: { results: [ [Object], [Object], [Object], [Object], [Object] ] }
-}
-========================================
+Executing tool.search-wikipedia…
+Found 5 search results.
 
+Thinking…
 I found the Wikipedia page for Gummersbach. Now, I will read the article to gather information about the town's size.
-========================================
 
+Thinking…
 {
   "action": "tool.read-wikipedia-article",
   "url": "https://en.wikipedia.org/wiki/Gummersbach",
   "topic": "Gummersbach size"
 }
-========================================
-EXECUTE
-{
-  action: 'tool.read-wikipedia-article',
-  url: 'https://en.wikipedia.org/wiki/Gummersbach',
-  topic: 'Gummersbach size'
-}
 
-{
-  summary: 'Summarized website https://en.wikipedia.org/wiki/Gummersbach according to topic Gummersbach size.',
-  output: {
-    summary: 'Gummersbach is a town in North Rhine-Westphalia, Germany, with a total area of 95.3 square kilometers (36.8 square miles) and a population of 51,126 as of December 31, 2021.'
-  }
-}
-========================================
+Executing tool.read-wikipedia-article…
+Summarized website https://en.wikipedia.org/wiki/Gummersbach according to topic Gummersbach size.
 
+Thinking…
 Gummersbach is a town in North Rhine-Westphalia, Germany, with a total area of 95.3 square kilometers (36.8 square miles) and a population of 51,126 as of December 31, 2021. Now, I will search for information on Bergneustadt.
-========================================
 
+Thinking…
 {
   "action": "tool.search-wikipedia",
   "query": "Bergneustadt"
 }
-========================================
-EXECUTE
-{ action: 'tool.search-wikipedia', query: 'Bergneustadt' }
 
-{
-  summary: 'Found 5 search results.',
-  output: { results: [ [Object], [Object], [Object], [Object], [Object] ] }
-}
-========================================
+Executing tool.search-wikipedia…
+Found 5 search results.
 
+Thinking…
 I found the Wikipedia page for Bergneustadt. Now, I will read the article to gather information about the town's size.
-========================================
 
+Thinking…
 {
   "action": "tool.read-wikipedia-article",
   "url": "https://en.wikipedia.org/wiki/Bergneustadt",
   "topic": "Bergneustadt size"
 }
-========================================
-EXECUTE
-{
-  action: 'tool.read-wikipedia-article',
-  url: 'https://en.wikipedia.org/wiki/Bergneustadt',
-  topic: 'Bergneustadt size'
-}
 
-{
-  summary: 'Summarized website https://en.wikipedia.org/wiki/Bergneustadt according to topic Bergneustadt size.',
-  output: {
-    summary: 'Bergneustadt is a municipality in North Rhine-Westphalia, Germany, with a total area of 37.86 square kilometers (14.62 square miles). As of December 31, 2021, it has a population of 18,416.'
-  }
-}
-========================================
+Executing tool.read-wikipedia-article…
+Summarized website https://en.wikipedia.org/wiki/Bergneustadt according to topic Bergneustadt size.
 
-Bergneustadt is a municipality in North Rhine-Westphalia, Germany, with a total area of 37.86 square kilometers (14.62 square miles). As of December 31, 2021, it has a population of 18,416.
+Thinking…
+Bergneustadt is a municipality in North Rhine-Westphalia, Germany, with a total area of 37.86 km2 (14.62 sq mi) and a population of 18,416 as of December 31, 2021.
 
-Comparing the two towns, Gummersbach is bigger than Bergneustadt in both area and population. Gummersbach has an area of 95.3 square kilometers (36.8 square miles) and a population of 51,126, while Bergneustadt has an area of 37.86 square kilometers (14.62 square miles) and a population of 18,416.
-========================================
+Comparing the two towns, Gummersbach has a larger area (95.3 square kilometers) and a higher population (51,126) than Bergneustadt (37.86 square kilometers and 18,416 population). Therefore, Gummersbach is the bigger town.
 
+Thinking…
 {
   "action": "done"
 }
-========================================
-EXECUTE
-{ action: 'done' }
 
-Prompt tokens: 10049 Completion tokens:419 Cost: $0.33
-Duration: 83376 ms
+Done
 ```
