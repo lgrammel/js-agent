@@ -149,11 +149,7 @@ export class BasicNextStepGenerator implements NextStepGenerator {
   }): Promise<Step> {
     const messages = this.generateMessages({ completedSteps, run });
 
-    try {
-      run.observer?.onStepGenerationStarted({ run, messages });
-    } catch (error: any) {
-      console.error(error); //TODO logger
-    }
+    run.onStepGenerationStarted({ messages });
 
     const generatedText = await this.textGenerator.generateText(
       { messages },
@@ -185,11 +181,7 @@ export class BasicNextStepGenerator implements NextStepGenerator {
       }
     }
 
-    try {
-      run.observer?.onStepGenerationFinished({ run, generatedText, step });
-    } catch (error: any) {
-      console.error(error); //TODO logger
-    }
+    run.onStepGenerationFinished({ generatedText, step });
 
     return step;
   }

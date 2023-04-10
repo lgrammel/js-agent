@@ -35,10 +35,10 @@ export class Agent {
       instructions,
     });
 
-    observer?.onAgentRunStarted({ run });
+    run.onStart();
 
     const result = await run.executeStep(this.rootStep);
 
-    observer?.onAgentRunFinished({ run, result });
+    run.onFinish({ result });
   }
 }

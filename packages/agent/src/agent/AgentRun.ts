@@ -1,3 +1,4 @@
+import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
 import { AbortController } from "../step/AbortController";
 import { Step } from "../step/Step";
 import { StepResult } from "../step/StepResult";
@@ -5,9 +6,10 @@ import { Agent } from "./Agent";
 import { AgentRunObserver } from "./AgentRunObserver";
 
 export class AgentRun {
+  private readonly observer?: AgentRunObserver;
+
   readonly agent: Agent;
   readonly controller: AbortController;
-  readonly observer?: AgentRunObserver;
   readonly instructions: string;
 
   constructor({
@@ -51,5 +53,51 @@ export class AgentRun {
     }
 
     return result;
+  }
+
+  onStart() {
+    try {
+      this.observer?.onAgentRunStarted({ run: this });
+    } catch (error) {
+      console.error(error); // TODO logger
+    }
+  }
+
+  onFinish({ result }: { result: StepResult }) {
+    try {
+      this.observer?.onAgentRunFinished({ run: this, result });
+    } catch (error) {
+      console.error(error); // TODO logger
+    }
+  }
+
+  onStepGenerationStarted({
+    messages,
+  }: {
+    messages: Array<OpenAIChatMessage>;
+  }) {
+    try {
+      this.observer?.onStepGenerationStarted({ run: this, messages });
+    } catch (error: any) {
+      console.error(error); //TODO logger
+    }
+  }
+
+  onStepGenerationFinished({
+    generatedText,
+    step,
+  }: {
+    generatedText: string;
+    step: Step;
+  }) {
+    try {
+      this.observer?.onStepGenerationFinished({
+        run: this,
+        generatedText,
+        step,
+      });
+    } catch (error: any) {
+      console.error(error); //TODO logger
+    }
   }
 }
