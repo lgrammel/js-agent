@@ -16,17 +16,20 @@ export class BasicNextStepGenerator implements NextStepGenerator {
   readonly actionRegistry: ActionRegistry;
   readonly textGenerator: ChatTextGenerator;
   readonly resultFormatterRegistry: ResultFormatterRegistry;
+  readonly stepRetention: number;
 
   constructor({
     instructionSections,
     actionRegistry,
     textGenerator,
     resultFormatterRegistry = new ResultFormatterRegistry(),
+    stepRetention = 10,
   }: {
     instructionSections: Array<InstructionSection>;
     actionRegistry: ActionRegistry;
     textGenerator: ChatTextGenerator;
     resultFormatterRegistry?: ResultFormatterRegistry;
+    stepRetention?: number;
   }) {
     if (instructionSections == null) {
       throw new Error("sections is required");
@@ -42,6 +45,7 @@ export class BasicNextStepGenerator implements NextStepGenerator {
     this.actionRegistry = actionRegistry;
     this.textGenerator = textGenerator;
     this.resultFormatterRegistry = resultFormatterRegistry;
+    this.stepRetention = stepRetention;
   }
 
   generateMessages({
@@ -65,7 +69,7 @@ export class BasicNextStepGenerator implements NextStepGenerator {
       { role: "user", content: `## TASK\n${run.instructions}` },
     ];
 
-    for (const step of completedSteps) {
+    for (const step of completedSteps.slice(-this.stepRetention)) {
       // repeat the original agent response to reinforce the action format and keep the conversation going:
       if (step.generatedText != null) {
         messages.push({
