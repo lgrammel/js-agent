@@ -11,6 +11,12 @@ const remoteToolExecutor = new $.action.tool.RemoteToolExecutor({
   baseUrl: "http://localhost:3001",
 });
 
+const resultFormatters = new $.action.ResultFormatterRegistry([
+  new $.action.tool.ReadFileResultFormatter(),
+  new $.action.tool.RunCommandResultFormatter(),
+  new $.action.tool.WriteFileResultFormatter(),
+]);
+
 runCLIAgent({
   agent: new Agent({
     name: "JavaScript Developer",
@@ -34,9 +40,7 @@ You have access to a GitHub repository (current folder).`,
           ],
           format: new $.action.format.JsonActionFormat(),
         }),
-        resultFormatterRegistry: new $.action.ResultFormatterRegistry([
-          new $.action.tool.RunCommandResultFormatter(),
-        ]),
+        resultFormatterRegistry: resultFormatters,
         textGenerator,
       }),
     }),

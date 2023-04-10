@@ -15,13 +15,19 @@ export class WriteFileAction extends ToolAction<
   WriteFileInput,
   WriteFileOutput
 > {
+  static readonly TYPE = "tool.write-file";
+
+  static readonly OUTPUT_SCHEMA = zod.object({
+    content: zod.string(),
+  });
+
   constructor({
     executor,
   }: {
     executor: ToolExecutor<WriteFileInput, WriteFileOutput>;
   }) {
     super({
-      type: "tool.write-file",
+      type: WriteFileAction.TYPE,
       description: "Write file content.",
       inputSchema: zod.object({
         filePath: zod.string(),
@@ -31,9 +37,7 @@ export class WriteFileAction extends ToolAction<
         filePath: "{file path relative to the workspace folder}",
         content: "{new file content}",
       },
-      outputSchema: zod.object({
-        content: zod.string(),
-      }),
+      outputSchema: WriteFileAction.OUTPUT_SCHEMA,
       executor,
     });
   }
