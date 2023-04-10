@@ -30,12 +30,25 @@ pnpm run-agent `cat examples/helloworld/task.txt` # or any other instruction
 
 The `drive` folder contains the shared files between the host and the docker container.
 
-### Tips & Tricks
+## How to use the gptagent.js developer for your own project
 
-Clone the git repository that the agent should work on into the drive folder:
+1. Clone the git repository that the agent should work on into the drive folder, e.g.,
+   `git clone https://github.com/lgrammel/gptagent.js.git drive`
 
-```sh
-git clone https://github.com/lgrammel/gptagent.js.git drive
+2. Configure the Dockerfile to install any libraries that you need
+
+3. Update agent.mjs with project-specific instructions and setup steps
+
+4. Build & run the docker container
+
+5. Run the agent with a task.
+   Put any needed guidance and finish criteria into the task instructions.
+   Reference files by their relative path from the workspace root (e.g., "packages/agent/src/index.ts").
+
+## Example tasks
+
+```
+Write a unit test for packages/agent/src/action/format/JsonActionFormat. Cover the main path and edge cases to get good coverage.
 ```
 
 ## Example Output
