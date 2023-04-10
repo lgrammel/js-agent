@@ -5,6 +5,9 @@ RUN apk update && apk add dumb-init
 
 RUN npm install -g npm@9.6.2
 
+# Specific to gptagent.js example. Adjust to fit your own project:
+RUN npm install -g pnpm
+
 # Security: Run as non-root user.
 USER node
 
