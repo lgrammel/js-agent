@@ -20,25 +20,25 @@ importers:
         specifier: 5.0.2
         version: 5.0.2
 
-  example/javascript-developer:
+  examples/javascript-developer:
     dependencies:
       '@gptagent/agent':
         specifier: '*'
-        version: link:../../package/agent
+        version: link:../../packages/agent
       dotenv:
         specifier: 16.0.3
         version: 16.0.3
 
-  example/wikipedia-qa:
+  examples/wikipedia-qa:
     dependencies:
       '@gptagent/agent':
         specifier: '*'
-        version: link:../../package/agent
+        version: link:../../packages/agent
       dotenv:
         specifier: 16.0.3
         version: 16.0.3
 
-  package/agent:
+  packages/agent:
     dependencies:
       axios:
         specifier: 1.3.4

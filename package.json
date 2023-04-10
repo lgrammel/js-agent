@@ -17,6 +17,6 @@
     "typescript": "5.0.2"
   },
   "workspaces": [
-    "package/*"
+    "packages/*"
   ]
 }

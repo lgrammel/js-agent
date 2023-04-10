@@ -19,13 +19,13 @@ export OPENAI_API_KEY=sk-...
 pnpm install
 pnpm nx run-many --target=build
 
-# in example/javascript-developer folder:
+# in examples/javascript-developer folder:
 mkdir drive
 
 pnpm build
 pnpm run-executor
 
-pnpm run-agent `cat example/helloworld/task.txt` # or any other instruction
+pnpm run-agent `cat examples/helloworld/task.txt` # or any other instruction
 ```
 
 The `drive` folder contains the shared files between the host and the docker container.
@@ -40,4 +40,4 @@ git clone https://github.com/lgrammel/gptagent.js.git drive
 
 ## Example Output
 
-![javascript-developer](https://github.com/lgrammel/gptagent.js/raw/main/example/javascript-developer/screenshot/autodev-001.png)
+![javascript-developer](https://github.com/lgrammel/gptagent.js/raw/main/examples/javascript-developer/screenshot/autodev-001.png)

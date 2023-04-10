@@ -7,8 +7,8 @@ GPTAgent.js makes the agent configuration explicit, so you can easily understand
 
 ## Examples
 
-- [JavaScript/TypeScript developer](https://github.com/lgrammel/gptagent.js/tree/main/example/javascript-developer)
-- [Wikipedia Question-Answering](https://github.com/lgrammel/gptagent.js/tree/main/example/wikipedia-qa)
+- [JavaScript/TypeScript developer](https://github.com/lgrammel/gptagent.js/tree/main/examples/javascript-developer)
+- [Wikipedia Question-Answering](https://github.com/lgrammel/gptagent.js/tree/main/examples/wikipedia-qa)
 
 ## Usage
 
@@ -82,7 +82,7 @@ runAgent({
 
 ## Example Output
 
-![wikipedia-qa](https://github.com/lgrammel/gptagent.js/raw/main/example/wikipedia-qa/screenshot/wikipedia-qa-001.png)
+![wikipedia-qa](https://github.com/lgrammel/gptagent.js/raw/main/examples/wikipedia-qa/screenshot/wikipedia-qa-001.png)
 
 ## Requirements
 
