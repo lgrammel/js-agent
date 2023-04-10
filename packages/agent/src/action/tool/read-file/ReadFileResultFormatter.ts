@@ -24,6 +24,6 @@ export class ReadFileResultFormatter
   }: {
     result: { output: ReadFileOutput; summary: string };
   }) {
-    return `## ${summary}\n###File content\n${content}`;
+    return `## ${summary}\n### File content\n${content}`;
   }
 }

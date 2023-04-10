@@ -94,8 +94,9 @@ ${this.actionRegistry.getAvailableActionInstructions()}`,
             break;
           }
 
-          const resultFormatter =
-            this.resultFormatterRegistry.getResultFormatter(step.type);
+          const resultFormatter = this.resultFormatterRegistry.getFormatter(
+            step.type
+          );
 
           if (resultFormatter == null) {
             content = JSON.stringify(stepState.output);

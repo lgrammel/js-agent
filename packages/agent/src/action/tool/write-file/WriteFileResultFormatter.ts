@@ -24,6 +24,6 @@ export class WriteFileResultFormatter
   }: {
     result: { output: WriteFileOutput; summary: string };
   }) {
-    return `## ${summary}\n###New file content\n${content}`;
+    return `## ${summary}\n### New file content\n${content}`;
   }
 }

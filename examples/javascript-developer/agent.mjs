@@ -45,4 +45,5 @@ You have access to a GitHub repository (current folder).`,
       }),
     }),
   }),
+  resultFormatters,
 });

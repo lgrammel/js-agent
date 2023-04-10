@@ -36,9 +36,19 @@ export class AgentRun {
       return { type: "aborted" };
     }
 
-    this.observer?.onStepExecutionStarted({ run: this, step });
+    try {
+      this.observer?.onStepExecutionStarted({ run: this, step });
+    } catch (error) {
+      console.error(error); // TODO logger
+    }
+
     const result = await step.run(this);
-    this.observer?.onStepExecutionFinished({ run: this, step, result });
+
+    try {
+      this.observer?.onStepExecutionFinished({ run: this, step, result });
+    } catch (error) {
+      console.error(error); // TODO logger
+    }
 
     return result;
   }
