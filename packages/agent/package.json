@@ -12,9 +12,7 @@
   },
   "license": "MIT",
   "main": ".build/js/index.js",
-  "scripts": {
-    "build": "tsc"
-  },
+  "scripts": {},
   "devDependencies": {
     "@types/html-to-text": "^9.0.0"
   },

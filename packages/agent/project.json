@@ -8,6 +8,14 @@
         "cwd": "packages/agent",
         "command": "tsc"
       }
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "lib/task",
+        "command": "vitest run .test.ts"
+      }
     }
   }
 }
