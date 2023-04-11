@@ -4,8 +4,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const textGenerator = new $.ai.openai.Gpt4ChatTextGenerator({
+const textGenerator = new $.ai.openai.OpenAiChatTextGenerator({
   apiKey: process.env.OPENAI_API_KEY,
+  model: "gpt-3.5-turbo",
 });
 
 const searchWikipediaAction =

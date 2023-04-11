@@ -1,4 +1,5 @@
 import {
+  OpenAIChatCompletionModel,
   OpenAIChatMessage,
   calculateCallCostInMillicent,
   createChatCompletion,
@@ -29,23 +30,31 @@ export type TextGenerationResult =
       };
     };
 
-export class Gpt4ChatTextGenerator implements ChatTextGenerator {
+export class OpenAiChatTextGenerator implements ChatTextGenerator {
   private readonly apiKey: string;
   private readonly recordTextGeneration?: ({}: {
     result: TextGenerationResult;
   }) => void;
+  private readonly model: OpenAIChatCompletionModel;
 
   constructor({
     apiKey,
+    model,
     recordTextGeneration,
   }: {
     apiKey: string;
+    model: OpenAIChatCompletionModel;
     recordTextGeneration?: ({}: { result: TextGenerationResult }) => void;
   }) {
     if (apiKey == null) {
       throw new Error("apiKey is required");
     }
+    if (model == null) {
+      throw new Error("model is required");
+    }
+
     this.apiKey = apiKey;
+    this.model = model;
     this.recordTextGeneration = recordTextGeneration;
   }
 
@@ -56,8 +65,6 @@ export class Gpt4ChatTextGenerator implements ChatTextGenerator {
     }: { messages: OpenAIChatMessage[]; maxTokens?: number | undefined },
     context: unknown
   ): Promise<string> {
-    const model = "gpt-4";
-
     const startTime = performance.now();
     const startEpochSeconds = Math.floor(
       (performance.timeOrigin + startTime) / 1000
@@ -67,7 +74,7 @@ export class Gpt4ChatTextGenerator implements ChatTextGenerator {
       createChatCompletion({
         apiKey: this.apiKey,
         messages,
-        model,
+        model: this.model,
         temperature: 0,
         maxTokens,
       })
@@ -81,7 +88,7 @@ export class Gpt4ChatTextGenerator implements ChatTextGenerator {
           success: false,
           error: response.error,
           metadata: {
-            model,
+            model: this.model,
             startEpochSeconds,
             durationInMs: textGenerationDurationInMs,
             tries: response.tries,
@@ -99,12 +106,12 @@ export class Gpt4ChatTextGenerator implements ChatTextGenerator {
         success: true,
         generatedText,
         metadata: {
-          model,
+          model: this.model,
           startEpochSeconds,
           durationInMs: textGenerationDurationInMs,
           tries: response.tries,
           costInMilliCent: calculateCallCostInMillicent({
-            model,
+            model: this.model,
             usage: response.result.usage,
           }),
         },
