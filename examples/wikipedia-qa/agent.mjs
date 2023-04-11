@@ -45,23 +45,28 @@ runCLIAgent({
   agent: new Agent({
     name: "Wikipedia QA",
     rootStep: new $.step.DynamicCompositeStep({
-      nextStepGenerator: new $.step.BasicNextStepGenerator({
-        instructionSections: [
-          {
-            title: "ROLE",
-            content: `You are an knowledge worker that answers questions using Wikipedia content.`,
-          },
-          {
-            title: "CONSTRAINTS",
-            content: `Make sure all facts for your answer are from Wikipedia articles that you have read.`,
-          },
-        ],
-        actionRegistry: new ActionRegistry({
-          actions: [searchWikipediaAction, summarizeWebpageAction],
-          format: new $.action.format.JsonActionFormat(),
+      prompt: new $.prompt.CompositePrompt(
+        new $.prompt.FixedSectionsPrompt({
+          sections: [
+            {
+              title: "Role",
+              content: `You are an knowledge worker that answers questions using Wikipedia content.`,
+            },
+            {
+              title: "Constraints",
+              content: `Make sure all facts for your answer are from Wikipedia articles that you have read.`,
+            },
+          ],
         }),
-        textGenerator,
+        new $.prompt.AvailableActionsSectionPrompt(),
+        new $.prompt.TaskSectionPrompt(),
+        new $.prompt.RecentStepsPrompt({ stepRetention: 10 })
+      ),
+      actionRegistry: new ActionRegistry({
+        actions: [searchWikipediaAction, summarizeWebpageAction],
+        format: new $.action.format.JsonActionFormat(),
       }),
+      textGenerator,
     }),
   }),
 });

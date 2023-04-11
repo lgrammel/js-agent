@@ -4,4 +4,4 @@
 # Needs to be invoked from root of the project.
 
 cd packages/agent
-pnpm jest --no-colors
+pnpm jest --no-colors src/

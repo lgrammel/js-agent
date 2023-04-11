@@ -13,7 +13,7 @@
       "dependsOn": ["build"],
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "lib/task",
+        "cwd": "packages/agent",
         "command": "pnpm test"
       }
     }

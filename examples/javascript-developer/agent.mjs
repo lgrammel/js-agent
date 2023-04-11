@@ -52,38 +52,47 @@ const actions = [
   }),
 ];
 
+const setupStep = new $.step.FixedCompositeStep({
+  steps: await (async () => {
+    const steps = [];
+    for (const command of setupCommands) {
+      steps.push(
+        await runCommandAction.createStep({
+          input: { command },
+        })
+      );
+    }
+    return steps;
+  })(),
+});
+
 runCLIAgent({
   agent: new Agent({
     name: "JavaScript Developer",
     rootStep: new $.step.FixedCompositeStep({
       steps: [
-        new $.step.FixedCompositeStep({
-          steps: await (async () => {
-            const steps = [];
-            for (const command of setupCommands) {
-              steps.push(
-                await runCommandAction.createStep({
-                  input: { command },
-                })
-              );
-            }
-            return steps;
-          })(),
-        }),
+        setupStep,
         new $.step.DynamicCompositeStep({
-          nextStepGenerator: new $.step.BasicNextStepGenerator({
-            instructionSections: [
-              { title: "ROLE", content: role },
-              { title: "PROJECT", content: project },
-              { title: "CONSTRAINTS", content: constraints },
-            ],
-            actionRegistry: new ActionRegistry({
-              actions,
-              format: new $.action.format.JsonActionFormat(),
+          prompt: new $.prompt.CompositePrompt(
+            new $.prompt.FixedSectionsPrompt({
+              sections: [
+                { title: "role", content: role },
+                { title: "project", content: project },
+                { title: "constraints", content: constraints },
+              ],
             }),
-            resultFormatterRegistry: resultFormatters,
-            textGenerator,
+            new $.prompt.AvailableActionsSectionPrompt(),
+            new $.prompt.TaskSectionPrompt(),
+            new $.prompt.RecentStepsPrompt({
+              stepRetention: 10,
+              resultFormatters,
+            })
+          ),
+          actionRegistry: new ActionRegistry({
+            actions,
+            format: new $.action.format.JsonActionFormat(),
           }),
+          textGenerator,
         }),
       ],
     }),

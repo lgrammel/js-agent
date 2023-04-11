@@ -1,5 +1,4 @@
 export * from "./AbortController";
-export * from "./BasicNextStepGenerator";
 export * from "./DynamicCompositeStep";
 export * from "./ErrorStep";
 export * from "./FixedCompositeStep";
