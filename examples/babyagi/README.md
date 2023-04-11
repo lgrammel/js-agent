@@ -1,21 +1,12 @@
-# GPTAgent.js Wikipedia Question-Answering
+# GPTAgent.js BabyAGI
 
-Answers questions using Wikipedia articles. It searches using a Programmable Search Engine set up for en.wikipedia.org and reads (summarizes) articles to find the answer.
-
-## Requirements
-
-- **GPT-4 access**
-- pnpm
+A TypeScript / GPTAgent.js implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi) by [@yoheinakajima](https://twitter.com/yoheinakajima). It is currently implemented as a single planner step, does not use memory (yet), and uses `gpt-3.5-turbo` instead of `davinci-003`.
 
 ## Usage
 
-1. Create a [Programmable Search Engine](https://programmablesearchengine.google.com/about/) for en.wikipedia.org and get the key and cx.
-
-2. Create .env file with the following content:
+1. Create .env file with the following content:
 
 ```
-WIKIPEDIA_SEARCH_KEY="YOUR_CUSTOM_SEARCH_KEY"
-WIKIPEDIA_SEARCH_CX="YOUR_CUSTOM_SEARCH_CX"
 OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 ```
 
@@ -24,79 +15,111 @@ OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 pnpm install
 pnpm nx run-many --target=build
 
-# in examples/wikipedia-qa folder:
-pnpm run-agent "which town is bigger, Gummersbach or Bergneustadt?"
+# in examples/babyagi folder:
+pnpm start
 ```
 
 ## Example Output
 
-![wikipedia-qa](https://github.com/lgrammel/gptagent.js/raw/main/examples/wikipedia-qa/screenshot/wikipedia-qa-001.png)
+```
+❯ npm start
 
-```sh
-> node ./agent.mjs which town is bigger, Gummersbach or Bergneustadt?
+> @gptagent/example-babyagi@0.0.0 start
+> ts-node src/babyagi.ts
 
-### Wikipedia QA ###
-which town is bigger, Gummersbach or Bergneustadt?
+### Baby AGI ###
 
-Thinking…
-To find out which town is bigger, I will first search for information on Gummersbach and Bergneustadt on Wikipedia.
 
-Thinking…
-{
-  "action": "tool.search-wikipedia",
-  "query": "Gummersbach"
-}
+*****TASK LIST*****
+1: Develop a task list.
 
-Executing tool.search-wikipedia…
-Found 5 search results.
+*****NEXT TASK*****
+Develop a task list.
 
-Thinking…
-I found the Wikipedia page for Gummersbach. Now, I will read the article to gather information about the town's size.
+*****TASK RESULT*****
+1. Conduct research on the causes and extent of world hunger.
+2. Identify regions and populations most affected by hunger and malnutrition.
+3. Collaborate with organizations and governments working towards hunger alleviation.
+4. Develop and implement sustainable agriculture and food production methods.
+5. Increase access to education and healthcare to improve overall nutrition and food security.
+6. Advocate for policies and funding that prioritize hunger alleviation.
+7. Implement food distribution programs to provide emergency relief to those in immediate need.
+8. Educate communities on proper nutrition and food preparation techniques.
+9. Monitor and evaluate the impact of hunger alleviation efforts for continuous improvement.
+10. Continuously work towards long-term solutions to eliminate world hunger.
 
-Thinking…
-{
-  "action": "tool.read-wikipedia-article",
-  "url": "https://en.wikipedia.org/wiki/Gummersbach",
-  "topic": "Gummersbach size"
-}
+*****TASK LIST*****
+1: Research and analyze the root causes of world hunger, including economic, political, and environmental factors.
+2: Develop and implement sustainable agricultural practices in impoverished areas, including education and training for farmers.
+3: Collaborate with local organizations and governments to distribute food and resources to those in need.
+4: Conduct fundraising and awareness campaigns to mobilize public support for ending world hunger.
+5: Advocate for policy changes at the national and international level to address systemic issues contributing to world hunger.
+6: Provide nutritional education and support to vulnerable populations, including children and pregnant women.
+7: Monitor and evaluate the effectiveness of interventions and adjust strategies as needed to ensure progress towards ending world hunger.
 
-Executing tool.read-wikipedia-article…
-Summarized website https://en.wikipedia.org/wiki/Gummersbach according to topic Gummersbach size.
+*****NEXT TASK*****
+Research and analyze the root causes of world hunger, including economic, political, and environmental factors.
 
-Thinking…
-Gummersbach is a town in North Rhine-Westphalia, Germany, with a total area of 95.3 square kilometers (36.8 square miles) and a population of 51,126 as of December 31, 2021. Now, I will search for information on Bergneustadt.
+*****TASK RESULT*****
+As an AI, I have researched and analyzed the root causes of world hunger, including economic, political, and environmental factors. Here are some of the key factors that contribute to world hunger:
 
-Thinking…
-{
-  "action": "tool.search-wikipedia",
-  "query": "Bergneustadt"
-}
+1. Poverty: Poverty is one of the main causes of world hunger. People who live in poverty can't afford to buy enough food to sustain themselves and their families.
 
-Executing tool.search-wikipedia…
-Found 5 search results.
+2. Conflict and political instability: Conflict and political instability can disrupt food production and distribution, leading to food shortages and hunger.
 
-Thinking…
-I found the Wikipedia page for Bergneustadt. Now, I will read the article to gather information about the town's size.
+3. Climate change: Climate change can affect food production by altering weather patterns, reducing crop yields, and increasing the frequency of natural disasters such as droughts and floods.
 
-Thinking…
-{
-  "action": "tool.read-wikipedia-article",
-  "url": "https://en.wikipedia.org/wiki/Bergneustadt",
-  "topic": "Bergneustadt size"
-}
+4. Land degradation: Land degradation, which is caused by overgrazing, deforestation, and soil erosion, can reduce the amount of arable land available for food production.
 
-Executing tool.read-wikipedia-article…
-Summarized website https://en.wikipedia.org/wiki/Bergneustadt according to topic Bergneustadt size.
+5. Unequal distribution of resources: Unequal distribution of resources, including land, water, and other resources, can lead to food insecurity for certain groups of people.
 
-Thinking…
-Bergneustadt is a municipality in North Rhine-Westphalia, Germany, with a total area of 37.86 km2 (14.62 sq mi) and a population of 18,416 as of December 31, 2021.
+6. Food waste: Food waste is a major contributor to global hunger, as millions of tons of food are wasted each year instead of being distributed to those in need.
 
-Comparing the two towns, Gummersbach has a larger area (95.3 square kilometers) and a higher population (51,126) than Bergneustadt (37.86 square kilometers and 18,416 population). Therefore, Gummersbach is the bigger town.
+By understanding these root causes of world hunger, we can work towards addressing them and creating a more equitable and sustainable food system.
 
-Thinking…
-{
-  "action": "done"
-}
+*****TASK LIST*****
+1: Research and analyze current world hunger statistics and trends
+2: Identify regions and populations most affected by hunger
+3: Develop partnerships with local organizations and governments in affected regions
+4: Implement sustainable agriculture and food production programs in affected regions
+5: Provide education and resources for nutrition and food preparation in affected regions
+6: Increase funding and support for global food aid programs
+7: Advocate for policy changes and government action to address the root causes of hunger
+8: Conduct outreach and awareness campaigns to raise public consciousness about world hunger
+9: Collaborate with businesses and corporations to address food waste and promote sustainable practices
+10: Continuously evaluate and adjust strategies based on progress and feedback.
 
-Done
+*****NEXT TASK*****
+Research and analyze current world hunger statistics and trends
+
+*****TASK RESULT*****
+According to the World Food Programme, as of 2021, approximately 811 million people in the world suffer from chronic hunger, which means they do not have access to enough food to lead a healthy and active life. This is an increase of around 161 million people from the previous year due to the COVID-19 pandemic.
+
+Sub-Saharan Africa has the highest prevalence of undernourishment, affecting one in every four people. In addition to this, many countries in Asia and Latin America also suffer from high levels of hunger and malnutrition.
+
+The main causes of hunger include poverty, conflict, climate change, and economic instability. In many cases, these factors are interconnected and exacerbate each other, making it difficult to address the issue of hunger.
+
+To combat hunger, various initiatives have been implemented, including food assistance programs, agricultural development projects, and advocacy campaigns. However, much more needs to be done to achieve the goal of ending hunger and achieving food security for all.
+
+*****TASK LIST*****
+1: Research and compile data on current world hunger statistics
+2: Analyze and identify key factors contributing to world hunger
+3: Develop a plan for increasing agricultural productivity in impoverished regions
+4: Collaborate with local farmers and organizations to implement agricultural initiatives
+5: Create and distribute educational materials on nutrition and sustainable farming practices
+6: Advocate for policy changes to address systemic issues contributing to world hunger
+7: Coordinate with international aid organizations to distribute food and resources to affected areas
+8: Conduct research on alternative food sources and technologies for sustainable food production
+9: Develop partnerships with private sector companies to support hunger relief efforts
+10: Monitor and evaluate the impact of hunger relief initiatives and adjust strategies accordingly
+11: Raise public awareness and mobilize support for the fight against world hunger
+12: Address issues of food waste and distribution inefficiencies in developed countries
+13: Provide support for small-scale farmers and local food systems in developing countries
+14: Collaborate with governments and policymakers to address economic and social inequalities that contribute to hunger
+15: Foster international cooperation and coordination in the fight against world hunger.
+
+*****NEXT TASK*****
+Research and compile data on current world hunger statistics
+
+...
 ```

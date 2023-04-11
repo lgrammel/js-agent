@@ -7,6 +7,9 @@ GPTAgent.js makes the agent configuration explicit, so you can easily understand
 
 ## Examples
 
+**[BabyAGI](https://github.com/lgrammel/gptagent.js/tree/main/examples/babyagi)**:
+A TypeScript / GPTAgent.js implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi) by [@yoheinakajima](https://twitter.com/yoheinakajima).
+
 **[JavaScript/TypeScript developer](https://github.com/lgrammel/gptagent.js/tree/main/examples/javascript-developer)**:
 An automated developer agent that works in a docker container.
 It can read files, write files and execute commands.
