@@ -6,7 +6,7 @@
     "target": "es2020",
     "lib": ["es2020", "dom"],
     "module": "commonjs",
-    "types": ["node", "vitest/globals"],
+    "types": ["node", "jest"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",

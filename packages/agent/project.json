@@ -14,7 +14,7 @@
       "executor": "nx:run-commands",
       "options": {
         "cwd": "lib/task",
-        "command": "vitest run .test.ts"
+        "command": "pnpm test"
       }
     }
   }

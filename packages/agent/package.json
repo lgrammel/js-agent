@@ -12,7 +12,9 @@
   },
   "license": "MIT",
   "main": ".build/js/index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "jest"
+  },
   "devDependencies": {
     "@types/html-to-text": "^9.0.0"
   },

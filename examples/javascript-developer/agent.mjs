@@ -10,8 +10,7 @@ const project = `You are working on a JavaScript/TypeScript project called "gpta
 The project uses pnpm for package management.
 The main package is located in the "packages/agent" directory.
 
-Gptagent.js uses vitest for unit testing.
-Unit tests are written using vitest and have a .test.ts ending.
+Unit tests are written using jest and have a .test.ts ending.
 Unit tests are in the same folder as the files that are tested.
 When writing tests, first read the production code and then write the tests.
 You can run the tests with "ai-bin/test-agent.sh".`;
