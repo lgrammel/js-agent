@@ -19,12 +19,51 @@ type Task = {
   description: string;
 };
 
-class PlannerStep extends $.step.Step {
+function generateExecutionStep({
+  objective,
+  task,
+}: {
+  objective: string;
+  task: string;
+}) {
+  return new $.step.PromptStep({
+    type: "execute-prompt",
+    textGenerator,
+    messages: [
+      {
+        role: "system",
+        content: `You are an AI who performs one task based on the following objective: ${objective}.
+Your task: ${task}
+Response:`,
+      },
+    ],
+    maxTokens: 2000,
+    temperature: 0.7,
+  });
+}
+
+class DynamicTaskListStep extends $.step.Step {
   private readonly objective: string;
+  private readonly generateExecutionStep: ({}: {
+    objective: string;
+    task: string;
+  }) => $.step.Step;
+
   private tasks: Array<Task>;
   private taskIdCounter = 1;
 
-  constructor({ objective, tasks }: { objective: string; tasks: string[] }) {
+  constructor({
+    objective,
+    tasks,
+    generateExecutionStep,
+  }: {
+    objective: string;
+    tasks: string[];
+    generateExecutionStep: ({}: {
+      objective: string;
+      task: string;
+    }) => $.step.Step;
+  }) {
     super({ type: "planner" });
 
     this.objective = objective;
@@ -32,6 +71,7 @@ class PlannerStep extends $.step.Step {
       id: this.taskIdCounter++,
       description: task,
     }));
+    this.generateExecutionStep = generateExecutionStep;
   }
 
   private async createTasks({
@@ -101,21 +141,23 @@ Start the task list with number ${currentTaskId}.`,
     }
   }
 
-  private async execute({ task }: { task: Task }) {
-    return (
-      await textGenerator.generateText({
-        messages: [
-          {
-            role: "system",
-            content: `You are an AI who performs one task based on the following objective: ${this.objective}.
-Your task: ${task.description}
-Response:`,
-          },
-        ],
-        maxTokens: 2000,
-        temperature: 0.7,
-      })
-    ).trim();
+  private async updateTaskList({
+    task,
+    taskResult,
+  }: {
+    task: Task;
+    taskResult: string;
+  }) {
+    const newTasks = await this.createTasks({ task, taskResult });
+
+    this.tasks.push(
+      ...newTasks.map((task) => ({
+        id: this.taskIdCounter++,
+        description: task,
+      }))
+    );
+
+    await this.prioritizeTasks({ currentTaskId: task.id });
   }
 
   protected async _run(run: AgentRun): Promise<$.step.StepResult> {
@@ -133,23 +175,22 @@ Response:`,
       console.log(chalk.green("*****NEXT TASK*****"));
       console.log(`${task.description}\n`);
 
-      // Send to execution function to complete the task based on the context
-      const taskResult = await this.execute({ task });
+      // Task execution:
+      const step = this.generateExecutionStep({
+        objective: this.objective,
+        task: task.description,
+      });
+      const result = await run.executeStep(step);
+      if (result.type === "aborted" || result.type === "failed") {
+        return result;
+      }
+      const taskResult = result.summary;
+
       console.log(chalk.green("*****TASK RESULT*****"));
       console.log(taskResult);
       console.log();
 
-      // Step 3: Create new tasks and reprioritize task list
-      const newTasks = await this.createTasks({ task, taskResult });
-
-      this.tasks.push(
-        ...newTasks.map((task) => ({
-          id: this.taskIdCounter++,
-          description: task,
-        }))
-      );
-
-      await this.prioritizeTasks({ currentTaskId: task.id });
+      await this.updateTaskList({ task, taskResult });
     }
 
     return { type: "succeeded", summary: "Completed all tasks." };
@@ -159,9 +200,10 @@ Response:`,
 runCLIAgent({
   agent: new Agent({
     name: "Baby AGI",
-    rootStep: new PlannerStep({
+    rootStep: new DynamicTaskListStep({
       objective: OBJECTIVE,
       tasks: [YOUR_FIRST_TASK],
+      generateExecutionStep,
     }),
   }),
 });

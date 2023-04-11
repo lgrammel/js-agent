@@ -4,7 +4,7 @@ import { StepState } from "./StepState";
 
 export abstract class Step {
   readonly type: string;
-  readonly generatedText: string | undefined;
+  readonly generatedText: string | undefined; // TODO remove - this is an artifact of a specific planning mechanism
 
   state: StepState;
 
