@@ -9,10 +9,13 @@ import { ErrorStep } from "./ErrorStep";
 import { NextStepGenerator } from "./NextStepGenerator";
 import { NoopStep } from "./NoopStep";
 import { Step } from "./Step";
-import { InstructionSection } from "./InstructionSection";
+import { FixedSectionsPrompt } from "../prompt/FixedSectionsPrompt";
+import { AvailableActionsSectionPrompt } from "../prompt/AvailableActionsSectionPrompt";
+import { Section } from "../prompt/Section";
+import { TaskSectionPrompt } from "../prompt/TaskSectionPrompt";
 
 export class BasicNextStepGenerator implements NextStepGenerator {
-  readonly instructionSections: Array<InstructionSection>;
+  readonly instructionSections: Array<Section>;
   readonly actionRegistry: ActionRegistry;
   readonly textGenerator: ChatTextGenerator;
   readonly resultFormatterRegistry: ResultFormatterRegistry;
@@ -25,7 +28,7 @@ export class BasicNextStepGenerator implements NextStepGenerator {
     resultFormatterRegistry = new ResultFormatterRegistry(),
     stepRetention = 10,
   }: {
-    instructionSections: Array<InstructionSection>;
+    instructionSections: Array<Section>;
     actionRegistry: ActionRegistry;
     textGenerator: ChatTextGenerator;
     resultFormatterRegistry?: ResultFormatterRegistry;
@@ -48,25 +51,26 @@ export class BasicNextStepGenerator implements NextStepGenerator {
     this.stepRetention = stepRetention;
   }
 
-  generateMessages({
+  async generateMessages({
     completedSteps,
     run,
   }: {
     completedSteps: Array<Step>;
     run: AgentRun;
-  }): Array<OpenAIChatMessage> {
+  }): Promise<Array<OpenAIChatMessage>> {
+    const promptContext = {
+      actions: this.actionRegistry,
+      task: run.task,
+    };
+
     const messages: Array<OpenAIChatMessage> = [
-      {
-        role: "system",
-        content: this.instructionSections
-          .map((section) => `## ${section.title}\n${section.content}`)
-          .join("\n\n"),
-      },
-      {
-        role: "system",
-        content: `## AVAILABLE ACTIONS\n${this.actionRegistry.getAvailableActionInstructions()}`,
-      },
-      { role: "user", content: `## TASK\n${run.instructions}` },
+      ...(await new FixedSectionsPrompt({
+        sections: this.instructionSections,
+      }).generatePrompt(promptContext)),
+      ...(await new AvailableActionsSectionPrompt().generatePrompt(
+        promptContext
+      )),
+      ...(await new TaskSectionPrompt().generatePrompt(promptContext)),
     ];
 
     for (const step of completedSteps.slice(-this.stepRetention)) {
@@ -147,7 +151,7 @@ export class BasicNextStepGenerator implements NextStepGenerator {
     completedSteps: Array<Step>;
     run: AgentRun;
   }): Promise<Step> {
-    const messages = this.generateMessages({ completedSteps, run });
+    const messages = await this.generateMessages({ completedSteps, run });
 
     run.onStepGenerationStarted({ messages });
 

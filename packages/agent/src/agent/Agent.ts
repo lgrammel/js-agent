@@ -32,7 +32,7 @@ export class Agent {
       agent: this,
       controller,
       observer,
-      instructions,
+      task: instructions,
     });
 
     run.onStart();

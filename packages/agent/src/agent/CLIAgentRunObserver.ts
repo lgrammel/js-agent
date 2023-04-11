@@ -21,7 +21,7 @@ export class CLIAgentRunObserver implements AgentRunObserver {
 
   onAgentRunStarted({ run }: { run: AgentRun }) {
     log(chalk.green(`### ${run.agent.name} ###`));
-    log(run.instructions);
+    log(run.task);
     log();
   }
 

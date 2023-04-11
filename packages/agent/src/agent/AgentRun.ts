@@ -10,23 +10,23 @@ export class AgentRun {
 
   readonly agent: Agent;
   readonly controller: AbortController;
-  readonly instructions: string;
+  readonly task: string;
 
   constructor({
     agent,
     controller,
     observer,
-    instructions,
+    task,
   }: {
     agent: Agent;
     controller: AbortController;
     observer?: AgentRunObserver;
-    instructions: string;
+    task: string;
   }) {
     this.agent = agent;
     this.controller = controller;
     this.observer = observer;
-    this.instructions = instructions;
+    this.task = task;
   }
 
   isAborted() {
