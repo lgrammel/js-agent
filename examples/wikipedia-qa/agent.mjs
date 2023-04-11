@@ -1,4 +1,5 @@
-import $, { ActionRegistry, Agent, runCLIAgent } from "@gptagent/agent";
+import * as $ from "@gptagent/agent";
+import { ActionRegistry, Agent, runCLIAgent } from "@gptagent/agent";
 import dotenv from "dotenv";
 
 dotenv.config();

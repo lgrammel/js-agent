@@ -35,7 +35,8 @@ See examples for details on how to implement and run an agent.
 ## Example Agent Definition
 
 ```js
-import $, { ActionRegistry, Agent, runCLIAgent } from "@gptagent/agent";
+import * as $ from "@gptagent/agent";
+import { ActionRegistry, Agent, runCLIAgent } from "@gptagent/agent";
 
 const textGenerator = new $.ai.openai.Gpt4ChatTextGenerator({
   apiKey: process.env.OPENAI_API_KEY,

@@ -1,7 +1,5 @@
 # GPTAgent.js: Automatic AI Agents with TS/JS
 
-![Twitter Follow](https://img.shields.io/twitter/follow/lgrammel?style=social)
-
 GPTAgent.js is a composable and extensible framework for creating AI agents with TypeScript/JavaScript.
 
 Creating AI agents requires considerable experimentation to achieve good results.
@@ -9,8 +7,13 @@ GPTAgent.js makes the agent configuration explicit, so you can easily understand
 
 ## Examples
 
-- [JavaScript/TypeScript developer](https://github.com/lgrammel/gptagent.js/tree/main/examples/javascript-developer)
-- [Wikipedia Question-Answering](https://github.com/lgrammel/gptagent.js/tree/main/examples/wikipedia-qa)
+**[JavaScript/TypeScript developer](https://github.com/lgrammel/gptagent.js/tree/main/examples/javascript-developer)**:
+An automated developer agent that works in a docker container.
+It can read files, write files and execute commands.
+You can use it to document code, write tests, update tests and features, etc.
+
+**[Wikipedia Question-Answering](https://github.com/lgrammel/gptagent.js/tree/main/examples/wikipedia-qa)**:
+An agent that has access to a wikipedia search engine and can read wikipedia articles. You can use it to answer questions about wikipedia content.
 
 ## Usage
 
@@ -30,7 +33,8 @@ See examples for details on how to implement and run an agent.
 ## Example Agent Definition
 
 ```js
-import $, { ActionRegistry, Agent, runCLIAgent } from "@gptagent/agent";
+import * as $ from "@gptagent/agent";
+import { ActionRegistry, Agent, runCLIAgent } from "@gptagent/agent";
 
 const textGenerator = new $.ai.openai.Gpt4ChatTextGenerator({
   apiKey: process.env.OPENAI_API_KEY,
