@@ -29,6 +29,25 @@ importers:
         specifier: 5.0.2
         version: 5.0.2
 
+  examples/babyagi:
+    dependencies:
+      '@gptagent/agent':
+        specifier: '*'
+        version: link:../../packages/agent
+      chalk:
+        specifier: ^4
+        version: 4.1.2
+      dotenv:
+        specifier: 16.0.3
+        version: 16.0.3
+    devDependencies:
+      ts-node:
+        specifier: 10.9.1
+        version: 10.9.1(@types/node@18.15.3)(typescript@5.0.2)
+      typescript:
+        specifier: 5.0.2
+        version: 5.0.2
+
   examples/javascript-developer:
     dependencies:
       '@gptagent/agent':

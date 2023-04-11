@@ -89,10 +89,7 @@ export class DynamicCompositeStep extends Step {
 
     run.onStepGenerationStarted({ messages });
 
-    const generatedText = await this.textGenerator.generateText(
-      { messages },
-      run
-    );
+    const generatedText = await this.textGenerator.generateText({ messages });
 
     const actionParameters = this.actionRegistry.format.parse(generatedText);
 

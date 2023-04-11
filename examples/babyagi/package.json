@@ -1,0 +1,19 @@
+{
+  "name": "@gptagent/example-babyagi",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node src/babyagi.ts",
+    "build": "tsc"
+  },
+  "private": true,
+  "dependencies": {
+    "chalk": "^4",
+    "@gptagent/agent": "*",
+    "dotenv": "16.0.3"
+  },
+  "devDependencies": {
+    "ts-node": "10.9.1",
+    "typescript": "5.0.2"
+  }
+}

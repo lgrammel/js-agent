@@ -58,13 +58,16 @@ export class OpenAiChatTextGenerator implements ChatTextGenerator {
     this.recordTextGeneration = recordTextGeneration;
   }
 
-  async generateText(
-    {
-      messages,
-      maxTokens,
-    }: { messages: OpenAIChatMessage[]; maxTokens?: number | undefined },
-    context: unknown
-  ): Promise<string> {
+  async generateText({
+    messages,
+    maxTokens,
+    temperature = 0,
+  }: {
+    messages: OpenAIChatMessage[];
+    maxTokens?: number;
+    temperature?: number;
+  }): // context: unknown TODO switch to LLMCallRecorder
+  Promise<string> {
     const startTime = performance.now();
     const startEpochSeconds = Math.floor(
       (performance.timeOrigin + startTime) / 1000
@@ -75,7 +78,7 @@ export class OpenAiChatTextGenerator implements ChatTextGenerator {
         apiKey: this.apiKey,
         messages,
         model: this.model,
-        temperature: 0,
+        temperature,
         maxTokens,
       })
     );
