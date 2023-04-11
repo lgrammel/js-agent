@@ -92,7 +92,7 @@ runCLIAgent({
         }),
         new $.prompt.AvailableActionsSectionPrompt(),
         new $.prompt.TaskSectionPrompt(),
-        new $.prompt.RecentStepsPrompt({ stepRetention: 10 })
+        new $.prompt.RecentStepsPrompt({ maxSteps: 10 })
       ),
       actionRegistry: new ActionRegistry({
         actions: [searchWikipediaAction, summarizeWebpageAction],
