@@ -1,6 +1,7 @@
 export * as action from "./action";
 export * from "./action/ActionRegistry";
 export * from "./action/tool/ToolRegistry";
+export * as agent from "./agent";
 export * from "./agent/Agent";
 export * from "./agent/runCLIAgent";
 export * as ai from "./ai";
