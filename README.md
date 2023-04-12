@@ -116,6 +116,5 @@ runCLIAgent({
 
 ## Requirements
 
-- **GPT-4 access**
 - node 18
 - pnpm
