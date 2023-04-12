@@ -40,13 +40,44 @@ Response:`,
   });
 }
 
-class DynamicTaskListStep extends $.step.Step {
+export type updateTaskList = ({}: {
+  objective: string;
+  completedTask: string;
+  completedTaskResult: string;
+  remainingTasks: string[];
+}) => PromiseLike<Array<string>>;
+
+const generateAndPrioritizeTaskList: updateTaskList = async ({
+  objective,
+  completedTask,
+  completedTaskResult,
+  remainingTasks,
+}: {
+  objective: string;
+  completedTask: string;
+  completedTaskResult: string;
+  remainingTasks: string[];
+}): Promise<string[]> =>
+  await prioritizeTasks({
+    tasks: await addNewTasks({
+      objective,
+      completedTask,
+      completedTaskResult,
+      existingTasks: remainingTasks,
+      textGenerator,
+    }),
+    objective,
+    textGenerator,
+  });
+
+class UpdateTasksLoop extends $.step.Step {
   private readonly objective: string;
   private readonly generateExecutionStep: ({}: {
     objective: string;
     task: string;
     run: $.agent.AgentRun;
   }) => $.step.Step;
+  private readonly updateTaskList: updateTaskList;
 
   private tasks: Array<string>;
 
@@ -54,6 +85,7 @@ class DynamicTaskListStep extends $.step.Step {
     objective,
     initialTasks = ["Develop a task list."],
     generateExecutionStep,
+    updateTaskList,
     run,
   }: {
     objective: string;
@@ -63,33 +95,15 @@ class DynamicTaskListStep extends $.step.Step {
       task: string;
       run: $.agent.AgentRun;
     }) => $.step.Step;
+    updateTaskList: updateTaskList;
     run: $.agent.AgentRun;
   }) {
     super({ type: "planner", run });
 
     this.objective = objective;
     this.tasks = initialTasks;
+    this.updateTaskList = updateTaskList;
     this.generateExecutionStep = generateExecutionStep;
-  }
-
-  private async updateTaskList({
-    completedTask,
-    completedTaskResult,
-  }: {
-    completedTask: string;
-    completedTaskResult: string;
-  }) {
-    return await prioritizeTasks({
-      tasks: await addNewTasks({
-        objective: this.objective,
-        completedTaskResult,
-        completedTask,
-        existingTasks: this.tasks,
-        textGenerator,
-      }),
-      objective: this.objective,
-      textGenerator,
-    });
   }
 
   protected async _execute(): Promise<$.step.StepResult> {
@@ -127,8 +141,10 @@ class DynamicTaskListStep extends $.step.Step {
       console.log();
 
       this.tasks = await this.updateTaskList({
+        objective: this.objective,
         completedTask: task,
         completedTaskResult: taskResult,
+        remainingTasks: this.tasks,
       });
     }
 
@@ -140,9 +156,10 @@ runCLIAgent({
   agent: new Agent({
     name: "Baby AGI",
     execute: async (run) =>
-      new DynamicTaskListStep({
+      new UpdateTasksLoop({
         objective: OBJECTIVE,
         generateExecutionStep,
+        updateTaskList: generateAndPrioritizeTaskList,
         run,
       }),
   }),
