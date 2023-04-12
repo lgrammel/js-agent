@@ -25,6 +25,9 @@ npm install @gptagent/agent
 ```
 
 See examples for details on how to implement and run an agent.
+See examples for details on how to implement and run an agent.
+
+**GPTAgent.js is currently in its initial experimental phase. Prior to reaching version 0.1, there may breaking changes in each release.**
 
 ## Features
 
