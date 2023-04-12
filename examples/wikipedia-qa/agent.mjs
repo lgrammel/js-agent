@@ -6,7 +6,7 @@ dotenv.config();
 
 const textGenerator = new $.ai.openai.OpenAiChatTextGenerator({
   apiKey: process.env.OPENAI_API_KEY,
-  model: "gpt-3.5-turbo",
+  model: "gpt-4",
 });
 
 const searchWikipediaAction =
@@ -45,7 +45,7 @@ const summarizeWebpageAction = new $.action.tool.SummarizeWebpageAction({
 runCLIAgent({
   agent: new Agent({
     name: "Wikipedia QA",
-    rootStep: new $.step.DynamicCompositeStep({
+    execute: $.step.createDynamicCompositeStep({
       prompt: new $.prompt.CompositePrompt(
         new $.prompt.FixedSectionsPrompt({
           sections: [

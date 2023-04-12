@@ -5,20 +5,18 @@ import { RunCommandInput, RunCommandOutput } from "./RunCommandAction";
 export class RunCommandExecutor
   implements ToolExecutor<RunCommandInput, RunCommandOutput>
 {
-  async execute({
-    input: { command },
-    context: { workspacePath },
-  }: {
-    input: RunCommandInput;
-    context: {
-      workspacePath: string;
-    };
-  }) {
+  readonly workspacePath: string;
+
+  constructor({ workspacePath }: { workspacePath: string }) {
+    this.workspacePath = workspacePath;
+  }
+
+  async execute({ input: { command } }: { input: RunCommandInput }) {
     const { stdout, stderr } = await new Promise<{
       stdout: string;
       stderr: string;
     }>((resolve, reject) => {
-      exec(command, { cwd: workspacePath }, (error, stdout, stderr) => {
+      exec(command, { cwd: this.workspacePath }, (error, stdout, stderr) => {
         resolve({
           stdout,
           stderr,

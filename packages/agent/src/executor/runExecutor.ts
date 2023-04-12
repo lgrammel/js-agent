@@ -28,7 +28,6 @@ export const runExecutor = async ({ tools }: { tools: ToolRegistry }) => {
 
   server.register(
     createToolPlugin({
-      workspacePath: environment.WORKSPACE,
       toolRegistry: tools,
     })
   );

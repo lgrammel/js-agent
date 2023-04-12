@@ -1,29 +1,49 @@
 import { AgentRun } from "../agent";
 import { Step } from "./Step";
+import { StepFactory } from "./StepFactory";
 import { StepResult } from "./StepResult";
+
+export const createFixedCompositeStep =
+  ({
+    type,
+    steps: stepFactories,
+  }: {
+    type?: string;
+    steps: Array<StepFactory>;
+  }): StepFactory =>
+  async (run) => {
+    const steps = [];
+    for (const factory of stepFactories) {
+      steps.push(await factory(run));
+    }
+
+    return new FixedCompositeStep({ type, run, steps });
+  };
 
 export class FixedCompositeStep extends Step {
   readonly steps: Array<Step> = [];
 
   constructor({
-    generatedText,
+    type = "composite.fixed",
+    run,
     steps,
   }: {
-    generatedText?: string;
+    type?: string;
+    run: AgentRun;
     steps: Array<Step>;
   }) {
-    super({ generatedText, type: "composite.fixed" });
+    super({ type, run });
     this.steps = steps;
   }
 
-  async _run(run: AgentRun): Promise<StepResult> {
+  async _execute(): Promise<StepResult> {
     try {
       for (const step of this.steps) {
-        if (run.isAborted()) {
+        if (this.run.isAborted()) {
           return { type: "aborted" };
         }
 
-        const result = await run.executeStep(step);
+        const result = await step.execute();
 
         if (result.type === "aborted") {
           return { type: "aborted" };

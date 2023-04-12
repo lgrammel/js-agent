@@ -3,10 +3,8 @@ import { ToolRegistry } from "../action/tool";
 
 export function createToolPlugin({
   toolRegistry,
-  workspacePath,
 }: {
   toolRegistry: ToolRegistry;
-  workspacePath: string;
 }) {
   return async function toolPlugin(fastify: FastifyInstance) {
     fastify.post<{ Params: { toolType: string } }>("/tool/:toolType", {
@@ -19,9 +17,6 @@ export function createToolPlugin({
           const output = await tool.executor.execute({
             input,
             action: tool,
-            context: {
-              workspacePath,
-            },
           });
 
           const textOutput = JSON.stringify(output);

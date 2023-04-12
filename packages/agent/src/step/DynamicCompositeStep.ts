@@ -6,34 +6,58 @@ import { ErrorStep } from "./ErrorStep";
 import { NoopStep } from "./NoopStep";
 import { Step } from "./Step";
 import { StepResult } from "./StepResult";
+import { StepFactory } from "./StepFactory";
 
 export type DynamicCompositeStepContext = {
   actions: ActionRegistry;
   task: string;
   completedSteps: Array<Step>;
+  generatedTextsByStepId: Map<string, string>;
 };
 
-export class DynamicCompositeStep extends Step {
-  protected readonly completedSteps: Array<Step> = [];
-
-  readonly actionRegistry: ActionRegistry;
-  readonly textGenerator: ChatTextGenerator;
-  readonly prompt: Prompt<{
-    actions: ActionRegistry;
-    task: string;
-    completedSteps: Array<Step>;
-  }>;
-
-  constructor({
+export const createDynamicCompositeStep =
+  ({
+    type,
     actionRegistry,
     textGenerator,
     prompt,
   }: {
+    type?: string;
+    actionRegistry: ActionRegistry;
+    textGenerator: ChatTextGenerator;
+    prompt: Prompt<DynamicCompositeStepContext>;
+  }): StepFactory =>
+  async (run) =>
+    new DynamicCompositeStep({
+      type,
+      run,
+      actionRegistry,
+      textGenerator,
+      prompt,
+    });
+
+export class DynamicCompositeStep extends Step {
+  protected readonly completedSteps: Array<Step> = [];
+  private readonly generatedTextsByStepId = new Map<string, string>();
+
+  readonly actionRegistry: ActionRegistry;
+  readonly textGenerator: ChatTextGenerator;
+  readonly prompt: Prompt<DynamicCompositeStepContext>;
+
+  constructor({
+    type = "composite.dynamic",
+    run,
+    actionRegistry,
+    textGenerator,
+    prompt,
+  }: {
+    type?: string;
+    run: AgentRun;
     actionRegistry: ActionRegistry;
     textGenerator: ChatTextGenerator;
     prompt: Prompt<DynamicCompositeStepContext>;
   }) {
-    super({ type: "composite.dynamic" });
+    super({ type, run });
 
     if (actionRegistry == null) {
       throw new Error("actionRegistry is required");
@@ -50,16 +74,16 @@ export class DynamicCompositeStep extends Step {
     this.prompt = prompt;
   }
 
-  async _run(run: AgentRun): Promise<StepResult> {
+  async _execute(): Promise<StepResult> {
     try {
       while (true) {
-        if (run.isAborted()) {
+        if (this.run.isAborted()) {
           return { type: "aborted" };
         }
 
-        const nextStep = await this.generateNextStep({ run });
+        const nextStep = await this.generateNextStep();
 
-        const result = await run.executeStep(nextStep);
+        const result = await nextStep.execute();
 
         if (result.type === "aborted") {
           return { type: "aborted" }; // don't store as completed step
@@ -80,14 +104,15 @@ export class DynamicCompositeStep extends Step {
     }
   }
 
-  async generateNextStep({ run }: { run: AgentRun }): Promise<Step> {
+  async generateNextStep(): Promise<Step> {
     const messages = await this.prompt.generatePrompt({
       actions: this.actionRegistry,
-      task: run.task,
+      task: this.run.task,
       completedSteps: this.completedSteps,
+      generatedTextsByStepId: this.generatedTextsByStepId,
     });
 
-    run.onStepGenerationStarted({ messages });
+    this.run.onStepGenerationStarted({ messages });
 
     const generatedText = await this.textGenerator.generateText({ messages });
 
@@ -97,26 +122,25 @@ export class DynamicCompositeStep extends Step {
     if (actionParameters.action == null) {
       step = new NoopStep({
         type: "thought",
-        generatedText,
-        summary: actionParameters._freeText,
+        run: this.run,
+        summary: actionParameters._freeText ?? "",
       });
     } else {
       try {
         const action = this.actionRegistry.getAction(actionParameters.action);
 
         step = await action.createStep({
-          generatedText,
+          run: this.run,
           input: actionParameters,
         });
       } catch (error: any) {
-        step = new ErrorStep({
-          generatedText,
-          error,
-        });
+        step = new ErrorStep({ run: this.run, error });
       }
     }
 
-    run.onStepGenerationFinished({ generatedText, step });
+    this.generatedTextsByStepId.set(step.id, generatedText);
+
+    this.run.onStepGenerationFinished({ generatedText, step });
 
     return step;
   }

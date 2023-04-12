@@ -1,3 +1,4 @@
+import { AgentRun } from "../agent";
 import { NoopStep } from "../step/NoopStep";
 import { Action } from "./Action";
 import zod from "zod";
@@ -30,15 +31,15 @@ export class DoneAction
 
   async createStep({
     input,
-    generatedText,
+    run,
   }: {
-    generatedText?: string;
+    run: AgentRun;
     input: { _freeText?: string };
   }) {
     return new NoopStep({
       type: this.type,
-      generatedText,
-      summary: input._freeText,
+      run,
+      summary: input._freeText ?? "Done.",
       isDoneStep: true,
     });
   }

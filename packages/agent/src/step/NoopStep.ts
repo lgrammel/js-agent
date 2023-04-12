@@ -1,3 +1,4 @@
+import { AgentRun } from "../agent";
 import { Step } from "./Step";
 import { StepResult } from "./StepResult";
 
@@ -7,21 +8,21 @@ export class NoopStep extends Step {
 
   constructor({
     type = "noop",
-    generatedText,
-    summary = generatedText ?? "",
+    run,
+    summary,
     isDoneStep = false,
   }: {
     type?: string;
-    generatedText?: string;
-    summary?: string;
+    run: AgentRun;
+    summary: string;
     isDoneStep?: boolean;
   }) {
-    super({ type, generatedText });
+    super({ type, run });
     this.summary = summary;
     this._isDoneStep = isDoneStep;
   }
 
-  protected async _run(): Promise<StepResult> {
+  protected async _execute(): Promise<StepResult> {
     return { type: "succeeded", summary: this.summary };
   }
 

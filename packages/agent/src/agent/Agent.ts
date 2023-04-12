@@ -1,22 +1,28 @@
 import { MaxStepAbortController } from "../step/MaxStepAbortController";
-import { Step } from "../step/Step";
+import { StepFactory } from "../step/StepFactory";
 import { AgentRun } from "./AgentRun";
 import { AgentRunObserver } from "./AgentRunObserver";
 
 export class Agent {
   readonly name: string;
-  readonly rootStep: Step;
+  readonly createRootStep: StepFactory;
 
-  constructor({ name, rootStep }: { name: string; rootStep: Step }) {
+  constructor({
+    name,
+    execute: createRootStep,
+  }: {
+    name: string;
+    execute: StepFactory;
+  }) {
     if (name == null) {
       throw new Error("name is required");
     }
-    if (rootStep == null) {
-      throw new Error("rootStep is required");
+    if (createRootStep == null) {
+      throw new Error("execute is required");
     }
 
     this.name = name;
-    this.rootStep = rootStep;
+    this.createRootStep = createRootStep;
   }
 
   async run({
@@ -35,9 +41,11 @@ export class Agent {
       task: instructions,
     });
 
+    const rootStep = await this.createRootStep(run);
+
     run.onStart();
 
-    const result = await run.executeStep(this.rootStep);
+    const result = await rootStep.execute();
 
     run.onFinish({ result });
   }

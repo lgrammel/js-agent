@@ -1,3 +1,4 @@
+import { AgentRun } from "../agent";
 import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
 import { ChatTextGenerator } from "../component/text-generator/ChatTextGenerator";
 import { Step } from "./Step";
@@ -11,18 +12,20 @@ export class PromptStep extends Step {
 
   constructor({
     type = "prompt",
+    run,
     textGenerator,
     messages,
     maxTokens,
     temperature,
   }: {
     type?: string;
+    run: AgentRun;
     textGenerator: ChatTextGenerator;
     messages: OpenAIChatMessage[];
     maxTokens?: number;
     temperature?: number;
   }) {
-    super({ type });
+    super({ type, run });
 
     this.textGenerator = textGenerator;
     this.messages = messages;
@@ -30,7 +33,7 @@ export class PromptStep extends Step {
     this.temperature = temperature;
   }
 
-  protected async _run(): Promise<StepResult> {
+  protected async _execute(): Promise<StepResult> {
     const generatedText = (
       await this.textGenerator.generateText({
         messages: this.messages,

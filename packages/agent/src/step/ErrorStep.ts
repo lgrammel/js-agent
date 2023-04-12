@@ -1,3 +1,4 @@
+import { AgentRun } from "../agent";
 import { Step } from "./Step";
 import { StepResult } from "./StepResult";
 
@@ -7,22 +8,22 @@ export class ErrorStep extends Step {
 
   constructor({
     type = "error",
-    generatedText,
+    run,
     errorMessage,
     error,
   }: {
     type?: string;
-    generatedText?: string;
+    run: AgentRun;
     errorMessage?: string;
     error: unknown;
   }) {
-    super({ type, generatedText });
+    super({ type, run });
 
     this.errorMessage = errorMessage;
     this.error = error;
   }
 
-  protected async _run(): Promise<StepResult> {
+  protected async _execute(): Promise<StepResult> {
     return {
       type: "failed",
       summary:

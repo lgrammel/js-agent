@@ -1,3 +1,4 @@
+import { AgentRun } from "../../agent";
 import { Step } from "../../step/Step";
 import { StepResult } from "../../step/StepResult";
 import { ToolAction } from "./ToolAction";
@@ -10,28 +11,25 @@ export class ToolStep<
   readonly input: INPUT;
 
   constructor({
+    run,
     action,
     input,
-    generatedText,
   }: {
+    run: AgentRun;
     action: ToolAction<INPUT, OUTPUT>;
     input: INPUT;
-    generatedText?: string;
   }) {
-    super({ type: action.type, generatedText });
+    super({ type: action.type, run });
 
     this.action = action;
     this.input = input;
   }
 
-  protected async _run(): Promise<StepResult> {
+  protected async _execute(): Promise<StepResult> {
     try {
       const { output, summary } = await this.action.executor.execute({
         input: this.input,
         action: this.action,
-        context: {
-          workspacePath: process.cwd(), // TODO cleanup
-        },
       });
 
       return {

@@ -3,33 +3,46 @@ import { StepResult } from "./StepResult";
 import { StepState } from "./StepState";
 
 export abstract class Step {
+  readonly id: string;
   readonly type: string;
-  readonly generatedText: string | undefined; // TODO remove - this is an artifact of a specific planning mechanism
+  readonly run: AgentRun;
 
   state: StepState;
 
-  constructor({
-    type,
-    generatedText,
-  }: {
-    type: string;
-    generatedText?: string;
-  }) {
+  constructor({ type, run }: { type: string; run: AgentRun }) {
+    if (type == null) {
+      throw new Error(`Step type is required`);
+    }
+    if (run == null) {
+      throw new Error(`Step run is required`);
+    }
+
     this.type = type;
-    this.generatedText = generatedText;
+    this.run = run;
+
+    this.id = run.generateId({ type });
     this.state = { type: "pending" };
   }
 
-  protected abstract _run(run: AgentRun): Promise<StepResult>;
+  protected abstract _execute(): Promise<StepResult>;
 
-  async run(run: AgentRun): Promise<StepResult> {
+  async execute(): Promise<StepResult> {
+    if (this.run.isAborted()) {
+      return { type: "aborted" };
+    }
+
     if (this.state.type !== "pending") {
       throw new Error(`Step is already running`);
     }
 
     this.state = { type: "running" };
-    const result = await this._run(run);
+    this.run.onStepExecutionStarted({ step: this });
+
+    const result = await this._execute();
     this.state = result;
+
+    this.run.onStepExecutionFinished({ step: this, result });
+
     return result;
   }
 

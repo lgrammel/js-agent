@@ -2,11 +2,13 @@ import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
 import { AbortController } from "../step/AbortController";
 import { Step } from "../step/Step";
 import { StepResult } from "../step/StepResult";
+import { createNextId } from "../util/createNextId";
 import { Agent } from "./Agent";
 import { AgentRunObserver } from "./AgentRunObserver";
 
 export class AgentRun {
   private readonly observer?: AgentRunObserver;
+  private readonly nextId = createNextId(1);
 
   readonly agent: Agent;
   readonly controller: AbortController;
@@ -29,30 +31,34 @@ export class AgentRun {
     this.task = task;
   }
 
+  generateId({ type }: { type: string }) {
+    return `${this.nextId()}-${type}`;
+  }
+
   isAborted() {
     return this.controller.isRunAborted();
   }
 
-  async executeStep(step: Step): Promise<StepResult> {
-    if (this.isAborted()) {
-      return { type: "aborted" };
-    }
-
+  onStepExecutionStarted({ step }: { step: Step }) {
     try {
       this.observer?.onStepExecutionStarted({ run: this, step });
     } catch (error) {
       console.error(error); // TODO logger
     }
+  }
 
-    const result = await step.run(this);
-
+  onStepExecutionFinished({
+    step,
+    result,
+  }: {
+    step: Step;
+    result: StepResult;
+  }) {
     try {
       this.observer?.onStepExecutionFinished({ run: this, step, result });
     } catch (error) {
       console.error(error); // TODO logger
     }
-
-    return result;
   }
 
   onStart() {

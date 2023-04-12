@@ -2,6 +2,7 @@ import zod from "zod";
 import { Action } from "../Action.js";
 import { ToolExecutor } from "./ToolExecutor.js";
 import { ToolStep } from "./ToolStep.js";
+import { AgentRun } from "../../agent/AgentRun.js";
 
 export class ToolAction<
   INPUT extends Record<string, string | undefined>,
@@ -43,15 +44,15 @@ export class ToolAction<
 
   async createStep({
     input,
-    generatedText,
+    run,
   }: {
-    generatedText?: string;
     input: INPUT;
+    run: AgentRun;
   }): Promise<ToolStep<INPUT, OUTPUT>> {
     return new ToolStep({
       action: this,
       input,
-      generatedText,
+      run,
     });
   }
 }

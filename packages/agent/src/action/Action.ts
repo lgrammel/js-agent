@@ -1,6 +1,7 @@
 import zod from "zod";
 import { ActionParameters } from "./ActionParameters";
 import { Step } from "../step/Step";
+import { AgentRun } from "../agent";
 
 export interface Action<INPUT extends ActionParameters, OUTPUT> {
   readonly type: string;
@@ -11,11 +12,5 @@ export interface Action<INPUT extends ActionParameters, OUTPUT> {
 
   readonly outputSchema: zod.Schema<OUTPUT>;
 
-  createStep({
-    generatedText,
-    input,
-  }: {
-    generatedText?: string;
-    input: INPUT;
-  }): Promise<Step>;
+  createStep({ run, input }: { run: AgentRun; input: INPUT }): Promise<Step>;
 }

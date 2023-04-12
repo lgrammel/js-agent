@@ -24,17 +24,20 @@ export class RecentStepsPrompt
 
   async generatePrompt({
     completedSteps,
+    generatedTextsByStepId,
   }: {
     completedSteps: Array<Step>;
+    generatedTextsByStepId: Map<string, string>;
   }): Promise<OpenAIChatMessage[]> {
     const messages: OpenAIChatMessage[] = [];
 
     for (const step of completedSteps.slice(-this.maxSteps)) {
       // repeat the original agent response to reinforce the action format and keep the conversation going:
-      if (step.generatedText != null) {
+      const generatedText = generatedTextsByStepId.get(step.id);
+      if (generatedText != null) {
         messages.push({
           role: "assistant",
-          content: step.generatedText,
+          content: generatedText,
         });
       }
 
