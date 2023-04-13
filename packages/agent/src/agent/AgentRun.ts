@@ -39,11 +39,31 @@ export class AgentRun {
     return this.controller.isRunAborted();
   }
 
+  private logError(error: unknown) {
+    console.error(error); // TODO logger
+  }
+
+  onLoopIterationStarted({ loop }: { loop: Step }) {
+    try {
+      this.observer?.onLoopIterationStarted?.({ run: this, loop });
+    } catch (error) {
+      this.logError(error);
+    }
+  }
+
+  onLoopIterationFinished({ loop }: { loop: Step }) {
+    try {
+      this.observer?.onLoopIterationFinished?.({ run: this, loop });
+    } catch (error) {
+      this.logError(error);
+    }
+  }
+
   onStepExecutionStarted({ step }: { step: Step }) {
     try {
-      this.observer?.onStepExecutionStarted({ run: this, step });
+      this.observer?.onStepExecutionStarted?.({ run: this, step });
     } catch (error) {
-      console.error(error); // TODO logger
+      this.logError(error);
     }
   }
 
@@ -55,25 +75,25 @@ export class AgentRun {
     result: StepResult;
   }) {
     try {
-      this.observer?.onStepExecutionFinished({ run: this, step, result });
+      this.observer?.onStepExecutionFinished?.({ run: this, step });
     } catch (error) {
-      console.error(error); // TODO logger
+      this.logError(error);
     }
   }
 
   onStart() {
     try {
-      this.observer?.onAgentRunStarted({ run: this });
+      this.observer?.onAgentRunStarted?.({ run: this });
     } catch (error) {
-      console.error(error); // TODO logger
+      this.logError(error);
     }
   }
 
   onFinish({ result }: { result: StepResult }) {
     try {
-      this.observer?.onAgentRunFinished({ run: this, result });
+      this.observer?.onAgentRunFinished?.({ run: this, result });
     } catch (error) {
-      console.error(error); // TODO logger
+      this.logError(error);
     }
   }
 
@@ -83,9 +103,9 @@ export class AgentRun {
     messages: Array<OpenAIChatMessage>;
   }) {
     try {
-      this.observer?.onStepGenerationStarted({ run: this, messages });
+      this.observer?.onStepGenerationStarted?.({ run: this, messages });
     } catch (error: any) {
-      console.error(error); //TODO logger
+      this.logError(error);
     }
   }
 
@@ -97,13 +117,13 @@ export class AgentRun {
     step: Step;
   }) {
     try {
-      this.observer?.onStepGenerationFinished({
+      this.observer?.onStepGenerationFinished?.({
         run: this,
         generatedText,
         step,
       });
     } catch (error: any) {
-      console.error(error); //TODO logger
+      this.logError(error);
     }
   }
 }

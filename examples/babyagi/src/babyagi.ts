@@ -71,23 +71,26 @@ const generateAndPrioritizeTaskList: updateTaskList = async ({
   });
 
 class UpdateTasksLoop extends $.step.Step {
-  private readonly objective: string;
+  readonly objective: string;
+  tasks: Array<string>;
+
   private readonly generateExecutionStep: ({}: {
     objective: string;
     task: string;
     run: $.agent.AgentRun;
   }) => $.step.Step;
+
   private readonly updateTaskList: updateTaskList;
 
-  private tasks: Array<string>;
-
   constructor({
+    type = "update-tasks",
     objective,
     initialTasks = ["Develop a task list."],
     generateExecutionStep,
     updateTaskList,
     run,
   }: {
+    type?: string;
     objective: string;
     initialTasks?: string[];
     generateExecutionStep: ({}: {
@@ -98,35 +101,28 @@ class UpdateTasksLoop extends $.step.Step {
     updateTaskList: updateTaskList;
     run: $.agent.AgentRun;
   }) {
-    super({ type: "planner", run });
+    super({ type, run });
 
     this.objective = objective;
     this.tasks = initialTasks;
+
     this.updateTaskList = updateTaskList;
     this.generateExecutionStep = generateExecutionStep;
   }
 
   protected async _execute(): Promise<$.step.StepResult> {
     while (this.tasks.length > 0) {
-      // Print the task list
-      console.log(chalk.green("*****TASK LIST*****"));
-      console.log(
-        `${this.tasks
-          .map((task, index) => `${index + 1}: ${task}`)
-          .join("\n")}\n`
-      );
+      this.run.onLoopIterationStarted({ loop: this });
 
-      // Step 1: Pull the first task
       const task = this.tasks.shift()!;
-      console.log(chalk.green("*****NEXT TASK*****"));
-      console.log(`${task}\n`);
 
-      // Task execution:
       const step = this.generateExecutionStep({
         objective: this.objective,
         task,
         run: this.run,
       });
+
+      // TODO store the steps
 
       const result = await step.execute();
 
@@ -134,20 +130,17 @@ class UpdateTasksLoop extends $.step.Step {
         return result;
       }
 
-      const taskResult = result.summary;
-
-      console.log(chalk.green("*****TASK RESULT*****"));
-      console.log(taskResult);
-      console.log();
-
       this.tasks = await this.updateTaskList({
         objective: this.objective,
         completedTask: task,
-        completedTaskResult: taskResult,
+        completedTaskResult: result.summary,
         remainingTasks: this.tasks,
       });
+
+      this.run.onLoopIterationFinished({ loop: this });
     }
 
+    // TODO have a final result
     return { type: "succeeded", summary: "Completed all tasks." };
   }
 }
@@ -157,10 +150,35 @@ runCLIAgent({
     name: "Baby AGI",
     execute: async (run) =>
       new UpdateTasksLoop({
+        type: "main",
         objective: OBJECTIVE,
         generateExecutionStep,
         updateTaskList: generateAndPrioritizeTaskList,
         run,
       }),
   }),
+  observer: {
+    onLoopIterationStarted({ loop }) {
+      if (loop.type === "main" && loop instanceof UpdateTasksLoop) {
+        console.log(chalk.green("*****TASK LIST*****"));
+        console.log(
+          `${loop.tasks
+            .map((task, index) => `${index + 1}: ${task}`)
+            .join("\n")}\n`
+        );
+
+        const nextTask = loop.tasks[0];
+        console.log(chalk.green("*****NEXT TASK*****"));
+        console.log(`${nextTask}\n`);
+      }
+    },
+
+    onStepExecutionFinished({ step }) {
+      if (step.state.type === "succeeded" || step.state.type === "failed") {
+        console.log(chalk.green("*****TASK RESULT*****"));
+        console.log(step.state.summary);
+        console.log();
+      }
+    },
+  },
 });

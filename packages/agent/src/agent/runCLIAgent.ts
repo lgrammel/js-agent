@@ -1,20 +1,18 @@
-import { ResultFormatterRegistry } from "../action";
 import { Agent } from "./Agent";
-import { CLIAgentRunObserver } from "./CLIAgentRunObserver";
+import { AgentRunObserver } from "./AgentRunObserver";
 
 export const runCLIAgent = ({
   agent,
-  resultFormatters,
+  observer,
 }: {
   agent: Agent;
-  resultFormatters?: ResultFormatterRegistry;
+  observer: AgentRunObserver;
 }) => {
   agent
     .run({
+      // TODO rename to objective
       instructions: process.argv.slice(2).join(" "),
-      observer: new CLIAgentRunObserver({
-        resultFormatters,
-      }),
+      observer,
     })
     .then(() => {})
     .catch((error) => {

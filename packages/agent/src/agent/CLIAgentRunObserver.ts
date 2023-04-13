@@ -49,14 +49,9 @@ export class CLIAgentRunObserver implements AgentRunObserver {
     }
   }
 
-  onStepExecutionFinished({
-    step,
-    result,
-  }: {
-    step: Step;
-    result: StepResult;
-  }) {
+  onStepExecutionFinished({ step }: { step: Step }) {
     if (step instanceof ToolStep) {
+      const result = step.state;
       const resultType = result.type;
 
       switch (resultType) {
@@ -88,6 +83,12 @@ export class CLIAgentRunObserver implements AgentRunObserver {
         case "failed": {
           log(chalk.red(`ERROR: ${result.error}`));
           log();
+          break;
+        }
+
+        case "pending":
+        case "running": {
+          // ignored
           break;
         }
 

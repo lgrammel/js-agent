@@ -1,26 +1,26 @@
 import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
 import { Step } from "../step/Step";
-import { StepResult } from "../step/StepResult";
 import { AgentRun } from "./AgentRun";
 
 export interface AgentRunObserver {
-  onAgentRunStarted({}: { run: AgentRun }): void;
-  onAgentRunFinished({}: { run: AgentRun; result: unknown }): void;
+  onAgentRunStarted?: ({}: { run: AgentRun }) => void;
+  // TODO result should be a StepResult:
+  onAgentRunFinished?: ({}: { run: AgentRun; result: unknown }) => void;
 
-  onStepGenerationStarted({}: {
+  // TODO is this necessary? if so, how?
+  onStepGenerationStarted?: ({}: {
     run: AgentRun;
     messages: Array<OpenAIChatMessage>;
-  }): void;
-  onStepGenerationFinished({}: {
+  }) => void;
+  onStepGenerationFinished?: ({}: {
     run: AgentRun;
     generatedText: string;
     step: Step;
-  }): void;
+  }) => void;
 
-  onStepExecutionStarted({}: { run: AgentRun; step: Step }): void;
-  onStepExecutionFinished({}: {
-    run: AgentRun;
-    step: Step;
-    result: StepResult;
-  }): void;
+  onLoopIterationStarted?: ({}: { run: AgentRun; loop: Step }) => void;
+  onLoopIterationFinished?: ({}: { run: AgentRun; loop: Step }) => void;
+
+  onStepExecutionStarted?: ({}: { run: AgentRun; step: Step }) => void;
+  onStepExecutionFinished?: ({}: { run: AgentRun; step: Step }) => void;
 }
