@@ -8,7 +8,7 @@ import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
 
 const log = console.log;
 
-export class CLIAgentRunObserver implements AgentRunObserver {
+export class ConsoleAgentRunObserver implements AgentRunObserver {
   private readonly resultFormatters: ResultFormatterRegistry;
 
   constructor({

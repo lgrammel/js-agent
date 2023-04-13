@@ -95,4 +95,5 @@ runCLIAgent({
     }),
   }),
   resultFormatters,
+  observer: new $.agent.ConsoleAgentRunObserver(),
 });

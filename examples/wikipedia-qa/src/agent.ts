@@ -73,5 +73,5 @@ You speak perfect JSON.`,
       textGenerator,
     }),
   }),
-  observer: new $.agent.CLIAgentRunObserver(),
+  observer: new $.agent.ConsoleAgentRunObserver(),
 });
