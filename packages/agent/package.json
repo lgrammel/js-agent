@@ -1,6 +1,6 @@
 {
   "name": "@gptagent/agent",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "private": false,
   "homepage": "https://github.com/lgrammel/gptagent.js",
   "repository": {
