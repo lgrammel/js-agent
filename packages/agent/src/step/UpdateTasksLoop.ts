@@ -1,6 +1,28 @@
 import { AgentRun } from "../agent/AgentRun";
 import { Step } from "./Step";
+import { StepFactory } from "./StepFactory";
 import { StepResult } from "./StepResult";
+
+export const createUpdateTasksLoop =
+  ({
+    type,
+    initialTasks,
+    generateExecutionStep,
+    updateTaskList,
+  }: {
+    type?: string;
+    initialTasks?: string[];
+    generateExecutionStep: ({}: { task: string; run: AgentRun }) => Step;
+    updateTaskList: updateTaskList;
+  }): StepFactory =>
+  async (run) =>
+    new UpdateTasksLoop({
+      type,
+      initialTasks,
+      generateExecutionStep,
+      updateTaskList,
+      run,
+    });
 
 export type updateTaskList = ({}: {
   objective: string;

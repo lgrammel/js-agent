@@ -15,46 +15,44 @@ const textGenerator = new $.ai.openai.OpenAiChatTextGenerator({
 runCLIAgent({
   agent: new Agent({
     name: "Baby AGI",
-    execute: async (run) =>
-      new $.step.UpdateTasksLoop({
-        type: "main",
-        generateExecutionStep({ task, run }) {
-          return new $.step.PromptStep({
-            type: "execute-prompt",
-            run,
-            textGenerator,
-            messages: [
-              {
-                role: "system",
-                content: `You are an AI who performs one task based on the following objective: ${run.objective}.
+    execute: $.step.createUpdateTasksLoop({
+      type: "main",
+      generateExecutionStep({ task, run }) {
+        return new $.step.PromptStep({
+          type: "execute-prompt",
+          run,
+          textGenerator,
+          messages: [
+            {
+              role: "system",
+              content: `You are an AI who performs one task based on the following objective: ${run.objective}.
 Your task: ${task}
 Response:`,
-              },
-            ],
-            maxTokens: 2000,
-            temperature: 0.7,
-          });
-        },
-        async updateTaskList({
-          objective,
-          completedTask,
-          completedTaskResult,
-          remainingTasks,
-        }) {
-          return prioritizeTasks({
-            tasks: await addNewTasks({
-              objective,
-              completedTask,
-              completedTaskResult,
-              existingTasks: remainingTasks,
-              textGenerator,
-            }),
+            },
+          ],
+          maxTokens: 2000,
+          temperature: 0.7,
+        });
+      },
+      async updateTaskList({
+        objective,
+        completedTask,
+        completedTaskResult,
+        remainingTasks,
+      }) {
+        return prioritizeTasks({
+          tasks: await addNewTasks({
             objective,
+            completedTask,
+            completedTaskResult,
+            existingTasks: remainingTasks,
             textGenerator,
-          });
-        },
-        run,
-      }),
+          }),
+          objective,
+          textGenerator,
+        });
+      },
+    }),
   }),
   observer: {
     onLoopIterationStarted({ loop }) {
