@@ -19,7 +19,7 @@ export class ChatTextSummarizer implements TextSummarizer {
       messages: [
         {
           role: "system",
-          content: `## ROLE\nYou are an assistant that summarizes text.\nYou have a specific topic and you want to keep all the information that relates to the topic.`,
+          content: `## ROLE\nYou are an expert at summarizing texts.\nYou need to extract and keep all the information on a specific topic from the text.`,
         },
         {
           role: "user",

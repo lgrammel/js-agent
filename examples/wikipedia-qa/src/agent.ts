@@ -5,8 +5,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const textGenerator = new $.ai.openai.OpenAiChatTextGenerator({
-  apiKey: process.env.OPENAI_API_KEY,
-  model: "gpt-4",
+  apiKey: process.env.OPENAI_API_KEY ?? "",
+  model: "gpt-3.5-turbo",
 });
 
 const searchWikipediaAction =
@@ -15,8 +15,8 @@ const searchWikipediaAction =
     description:
       "Search wikipedia using a search term. Returns a list of pages.",
     executor: new $.action.tool.ProgrammableGoogleSearchEngineExecutor({
-      key: process.env.WIKIPEDIA_SEARCH_KEY,
-      cx: process.env.WIKIPEDIA_SEARCH_CX,
+      key: process.env.WIKIPEDIA_SEARCH_KEY ?? "",
+      cx: process.env.WIKIPEDIA_SEARCH_CX ?? "",
     }),
   });
 
@@ -31,9 +31,10 @@ const summarizeWebpageAction = new $.action.tool.SummarizeWebpageAction({
   executor: new $.action.tool.SummarizeWebpageExecutor({
     webpageTextExtractor:
       new $.component.webpageTextExtractor.BasicWebpageTextExtractor(),
-    summarizer: new $.component.textSummarizer.SingleLevelSplitSummarizer({
+    summarizer: new $.component.textSummarizer.RecursiveSplitSummarizer({
       splitter: new $.component.splitter.RecursiveCharacterSplitter({
-        maxCharactersByChunk: 4096 * 4,
+        // note: maxCharactersPerChunk can be increased to 4096 * 4 when you use gpt-4
+        maxCharactersPerChunk: 2048 * 4,
       }),
       summarizer: new $.component.textSummarizer.ChatTextSummarizer({
         chatTextGenerator: textGenerator,
@@ -51,7 +52,9 @@ runCLIAgent({
           sections: [
             {
               title: "Role",
-              content: `You are an knowledge worker that answers questions using Wikipedia content.`,
+              // Note: "You speak perfect JSON" helps getting gpt-3.5-turbo to provide structured json at the end
+              content: `You are an knowledge worker that answers questions using Wikipedia content.
+You speak perfect JSON.`,
             },
             {
               title: "Constraints",
@@ -59,9 +62,9 @@ runCLIAgent({
             },
           ],
         }),
-        new $.prompt.AvailableActionsSectionPrompt(),
         new $.prompt.TaskSectionPrompt(),
-        new $.prompt.RecentStepsPrompt({ maxSteps: 10 })
+        new $.prompt.AvailableActionsSectionPrompt(),
+        new $.prompt.RecentStepsPrompt({ maxSteps: 6 })
       ),
       actionRegistry: new ActionRegistry({
         actions: [searchWikipediaAction, summarizeWebpageAction],
@@ -70,4 +73,5 @@ runCLIAgent({
       textGenerator,
     }),
   }),
+  observer: new $.agent.CLIAgentRunObserver(),
 });

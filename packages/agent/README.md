@@ -36,14 +36,18 @@ See examples for details on how to implement and run an agent.
 - **agent/executor separation (optional)**: Run the executor in a safe environment (e.g. Docker container) where it can use the command line, install libraries, etc.
 - **cost tracking**
 
+## GPT-4 vs GPT-3.5-turbo
+
+For agents, it is recommended to use GPT-4. GPT-3.5-Turbo has trouble following instructions, accurately extracting information from text, and tends to hallucinate answers. However, GPT-4 can be expensive and is not fully available yet.
+
 ## Example Agent Definition
 
-```js
+```ts
 import * as $ from "@gptagent/agent";
 import { ActionRegistry, Agent, runCLIAgent } from "@gptagent/agent";
 
 const textGenerator = new $.ai.openai.OpenAiChatTextGenerator({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY ?? "",
   model: "gpt-3.5-turbo",
 });
 
@@ -53,8 +57,8 @@ const searchWikipediaAction =
     description:
       "Search wikipedia using a search term. Returns a list of pages.",
     executor: new $.action.tool.ProgrammableGoogleSearchEngineExecutor({
-      key: process.env.WIKIPEDIA_SEARCH_KEY,
-      cx: process.env.WIKIPEDIA_SEARCH_CX,
+      key: process.env.WIKIPEDIA_SEARCH_KEY ?? "",
+      cx: process.env.WIKIPEDIA_SEARCH_CX ?? "",
     }),
   });
 
@@ -69,9 +73,10 @@ const summarizeWebpageAction = new $.action.tool.SummarizeWebpageAction({
   executor: new $.action.tool.SummarizeWebpageExecutor({
     webpageTextExtractor:
       new $.component.webpageTextExtractor.BasicWebpageTextExtractor(),
-    summarizer: new $.component.textSummarizer.SingleLevelSplitSummarizer({
+    summarizer: new $.component.textSummarizer.RecursiveSplitSummarizer({
       splitter: new $.component.splitter.RecursiveCharacterSplitter({
-        maxCharactersByChunk: 4096 * 4,
+        // note: maxCharactersPerChunk can be increased to 4096 * 4 when you use gpt-4
+        maxCharactersPerChunk: 2048 * 4,
       }),
       summarizer: new $.component.textSummarizer.ChatTextSummarizer({
         chatTextGenerator: textGenerator,
@@ -83,13 +88,15 @@ const summarizeWebpageAction = new $.action.tool.SummarizeWebpageAction({
 runCLIAgent({
   agent: new Agent({
     name: "Wikipedia QA",
-    rootStep: new $.step.DynamicCompositeStep({
+    execute: $.step.createDynamicCompositeStep({
       prompt: new $.prompt.CompositePrompt(
         new $.prompt.FixedSectionsPrompt({
           sections: [
             {
               title: "Role",
-              content: `You are an knowledge worker that answers questions using Wikipedia content.`,
+              // Note: "You speak perfect JSON" helps getting gpt-3.5-turbo to provide structured json at the end
+              content: `You are an knowledge worker that answers questions using Wikipedia content.
+You speak perfect JSON.`,
             },
             {
               title: "Constraints",
@@ -108,6 +115,7 @@ runCLIAgent({
       textGenerator,
     }),
   }),
+  observer: new $.agent.CLIAgentRunObserver(),
 });
 ```
 

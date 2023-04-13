@@ -25,7 +25,7 @@ pnpm install
 pnpm nx run-many --target=build
 
 # in examples/wikipedia-qa folder:
-pnpm run-agent "which town is bigger, Gummersbach or Bergneustadt?"
+pnpm start "which town is bigger, Gummersbach or Bergneustadt?"
 ```
 
 ## Example Output

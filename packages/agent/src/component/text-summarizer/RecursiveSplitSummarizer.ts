@@ -1,7 +1,7 @@
 import { Splitter } from "../splitter/Splitter";
 import { TextSummarizer } from "./TextSummarizer";
 
-export class SingleLevelSplitSummarizer implements TextSummarizer {
+export class RecursiveSplitSummarizer implements TextSummarizer {
   private summarizer: TextSummarizer;
   private splitter: Splitter;
 
@@ -27,13 +27,17 @@ export class SingleLevelSplitSummarizer implements TextSummarizer {
       chunkSummaries.push(
         await this.summarizer.summarizeText({ text: chunk, topic }, context)
       );
+
+      console.log(chunkSummaries);
     }
 
     if (chunkSummaries.length === 1) {
       return chunkSummaries[0];
     }
 
-    return this.summarizer.summarizeText(
+    // recursive summarization: will split joined summaries as needed to stay
+    // within the allowed size limit of the splitter.
+    return this.summarizeText(
       {
         text: chunkSummaries.join("\n\n"),
         topic,

@@ -1,10 +1,10 @@
 import { Splitter } from "./Splitter";
 
 export class RecursiveCharacterSplitter implements Splitter {
-  private readonly maxCharactersByChunk: number;
+  private readonly maxCharactersPerChunk: number;
 
-  constructor({ maxCharactersByChunk }: { maxCharactersByChunk: number }) {
-    this.maxCharactersByChunk = maxCharactersByChunk;
+  constructor({ maxCharactersPerChunk }: { maxCharactersPerChunk: number }) {
+    this.maxCharactersPerChunk = maxCharactersPerChunk;
   }
 
   async split({ text }: { text: string }): Promise<Array<string>> {
@@ -12,7 +12,7 @@ export class RecursiveCharacterSplitter implements Splitter {
   }
 
   private splitSync({ text }: { text: string }): Array<string> {
-    if (text.length < this.maxCharactersByChunk) {
+    if (text.length < this.maxCharactersPerChunk) {
       return [text];
     }
 

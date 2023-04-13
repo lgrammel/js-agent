@@ -1,5 +1,5 @@
 import { WebpageTextExtractor } from "./WebpageTextExtractor";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { convert } from "html-to-text";
 
 export class BasicWebpageTextExtractor implements WebpageTextExtractor {

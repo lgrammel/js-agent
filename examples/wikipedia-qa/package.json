@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "run-agent": "node ./agent.mjs"
+    "start": "ts-node src/agent.ts",
+    "build": "tsc"
   },
   "private": true,
   "dependencies": {
