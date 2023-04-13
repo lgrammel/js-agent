@@ -10,3 +10,4 @@ export * from "./PromptStep";
 export * from "./Step";
 export * from "./StepResult";
 export * from "./StepState";
+export * from "./UpdateTasksLoop";

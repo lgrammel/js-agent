@@ -7,6 +7,7 @@ import { addNewTasks } from "./addNewTasks";
 
 dotenv.config();
 
+// TODO should come from instructions
 const OBJECTIVE = "Solve world hunger.";
 
 const textGenerator = new $.ai.openai.OpenAiChatTextGenerator({
@@ -40,126 +41,37 @@ Response:`,
   });
 }
 
-export type updateTaskList = ({}: {
-  objective: string;
-  completedTask: string;
-  completedTaskResult: string;
-  remainingTasks: string[];
-}) => PromiseLike<Array<string>>;
-
-const generateAndPrioritizeTaskList: updateTaskList = async ({
-  objective,
-  completedTask,
-  completedTaskResult,
-  remainingTasks,
-}: {
-  objective: string;
-  completedTask: string;
-  completedTaskResult: string;
-  remainingTasks: string[];
-}): Promise<string[]> =>
-  await prioritizeTasks({
-    tasks: await addNewTasks({
-      objective,
-      completedTask,
-      completedTaskResult,
-      existingTasks: remainingTasks,
-      textGenerator,
-    }),
-    objective,
-    textGenerator,
-  });
-
-class UpdateTasksLoop extends $.step.Step {
-  readonly objective: string;
-  tasks: Array<string>;
-
-  private readonly generateExecutionStep: ({}: {
-    objective: string;
-    task: string;
-    run: $.agent.AgentRun;
-  }) => $.step.Step;
-
-  private readonly updateTaskList: updateTaskList;
-
-  constructor({
-    type = "update-tasks",
-    objective,
-    initialTasks = ["Develop a task list."],
-    generateExecutionStep,
-    updateTaskList,
-    run,
-  }: {
-    type?: string;
-    objective: string;
-    initialTasks?: string[];
-    generateExecutionStep: ({}: {
-      objective: string;
-      task: string;
-      run: $.agent.AgentRun;
-    }) => $.step.Step;
-    updateTaskList: updateTaskList;
-    run: $.agent.AgentRun;
-  }) {
-    super({ type, run });
-
-    this.objective = objective;
-    this.tasks = initialTasks;
-
-    this.updateTaskList = updateTaskList;
-    this.generateExecutionStep = generateExecutionStep;
-  }
-
-  protected async _execute(): Promise<$.step.StepResult> {
-    while (this.tasks.length > 0) {
-      this.run.onLoopIterationStarted({ loop: this });
-
-      const task = this.tasks.shift()!;
-
-      const step = this.generateExecutionStep({
-        objective: this.objective,
-        task,
-        run: this.run,
-      });
-
-      // TODO store the steps
-
-      const result = await step.execute();
-
-      if (result.type === "aborted" || result.type === "failed") {
-        return result;
-      }
-
-      this.tasks = await this.updateTaskList({
-        objective: this.objective,
-        completedTask: task,
-        completedTaskResult: result.summary,
-        remainingTasks: this.tasks,
-      });
-
-      this.run.onLoopIterationFinished({ loop: this });
-    }
-
-    // TODO have a final result
-    return { type: "succeeded", summary: "Completed all tasks." };
-  }
-}
-
 runCLIAgent({
   agent: new Agent({
     name: "Baby AGI",
     execute: async (run) =>
-      new UpdateTasksLoop({
+      new $.step.UpdateTasksLoop({
         type: "main",
         objective: OBJECTIVE,
         generateExecutionStep,
-        updateTaskList: generateAndPrioritizeTaskList,
+        updateTaskList: async ({
+          objective,
+          completedTask,
+          completedTaskResult,
+          remainingTasks,
+        }): Promise<string[]> =>
+          await prioritizeTasks({
+            tasks: await addNewTasks({
+              objective,
+              completedTask,
+              completedTaskResult,
+              existingTasks: remainingTasks,
+              textGenerator,
+            }),
+            objective,
+            textGenerator,
+          }),
         run,
       }),
   }),
   observer: {
     onLoopIterationStarted({ loop }) {
-      if (loop.type === "main" && loop instanceof UpdateTasksLoop) {
+      if (loop.type === "main" && loop instanceof $.step.UpdateTasksLoop) {
         console.log(chalk.green("*****TASK LIST*****"));
         console.log(
           `${loop.tasks
