@@ -1,6 +1,8 @@
 # GPTAgent.js BabyAGI
 
-A TypeScript / GPTAgent.js implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi) by [@yoheinakajima](https://twitter.com/yoheinakajima). It is currently implemented as a single planner step, does not use memory (yet), and uses `gpt-3.5-turbo` instead of `davinci-003`.
+A TypeScript / GPTAgent.js implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi) by [@yoheinakajima](https://twitter.com/yoheinakajima).
+
+It is currently implemented as a single planner step, does not use memory (yet), and uses `gpt-3.5-turbo` instead of `davinci-003`. The main loop that executes the top task from a task list and then updates the task list was extracted into "UpdateTasksLoop" (gptindex.js).
 
 ## Usage
 
@@ -16,16 +18,16 @@ pnpm install
 pnpm nx run-many --target=build
 
 # in examples/babyagi folder:
-pnpm start
+pnpm start "solve world hunger"
 ```
 
 ## Example Output
 
 ```
-❯ npm start
+❯ npm start "solve world hunger"
 
 > @gptagent/example-babyagi@0.0.0 start
-> ts-node src/babyagi.ts
+> ts-node src/babyagi.ts "solve world hunger"
 
 ### Baby AGI ###
 
