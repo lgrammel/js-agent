@@ -10,11 +10,9 @@ export type updateTaskList = ({}: {
 }) => PromiseLike<Array<string>>;
 
 export class UpdateTasksLoop extends Step {
-  readonly objective: string;
   tasks: Array<string>;
 
   private readonly generateExecutionStep: ({}: {
-    objective: string;
     task: string;
     run: AgentRun;
   }) => Step;
@@ -23,26 +21,19 @@ export class UpdateTasksLoop extends Step {
 
   constructor({
     type = "update-tasks",
-    objective,
     initialTasks = ["Develop a task list."],
     generateExecutionStep,
     updateTaskList,
     run,
   }: {
     type?: string;
-    objective: string;
     initialTasks?: string[];
-    generateExecutionStep: ({}: {
-      objective: string;
-      task: string;
-      run: AgentRun;
-    }) => Step;
+    generateExecutionStep: ({}: { task: string; run: AgentRun }) => Step;
     updateTaskList: updateTaskList;
     run: AgentRun;
   }) {
     super({ type, run });
 
-    this.objective = objective;
     this.tasks = initialTasks;
 
     this.updateTaskList = updateTaskList;
@@ -56,7 +47,6 @@ export class UpdateTasksLoop extends Step {
       const task = this.tasks.shift()!;
 
       const step = this.generateExecutionStep({
-        objective: this.objective,
         task,
         run: this.run,
       });
@@ -69,7 +59,7 @@ export class UpdateTasksLoop extends Step {
       }
 
       this.tasks = await this.updateTaskList({
-        objective: this.objective,
+        objective: this.run.objective,
         completedTask: task,
         completedTaskResult: result.summary,
         remainingTasks: this.tasks,

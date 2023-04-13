@@ -26,10 +26,10 @@ export class Agent {
   }
 
   async run({
-    instructions,
+    objective,
     observer,
   }: {
-    instructions: string;
+    objective: string;
     observer?: AgentRunObserver;
   }) {
     const controller = new MaxStepAbortController({ maxSteps: 100 });
@@ -38,7 +38,7 @@ export class Agent {
       agent: this,
       controller,
       observer,
-      task: instructions,
+      objective,
     });
 
     const rootStep = await this.createRootStep(run);

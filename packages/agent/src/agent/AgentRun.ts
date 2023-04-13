@@ -12,23 +12,23 @@ export class AgentRun {
 
   readonly agent: Agent;
   readonly controller: AbortController;
-  readonly task: string;
+  readonly objective: string;
 
   constructor({
     agent,
     controller,
     observer,
-    task,
+    objective,
   }: {
     agent: Agent;
     controller: AbortController;
     observer?: AgentRunObserver;
-    task: string;
+    objective: string;
   }) {
     this.agent = agent;
     this.controller = controller;
     this.observer = observer;
-    this.task = task;
+    this.objective = objective;
   }
 
   generateId({ type }: { type: string }) {

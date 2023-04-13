@@ -11,7 +11,7 @@ export const runCLIAgent = ({
   agent
     .run({
       // TODO rename to objective
-      instructions: process.argv.slice(2).join(" "),
+      objective: process.argv.slice(2).join(" "),
       observer,
     })
     .then(() => {})

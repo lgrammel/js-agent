@@ -107,7 +107,7 @@ export class DynamicCompositeStep extends Step {
   async generateNextStep(): Promise<Step> {
     const messages = await this.prompt.generatePrompt({
       actions: this.actionRegistry,
-      task: this.run.task,
+      task: this.run.objective,
       completedSteps: this.completedSteps,
       generatedTextsByStepId: this.generatedTextsByStepId,
     });

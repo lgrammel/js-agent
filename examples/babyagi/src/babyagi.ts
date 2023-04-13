@@ -7,39 +7,10 @@ import { addNewTasks } from "./addNewTasks";
 
 dotenv.config();
 
-// TODO should come from instructions
-const OBJECTIVE = "Solve world hunger.";
-
 const textGenerator = new $.ai.openai.OpenAiChatTextGenerator({
   apiKey: process.env.OPENAI_API_KEY ?? "",
   model: "gpt-3.5-turbo",
 });
-
-function generateExecutionStep({
-  objective,
-  task,
-  run,
-}: {
-  objective: string;
-  task: string;
-  run: $.agent.AgentRun;
-}) {
-  return new $.step.PromptStep({
-    type: "execute-prompt",
-    run,
-    textGenerator,
-    messages: [
-      {
-        role: "system",
-        content: `You are an AI who performs one task based on the following objective: ${objective}.
-Your task: ${task}
-Response:`,
-      },
-    ],
-    maxTokens: 2000,
-    temperature: 0.7,
-  });
-}
 
 runCLIAgent({
   agent: new Agent({
@@ -47,15 +18,30 @@ runCLIAgent({
     execute: async (run) =>
       new $.step.UpdateTasksLoop({
         type: "main",
-        objective: OBJECTIVE,
-        generateExecutionStep,
-        updateTaskList: async ({
+        generateExecutionStep({ task, run }) {
+          return new $.step.PromptStep({
+            type: "execute-prompt",
+            run,
+            textGenerator,
+            messages: [
+              {
+                role: "system",
+                content: `You are an AI who performs one task based on the following objective: ${run.objective}.
+Your task: ${task}
+Response:`,
+              },
+            ],
+            maxTokens: 2000,
+            temperature: 0.7,
+          });
+        },
+        async updateTaskList({
           objective,
           completedTask,
           completedTaskResult,
           remainingTasks,
-        }): Promise<string[]> =>
-          await prioritizeTasks({
+        }) {
+          return prioritizeTasks({
             tasks: await addNewTasks({
               objective,
               completedTask,
@@ -65,7 +51,8 @@ runCLIAgent({
             }),
             objective,
             textGenerator,
-          }),
+          });
+        },
         run,
       }),
   }),
@@ -84,7 +71,6 @@ runCLIAgent({
         console.log(`${nextTask}\n`);
       }
     },
-
     onStepExecutionFinished({ step }) {
       if (step.state.type === "succeeded" || step.state.type === "failed") {
         console.log(chalk.green("*****TASK RESULT*****"));
