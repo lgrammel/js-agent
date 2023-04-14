@@ -1,4 +1,5 @@
 import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
+import { Loop } from "../step/Loop";
 import { Step } from "../step/Step";
 import { AgentRun } from "./AgentRun";
 
@@ -18,8 +19,8 @@ export interface AgentRunObserver {
     step: Step;
   }) => void;
 
-  onLoopIterationStarted?: ({}: { run: AgentRun; loop: Step }) => void;
-  onLoopIterationFinished?: ({}: { run: AgentRun; loop: Step }) => void;
+  onLoopIterationStarted?: ({}: { run: AgentRun; loop: Loop }) => void;
+  onLoopIterationFinished?: ({}: { run: AgentRun; loop: Loop }) => void;
 
   onStepExecutionStarted?: ({}: { run: AgentRun; step: Step }) => void;
   onStepExecutionFinished?: ({}: { run: AgentRun; step: Step }) => void;

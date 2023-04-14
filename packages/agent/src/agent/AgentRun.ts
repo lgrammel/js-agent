@@ -1,5 +1,6 @@
 import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
 import { AbortController } from "../step/AbortController";
+import { Loop } from "../step/Loop";
 import { Step } from "../step/Step";
 import { StepResult } from "../step/StepResult";
 import { createNextId } from "../util/createNextId";
@@ -43,7 +44,7 @@ export class AgentRun {
     console.error(error); // TODO logger
   }
 
-  onLoopIterationStarted({ loop }: { loop: Step }) {
+  onLoopIterationStarted({ loop }: { loop: Loop }) {
     try {
       this.observer?.onLoopIterationStarted?.({ run: this, loop });
     } catch (error) {
@@ -51,7 +52,7 @@ export class AgentRun {
     }
   }
 
-  onLoopIterationFinished({ loop }: { loop: Step }) {
+  onLoopIterationFinished({ loop }: { loop: Loop }) {
     try {
       this.observer?.onLoopIterationFinished?.({ run: this, loop });
     } catch (error) {
