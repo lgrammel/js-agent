@@ -27,8 +27,6 @@ export class RecursiveSplitSummarizer implements TextSummarizer {
       chunkSummaries.push(
         await this.summarizer.summarizeText({ text: chunk, topic }, context)
       );
-
-      console.log(chunkSummaries);
     }
 
     if (chunkSummaries.length === 1) {
