@@ -46,7 +46,7 @@ const summarizeWebpageAction = new $.action.tool.SummarizeWebpageAction({
 runCLIAgent({
   agent: new Agent({
     name: "Wikipedia QA",
-    execute: $.step.createDynamicCompositeStep({
+    execute: $.step.createGenerateNextStepLoop({
       prompt: new $.prompt.CompositePrompt(
         new $.prompt.FixedSectionsPrompt({
           sections: [

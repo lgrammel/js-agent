@@ -7,15 +7,16 @@ import { NoopStep } from "./NoopStep";
 import { Step } from "./Step";
 import { StepResult } from "./StepResult";
 import { StepFactory } from "./StepFactory";
+import { Loop } from "./Loop";
 
-export type DynamicCompositeStepContext = {
+export type GenerateNextStepLoopContext = {
   actions: ActionRegistry;
   task: string;
   completedSteps: Array<Step>;
   generatedTextsByStepId: Map<string, string>;
 };
 
-export const createDynamicCompositeStep =
+export const createGenerateNextStepLoop =
   ({
     type,
     actionRegistry,
@@ -25,10 +26,10 @@ export const createDynamicCompositeStep =
     type?: string;
     actionRegistry: ActionRegistry;
     textGenerator: ChatTextGenerator;
-    prompt: Prompt<DynamicCompositeStepContext>;
+    prompt: Prompt<GenerateNextStepLoopContext>;
   }): StepFactory =>
   async (run) =>
-    new DynamicCompositeStep({
+    new GenerateNextStepLoop({
       type,
       run,
       actionRegistry,
@@ -36,16 +37,15 @@ export const createDynamicCompositeStep =
       prompt,
     });
 
-export class DynamicCompositeStep extends Step {
-  protected readonly completedSteps: Array<Step> = [];
+export class GenerateNextStepLoop extends Loop {
   private readonly generatedTextsByStepId = new Map<string, string>();
 
   readonly actionRegistry: ActionRegistry;
   readonly textGenerator: ChatTextGenerator;
-  readonly prompt: Prompt<DynamicCompositeStepContext>;
+  readonly prompt: Prompt<GenerateNextStepLoopContext>;
 
   constructor({
-    type = "composite.dynamic",
+    type = "loop.generate-next-step",
     run,
     actionRegistry,
     textGenerator,
@@ -55,7 +55,7 @@ export class DynamicCompositeStep extends Step {
     run: AgentRun;
     actionRegistry: ActionRegistry;
     textGenerator: ChatTextGenerator;
-    prompt: Prompt<DynamicCompositeStepContext>;
+    prompt: Prompt<GenerateNextStepLoopContext>;
   }) {
     super({ type, run });
 
@@ -74,37 +74,7 @@ export class DynamicCompositeStep extends Step {
     this.prompt = prompt;
   }
 
-  async _execute(): Promise<StepResult> {
-    try {
-      while (true) {
-        if (this.run.isAborted()) {
-          return { type: "aborted" };
-        }
-
-        const nextStep = await this.generateNextStep();
-
-        const result = await nextStep.execute();
-
-        if (result.type === "aborted") {
-          return { type: "aborted" }; // don't store as completed step
-        }
-
-        this.completedSteps.push(nextStep);
-
-        if (nextStep.isDoneStep()) {
-          return result;
-        }
-      }
-    } catch (error) {
-      return {
-        type: "failed",
-        summary: `Failed to run step`, // TODO better summary
-        error,
-      };
-    }
-  }
-
-  async generateNextStep(): Promise<Step> {
+  async getNextStep(): Promise<Step> {
     const messages = await this.prompt.generatePrompt({
       actions: this.actionRegistry,
       task: this.run.objective,

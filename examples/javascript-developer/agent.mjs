@@ -53,7 +53,7 @@ const actions = [
   }),
 ];
 
-const setupStep = $.step.createFixedCompositeStep({
+const setupStep = $.step.createFixedStepsLoop({
   steps: setupCommands.map(
     (command) => async (run) =>
       runCommandAction.createStep({
@@ -66,10 +66,10 @@ const setupStep = $.step.createFixedCompositeStep({
 runCLIAgent({
   agent: new Agent({
     name: "JavaScript Developer",
-    execute: $.step.createFixedCompositeStep({
+    execute: $.step.createFixedStepsLoop({
       steps: [
         setupStep,
-        $.step.createDynamicCompositeStep({
+        $.step.createGenerateNextStepLoop({
           prompt: new $.prompt.CompositePrompt(
             new $.prompt.FixedSectionsPrompt({
               sections: [

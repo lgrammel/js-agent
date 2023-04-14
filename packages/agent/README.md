@@ -88,7 +88,7 @@ const summarizeWebpageAction = new $.action.tool.SummarizeWebpageAction({
 runCLIAgent({
   agent: new Agent({
     name: "Wikipedia QA",
-    execute: $.step.createDynamicCompositeStep({
+    execute: $.step.createGenerateNextStepLoop({
       prompt: new $.prompt.CompositePrompt(
         new $.prompt.FixedSectionsPrompt({
           sections: [
@@ -104,9 +104,9 @@ You speak perfect JSON.`,
             },
           ],
         }),
-        new $.prompt.AvailableActionsSectionPrompt(),
         new $.prompt.TaskSectionPrompt(),
-        new $.prompt.RecentStepsPrompt({ maxSteps: 10 })
+        new $.prompt.AvailableActionsSectionPrompt(),
+        new $.prompt.RecentStepsPrompt({ maxSteps: 6 })
       ),
       actionRegistry: new ActionRegistry({
         actions: [searchWikipediaAction, summarizeWebpageAction],

@@ -1,4 +1,5 @@
 import { AgentRun } from "../agent/AgentRun";
+import { Loop } from "./Loop";
 import { Step } from "./Step";
 import { StepFactory } from "./StepFactory";
 import { StepResult } from "./StepResult";
@@ -31,8 +32,9 @@ export type updateTaskList = ({}: {
   remainingTasks: string[];
 }) => PromiseLike<Array<string>>;
 
-export class UpdateTasksLoop extends Step {
+export class UpdateTasksLoop extends Loop {
   tasks: Array<string>;
+  currentTask: string | undefined;
 
   private readonly generateExecutionStep: ({}: {
     task: string;
@@ -42,7 +44,7 @@ export class UpdateTasksLoop extends Step {
   private readonly updateTaskList: updateTaskList;
 
   constructor({
-    type = "update-tasks",
+    type = "loop.update-tasks",
     initialTasks = ["Develop a task list."],
     generateExecutionStep,
     updateTaskList,
@@ -62,35 +64,33 @@ export class UpdateTasksLoop extends Step {
     this.generateExecutionStep = generateExecutionStep;
   }
 
-  protected async _execute(): Promise<StepResult> {
-    while (this.tasks.length > 0) {
-      this.run.onLoopIterationStarted({ loop: this });
+  protected async getNextStep() {
+    this.currentTask = this.tasks.shift()!;
+    return this.generateExecutionStep({
+      task: this.currentTask,
+      run: this.run,
+    });
+  }
 
-      const task = this.tasks.shift()!;
+  protected isFinished() {
+    return this.tasks.length === 0;
+  }
 
-      const step = this.generateExecutionStep({
-        task,
-        run: this.run,
-      });
-
-      // TODO store the steps
-      const result = await step.execute();
-
-      if (result.type === "aborted" || result.type === "failed") {
-        return result;
-      }
-
-      this.tasks = await this.updateTaskList({
-        objective: this.run.objective,
-        completedTask: task,
-        completedTaskResult: result.summary,
-        remainingTasks: this.tasks,
-      });
-
-      this.run.onLoopIterationFinished({ loop: this });
-    }
-
-    // TODO have a final result
-    return { type: "succeeded", summary: "Completed all tasks." };
+  protected async update({
+    step,
+    result,
+  }: {
+    step: Step;
+    result: StepResult & {
+      type: "succeeded" | "failed";
+    };
+  }) {
+    this.tasks = await this.updateTaskList({
+      objective: this.run.objective,
+      completedTask: this.currentTask!,
+      completedTaskResult: result.summary,
+      remainingTasks: this.tasks,
+    });
+    this.currentTask = undefined;
   }
 }
