@@ -5,10 +5,12 @@ export type StepState =
   | {
       type: "succeeded";
       summary: string;
+      input?: unknown;
       output?: unknown;
     }
   | {
       type: "failed";
       summary: string;
+      input?: unknown;
       error: unknown;
     };

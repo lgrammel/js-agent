@@ -1,7 +1,13 @@
-import zod from "zod";
+import { ActionParameters } from "./ActionParameters";
 
-export interface ResultFormatter<OUTPUT> {
-  readonly type: string;
-  readonly outputSchema: zod.Schema<OUTPUT>;
-  formatResult({}: { result: { output: OUTPUT; summary: string } }): string;
+export interface ResultFormatter<INPUT extends ActionParameters, OUTPUT> {
+  format({
+    input,
+    summary,
+    output,
+  }: {
+    input: INPUT;
+    summary: string;
+    output: OUTPUT;
+  }): string;
 }

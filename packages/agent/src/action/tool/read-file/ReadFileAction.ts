@@ -11,19 +11,13 @@ export type ReadFileOutput = {
 };
 
 export class ReadFileAction extends ToolAction<ReadFileInput, ReadFileOutput> {
-  static readonly TYPE = "tool.read-file";
-
-  static readonly OUTPUT_SCHEMA = zod.object({
-    content: zod.string(),
-  });
-
   constructor({
     executor,
   }: {
     executor: ToolExecutor<ReadFileInput, ReadFileOutput>;
   }) {
     super({
-      type: ReadFileAction.TYPE,
+      type: "tool.read-file",
       description: "Read file content.",
       inputSchema: zod.object({
         filePath: zod.string(),
@@ -31,7 +25,9 @@ export class ReadFileAction extends ToolAction<ReadFileInput, ReadFileOutput> {
       inputExample: {
         filePath: "{file path relative to the workspace folder}",
       },
-      outputSchema: ReadFileAction.OUTPUT_SCHEMA,
+      outputSchema: zod.object({
+        content: zod.string(),
+      }),
       executor,
     });
   }

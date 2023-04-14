@@ -35,6 +35,7 @@ export class ToolStep<
       return {
         type: "succeeded",
         summary,
+        input: this.input,
         output,
       };
     } catch (error) {

@@ -1,27 +1,15 @@
 import { ResultFormatter } from "../../ResultFormatter";
-import { RunCommandAction, RunCommandOutput } from "./RunCommandAction";
+import { RunCommandInput, RunCommandOutput } from "./RunCommandAction";
 
 export class RunCommandResultFormatter
-  implements ResultFormatter<RunCommandOutput>
+  implements ResultFormatter<RunCommandInput, RunCommandOutput>
 {
-  readonly outputSchema = RunCommandAction.OUTPUT_SCHEMA;
-  readonly type: string;
-
-  constructor({
-    type = RunCommandAction.TYPE,
+  format({
+    summary,
+    output: { stdout, stderr },
   }: {
-    type?: string;
-  } = {}) {
-    this.type = type;
-  }
-
-  formatResult({
-    result: {
-      summary,
-      output: { stdout, stderr },
-    },
-  }: {
-    result: { output: RunCommandOutput; summary: string };
+    output: RunCommandOutput;
+    summary: string;
   }) {
     const stdoutText =
       stdout.trim() !== "" ? `\n### stdout\n${stdout.trim()}` : "";

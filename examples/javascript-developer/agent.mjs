@@ -33,25 +33,42 @@ const remoteToolExecutor = new $.action.tool.RemoteToolExecutor({
   baseUrl: "http://localhost:3001",
 });
 
-const resultFormatters = new $.action.ResultFormatterRegistry([
-  new $.action.tool.ReadFileResultFormatter(),
-  new $.action.tool.RunCommandResultFormatter(),
-  new $.action.tool.WriteFileResultFormatter(),
-]);
-
 const runCommandAction = new $.action.tool.RunCommandAction({
   executor: remoteToolExecutor,
 });
 
+const readFileAction = new $.action.tool.ReadFileAction({
+  executor: remoteToolExecutor,
+});
+
+const writeFileAction = new $.action.tool.WriteFileAction({
+  executor: remoteToolExecutor,
+});
+
 const actions = [
-  new $.action.tool.ReadFileAction({ executor: remoteToolExecutor }),
-  new $.action.tool.WriteFileAction({ executor: remoteToolExecutor }),
+  readFileAction,
+  writeFileAction,
   runCommandAction,
   new $.action.DoneAction({
     type: "user-action",
     text: "Indicate that the user needs to take an action.",
   }),
 ];
+
+const resultFormatters = new $.action.ResultFormatterRegistry([
+  {
+    action: readFileAction,
+    formatter: new $.action.tool.ReadFileResultFormatter(),
+  },
+  {
+    action: writeFileAction,
+    formatter: new $.action.tool.WriteFileResultFormatter(),
+  },
+  {
+    action: runCommandAction,
+    formatter: new $.action.tool.RunCommandResultFormatter(),
+  },
+]);
 
 const setupStep = $.step.createFixedStepsLoop({
   steps: setupCommands.map(
@@ -94,6 +111,7 @@ runCLIAgent({
       ],
     }),
   }),
-  resultFormatters,
-  observer: new $.agent.ConsoleAgentRunObserver(),
+  observer: new $.agent.ConsoleAgentRunObserver({
+    resultFormatters,
+  }),
 });

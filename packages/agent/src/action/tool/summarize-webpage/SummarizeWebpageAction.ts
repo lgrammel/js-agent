@@ -15,8 +15,14 @@ export class SummarizeWebpageAction extends ToolAction<
   SummarizeWebpageInput,
   SummarizeWebpageOutput
 > {
+  static readonly TYPE = "tool.summarize-website";
+
+  static readonly OUTPUT_SCHEMA = zod.object({
+    summary: zod.string(),
+  });
+
   constructor({
-    type = "tool.summarize-website",
+    type = SummarizeWebpageAction.TYPE,
     description = "Summarize a webpage considering a topic.",
     inputExample = {
       topic: "{information that I want to extract from the website}",
@@ -37,9 +43,7 @@ export class SummarizeWebpageAction extends ToolAction<
         topic: zod.string(),
         url: zod.string(),
       }),
-      outputSchema: zod.object({
-        summary: zod.string(),
-      }),
+      outputSchema: SummarizeWebpageAction.OUTPUT_SCHEMA,
       executor,
     });
   }

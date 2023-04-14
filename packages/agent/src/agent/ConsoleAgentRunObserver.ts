@@ -61,13 +61,7 @@ export class ConsoleAgentRunObserver implements AgentRunObserver {
           if (formatter == null) {
             log(chalk.green(result.summary));
           } else {
-            log(
-              chalk.green(
-                formatter.formatResult({
-                  result: result as any, // TODO type safety
-                })
-              )
-            );
+            log(chalk.green(formatter.format(result as any)));
           }
 
           log();

@@ -1,9 +1,7 @@
-import zod from "zod";
-import { ResultFormatter } from "../action/ResultFormatter";
+import { ResultFormatterRegistry } from "../action/ResultFormatterRegistry";
 import { OpenAIChatMessage } from "../ai/openai";
 import { Step } from "../step";
 import { Prompt } from "./Prompt";
-import { ResultFormatterRegistry } from "../action/ResultFormatterRegistry";
 
 export class RecentStepsPrompt
   implements Prompt<{ completedSteps: Array<Step> }>
@@ -54,16 +52,11 @@ export class RecentStepsPrompt
             break;
           }
 
-          const resultFormatter = this.resultFormatters.getFormatter(step.type);
-
-          if (resultFormatter == null) {
-            content = JSON.stringify(stepState.output);
-            break;
-          }
-
-          content = this.formatOutput({
-            resultFormatter,
-            result: stepState,
+          content = this.resultFormatters.format({
+            type: step.type,
+            input: stepState.input,
+            output: stepState.output,
+            summary: stepState.summary,
           });
         }
       }
@@ -77,27 +70,5 @@ export class RecentStepsPrompt
     }
 
     return messages;
-  }
-
-  private formatOutput<OUTPUT>({
-    resultFormatter,
-    result,
-  }: {
-    result: unknown;
-    resultFormatter: ResultFormatter<OUTPUT>;
-  }) {
-    const schema = zod.object({
-      output: resultFormatter.outputSchema,
-      summary: zod.string(),
-    });
-
-    const parsedResult = schema.parse(result);
-
-    return resultFormatter.formatResult({
-      result: {
-        summary: parsedResult.summary,
-        output: parsedResult.output as any, // TODO fix type issue
-      },
-    });
   }
 }
