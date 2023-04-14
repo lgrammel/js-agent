@@ -74,6 +74,11 @@ export class GenerateNextStepLoop extends Loop {
     this.prompt = prompt;
   }
 
+  protected hasMoreSteps(): boolean {
+    const lastStep = this.completedSteps[this.completedSteps.length - 1];
+    return !lastStep?.isDoneStep();
+  }
+
   async getNextStep(): Promise<Step> {
     const messages = await this.prompt.generatePrompt({
       actions: this.actionRegistry,

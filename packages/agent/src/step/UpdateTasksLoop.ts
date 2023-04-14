@@ -72,8 +72,8 @@ export class UpdateTasksLoop extends Loop {
     });
   }
 
-  protected isFinished() {
-    return this.tasks.length === 0;
+  protected hasMoreSteps(): boolean {
+    return this.tasks.length > 0;
   }
 
   protected async update({

@@ -9,6 +9,8 @@ export abstract class Loop extends Step {
     super({ type, run });
   }
 
+  protected abstract hasMoreSteps(): boolean;
+
   protected abstract getNextStep(): PromiseLike<Step>;
 
   protected async update({
@@ -23,13 +25,9 @@ export abstract class Loop extends Step {
     return Promise.resolve();
   }
 
-  protected isFinished(): boolean {
-    return false;
-  }
-
   protected async _execute(): Promise<StepResult> {
     try {
-      while (true) {
+      while (this.hasMoreSteps()) {
         if (this.run.isAborted()) {
           return { type: "aborted" };
         }
@@ -39,22 +37,13 @@ export abstract class Loop extends Step {
         const step = await this.getNextStep();
         const result = await step.execute();
 
-        if (result.type === "aborted") {
-          return { type: "aborted" }; // don't store as completed step
-        }
-
         this.completedSteps.push(step);
 
-        if (step.isDoneStep()) {
-          return result;
+        if (result.type === "aborted") {
+          return { type: "aborted" };
         }
 
         await this.update({ step, result });
-
-        if (this.isFinished()) {
-          // TODO have a final result
-          return { type: "succeeded", summary: "Completed all tasks." };
-        }
 
         this.run.onLoopIterationFinished({ loop: this });
       }
@@ -65,5 +54,8 @@ export abstract class Loop extends Step {
         error,
       };
     }
+
+    // TODO have a final result
+    return { type: "succeeded", summary: "Completed all tasks." };
   }
 }

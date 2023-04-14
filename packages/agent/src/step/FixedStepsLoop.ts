@@ -41,7 +41,7 @@ export class FixedStepsLoop extends Loop {
     return this.steps[this.currentStep++];
   }
 
-  protected isFinished(): boolean {
-    return this.currentStep >= this.steps.length;
+  protected hasMoreSteps(): boolean {
+    return this.currentStep < this.steps.length;
   }
 }
