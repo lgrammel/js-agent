@@ -41,6 +41,7 @@ See examples for details on how to implement and run an agent.
 
 - **typed**: Provide as much typing as possible to support discovery and ensure safety.
 - **use functional programming for object assembly**: All objects that are immutable are assembled using functional programming. Object-orientation is only used for objects that have a changeable state (e.g. `Step` and `AgentRun`).
+- **support progressive refinement of agent specifications**: Agent specifications should be easy to write and every building block should provide good defaults. At the same time, it should be possible to easily override the defaults with specific settings, prompts, etc.
 - **build for production**: GPTAgent.js will have first-class support for logging, associating LLM calls and cost tracking with agent runs, etc.
 
 ## GPT-4 vs GPT-3.5-turbo
