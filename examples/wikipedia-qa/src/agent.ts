@@ -18,7 +18,7 @@ const searchWikipediaAction = $.tool.programmableGoogleSearchEngineAction({
   }),
 });
 
-const summarizeWebpageAction = $.tool.summarizeWebpage({
+const readWikipediaArticleAction = $.tool.summarizeWebpage({
   id: "read-wikipedia-article",
   description:
     "Read a wikipedia article and summarize it considering the query.",
@@ -65,7 +65,7 @@ You speak perfect JSON.`,
         new $.prompt.RecentStepsPrompt({ maxSteps: 6 })
       ),
       actionRegistry: new $.action.ActionRegistry({
-        actions: [searchWikipediaAction, summarizeWebpageAction],
+        actions: [searchWikipediaAction, readWikipediaArticleAction],
         format: new $.action.format.JsonActionFormat(),
       }),
       textGenerator,
