@@ -1,5 +1,5 @@
 import * as $ from "@gptagent/agent";
-import { ActionRegistry, Agent, runCLIAgent } from "@gptagent/agent";
+import { runCLIAgent } from "@gptagent/agent";
 import dotenv from "dotenv";
 
 // PROJECT AND ROLE CONFIGURATION
@@ -29,63 +29,25 @@ const textGenerator = new $.ai.openai.OpenAiChatTextGenerator({
   model: "gpt-4",
 });
 
-const remoteToolExecutor = new $.action.tool.RemoteToolExecutor({
+const executeRemote = $.tool.executeRemoteTool({
   baseUrl: "http://localhost:3001",
 });
 
-const runCommandAction = new $.action.tool.RunCommandAction({
-  executor: remoteToolExecutor,
-});
-
-const readFileAction = new $.action.tool.ReadFileAction({
-  executor: remoteToolExecutor,
-});
-
-const writeFileAction = new $.action.tool.WriteFileAction({
-  executor: remoteToolExecutor,
-});
-
-const actions = [
-  readFileAction,
-  writeFileAction,
-  runCommandAction,
-  new $.action.DoneAction({
-    type: "user-action",
-    text: "Indicate that the user needs to take an action.",
-  }),
-];
-
-const resultFormatters = new $.action.ResultFormatterRegistry([
-  {
-    action: readFileAction,
-    formatter: new $.action.tool.ReadFileResultFormatter(),
-  },
-  {
-    action: writeFileAction,
-    formatter: new $.action.tool.WriteFileResultFormatter(),
-  },
-  {
-    action: runCommandAction,
-    formatter: new $.action.tool.RunCommandResultFormatter(),
-  },
-]);
-
-const setupStep = $.step.createFixedStepsLoop({
-  steps: setupCommands.map(
-    (command) => async (run) =>
-      runCommandAction.createStep({
-        input: { command },
-        run,
-      })
-  ),
-});
-
 runCLIAgent({
-  agent: new Agent({
+  agent: new $.agent.Agent({
     name: "JavaScript Developer",
     execute: $.step.createFixedStepsLoop({
       steps: [
-        setupStep,
+        $.step.createFixedStepsLoop({
+          type: "setup",
+          steps: setupCommands.map(
+            (command) => async (run) =>
+              $.tool.runCommand({ execute: executeRemote }).createStep({
+                input: { command },
+                run,
+              })
+          ),
+        }),
         $.step.createGenerateNextStepLoop({
           prompt: new $.prompt.CompositePrompt(
             new $.prompt.FixedSectionsPrompt({
@@ -99,11 +61,18 @@ runCLIAgent({
             new $.prompt.TaskSectionPrompt(),
             new $.prompt.RecentStepsPrompt({
               stepRetention: 10,
-              resultFormatters,
             })
           ),
-          actionRegistry: new ActionRegistry({
-            actions,
+          actionRegistry: new $.action.ActionRegistry({
+            actions: [
+              $.tool.readFile({ execute: executeRemote }),
+              $.tool.writeFile({ execute: executeRemote }),
+              $.tool.runCommand({ execute: executeRemote }),
+              $.action.done({
+                type: "user-action",
+                text: "Indicate that the user needs to take an action.",
+              }),
+            ],
             format: new $.action.format.JsonActionFormat(),
           }),
           textGenerator,
@@ -111,7 +80,5 @@ runCLIAgent({
       ],
     }),
   }),
-  observer: new $.agent.ConsoleAgentRunObserver({
-    resultFormatters,
-  }),
+  observer: new $.agent.ConsoleAgentRunObserver(),
 });

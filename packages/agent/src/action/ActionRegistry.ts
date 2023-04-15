@@ -1,5 +1,5 @@
 import { Action } from "./Action";
-import { DoneAction } from "./DoneAction";
+import { done } from "./DoneAction";
 import { ActionFormat } from "./format/ActionFormat";
 
 export class ActionRegistry {
@@ -10,7 +10,7 @@ export class ActionRegistry {
 
   constructor({
     actions,
-    doneAction = new DoneAction(),
+    doneAction = done(),
     format,
   }: {
     actions: Action<any, any>[];
@@ -26,19 +26,19 @@ export class ActionRegistry {
   }
 
   register(action: Action<any, any>) {
-    if (this.actions.has(action.type)) {
+    if (this.actions.has(action.id)) {
       throw new Error(
-        `An action with the type '${action.type}' has already been registered.`
+        `An action with the name '${action.id}' has already been registered.`
       );
     }
 
-    this.actions.set(action.type, action);
+    this.actions.set(action.id, action);
   }
 
   getAction(type: string) {
     const action = this.actions.get(type);
 
-    if (action == null && type === this.doneAction.type) {
+    if (action == null && type === this.doneAction.id) {
       return this.doneAction;
     }
 
@@ -78,19 +78,19 @@ Each response must precisely follow the action syntax.`;
   }
 
   get actionTypes() {
-    return [Array.from(this.actions.keys()), this.doneAction.type].flat();
+    return [Array.from(this.actions.keys()), this.doneAction.id].flat();
   }
 
   describeActions() {
     return [...Array.from(this.actions.values()), this.doneAction]
       .map(
         (action) =>
-          `### ${action.type}\n${
+          `### ${action.id}\n${
             action.description
           }\nSyntax:\n${this.format.format(
             Object.assign(
               {
-                action: action.type,
+                action: action.id,
               },
               action.inputExample
             )

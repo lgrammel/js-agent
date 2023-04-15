@@ -1,5 +1,5 @@
 import * as $ from "@gptagent/agent";
-import { Agent, runCLIAgent } from "@gptagent/agent";
+import { runCLIAgent } from "@gptagent/agent";
 import chalk from "chalk";
 import dotenv from "dotenv";
 import { prioritizeTasks } from "./prioritizeTasks";
@@ -13,7 +13,7 @@ const textGenerator = new $.ai.openai.OpenAiChatTextGenerator({
 });
 
 runCLIAgent({
-  agent: new Agent({
+  agent: new $.agent.Agent({
     name: "Baby AGI",
     execute: $.step.createUpdateTasksLoop({
       type: "main",

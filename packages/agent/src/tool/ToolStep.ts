@@ -1,6 +1,6 @@
-import { AgentRun } from "../../agent";
-import { Step } from "../../step/Step";
-import { StepResult } from "../../step/StepResult";
+import { AgentRun } from "../agent/AgentRun";
+import { Step } from "../step/Step";
+import { StepResult } from "../step/StepResult";
 import { ToolAction } from "./ToolAction";
 
 export class ToolStep<
@@ -19,7 +19,7 @@ export class ToolStep<
     action: ToolAction<INPUT, OUTPUT>;
     input: INPUT;
   }) {
-    super({ type: action.type, run });
+    super({ type: action.id, run });
 
     this.action = action;
     this.input = input;
@@ -27,7 +27,7 @@ export class ToolStep<
 
   protected async _execute(): Promise<StepResult> {
     try {
-      const { output, summary } = await this.action.executor.execute({
+      const { output, summary } = await this.action.execute({
         input: this.input,
         action: this.action,
       });

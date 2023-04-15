@@ -2,11 +2,16 @@ import Fastify from "fastify";
 import hyperid from "hyperid";
 import pino from "pino";
 import zod from "zod";
+import { gracefullyShutdownOnSigTermAndSigInt } from "../../util/gracefullyShutdownOnSigTermAndSigInt";
+import { ToolAction } from "../ToolAction";
 import { createToolPlugin } from "./toolPlugin";
-import { gracefullyShutdownOnSigTermAndSigInt } from "../util/gracefullyShutdownOnSigTermAndSigInt";
-import { ToolRegistry } from "../action/tool";
+import { ToolRegistry } from "./ToolRegistry";
 
-export const runExecutor = async ({ tools }: { tools: ToolRegistry }) => {
+export const runToolExecutor = async ({
+  tools,
+}: {
+  tools: Array<ToolAction<any, any>>;
+}) => {
   const environmentSchema = zod.object({
     WORKSPACE: zod.string(),
     HOST: zod.string(),
@@ -28,7 +33,7 @@ export const runExecutor = async ({ tools }: { tools: ToolRegistry }) => {
 
   server.register(
     createToolPlugin({
-      toolRegistry: tools,
+      toolRegistry: new ToolRegistry({ tools }),
     })
   );
 

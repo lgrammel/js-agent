@@ -1,29 +1,26 @@
 import axios from "axios";
-import { ToolExecutor } from "./ToolExecutor";
-import { Action } from "../Action";
-import { ActionParameters } from "../ActionParameters";
+import { ExecuteToolFunction } from "./ExecuteToolFunction";
+import { ActionParameters } from "../action/ActionParameters";
+import { Action } from "../action/Action";
 
-export class RemoteToolExecutor<INPUT extends ActionParameters, OUTPUT>
-  implements ToolExecutor<INPUT, OUTPUT>
-{
-  private readonly baseUrl: string;
-
-  constructor({ baseUrl }: { baseUrl: string }) {
-    this.baseUrl = baseUrl;
-  }
-
-  async execute({
+export const executeRemoteTool =
+  <INPUT extends ActionParameters, OUTPUT>({
+    baseUrl,
+  }: {
+    baseUrl: string;
+  }): ExecuteToolFunction<INPUT, OUTPUT> =>
+  async ({
     input,
     action,
   }: {
     input: INPUT;
     action: Action<INPUT, OUTPUT>;
-  }): Promise<{ output: OUTPUT; summary: string }> {
+  }): Promise<{ output: OUTPUT; summary: string }> => {
     try {
       const parametersJson = JSON.stringify(input);
 
       const response = await axios.post(
-        `${this.baseUrl}/tool/${action.type}`, // TODO flexible location
+        `${baseUrl}/tool/${action.id}`, // TODO flexible location
         parametersJson,
         {
           headers: {
@@ -60,5 +57,4 @@ export class RemoteToolExecutor<INPUT extends ActionParameters, OUTPUT>
       }
       throw error;
     }
-  }
-}
+  };

@@ -1,4 +1,4 @@
-import { ToolAction } from "./ToolAction";
+import { ToolAction } from "../ToolAction";
 
 export class ToolRegistry {
   private readonly tools: Map<string, ToolAction<any, any>> = new Map();
@@ -10,27 +10,25 @@ export class ToolRegistry {
   }
 
   register(tool: ToolAction<any, any>) {
-    if (this.tools.has(tool.type)) {
+    if (this.tools.has(tool.id)) {
       throw new Error(
-        `A tool with the type '${tool.type}' has already been registered.`
+        `A tool with the id '${tool.id}' has already been registered.`
       );
     }
 
-    this.tools.set(tool.type, tool);
+    this.tools.set(tool.id, tool);
   }
 
-  get toolTypes() {
+  get toolIds() {
     return Array.from(this.tools.keys());
   }
 
-  getTool(type: string) {
-    const tool = this.tools.get(type);
+  getTool(id: string) {
+    const tool = this.tools.get(id);
 
     if (!tool) {
       throw new Error(
-        `No tool with the type '${type}' has been registered. Available tools: ${this.toolTypes.join(
-          ", "
-        )}`
+        `No tool '${id}' found. Available tools: ${this.toolIds.join(", ")}`
       );
     }
 

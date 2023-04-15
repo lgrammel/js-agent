@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { ToolRegistry } from "../action/tool";
+import { ToolRegistry } from "./ToolRegistry";
 
 export function createToolPlugin({
   toolRegistry,
@@ -14,7 +14,10 @@ export function createToolPlugin({
           const tool = toolRegistry.getTool(toolType);
 
           const input = tool.inputSchema.parse(request.body);
-          const output = await tool.executor.execute({
+
+          console.log(tool);
+
+          const output = await tool.execute({
             input,
             action: tool,
           });

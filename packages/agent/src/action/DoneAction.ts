@@ -3,32 +3,17 @@ import { NoopStep } from "../step/NoopStep";
 import { Action } from "./Action";
 import zod from "zod";
 
-export class DoneAction
-  implements
-    Action<
-      {
-        _freeText?: string;
-      },
-      {}
-    >
-{
-  readonly type: string;
-  readonly description: string;
-
-  readonly inputSchema = zod.object({});
-  readonly outputSchema = zod.object({});
-
-  constructor({
-    type = "done",
-    description = "Indicate that you are done with the task.",
-  }: {
-    type?: string;
-    description?: string;
-  } = {}) {
-    this.type = type;
-    this.description = description;
-  }
-
+export const done = ({
+  id = "done",
+  description = "Indicate that you are done with the task.",
+}: {
+  id?: string;
+  description?: string;
+} = {}): Action<{ _freeText?: string }, {}> => ({
+  id,
+  description,
+  inputSchema: zod.object({}),
+  outputSchema: zod.object({}),
   async createStep({
     input,
     run,
@@ -37,10 +22,10 @@ export class DoneAction
     input: { _freeText?: string };
   }) {
     return new NoopStep({
-      type: this.type,
+      type: id,
       run,
       summary: input._freeText ?? "Done.",
       isDoneStep: true,
     });
-  }
-}
+  },
+});

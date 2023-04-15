@@ -1,5 +1,5 @@
 import * as $ from "@gptagent/agent";
-import { ActionRegistry, Agent, runCLIAgent } from "@gptagent/agent";
+import { runCLIAgent } from "@gptagent/agent";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -9,26 +9,24 @@ const textGenerator = new $.ai.openai.OpenAiChatTextGenerator({
   model: "gpt-3.5-turbo",
 });
 
-const searchWikipediaAction =
-  new $.action.tool.ProgrammableGoogleSearchEngineAction({
-    type: "tool.search-wikipedia",
-    description:
-      "Search wikipedia using a search term. Returns a list of pages.",
-    executor: new $.action.tool.ProgrammableGoogleSearchEngineExecutor({
-      key: process.env.WIKIPEDIA_SEARCH_KEY ?? "",
-      cx: process.env.WIKIPEDIA_SEARCH_CX ?? "",
-    }),
-  });
+const searchWikipediaAction = $.tool.programmableGoogleSearchEngineAction({
+  id: "search-wikipedia",
+  description: "Search wikipedia using a search term. Returns a list of pages.",
+  execute: $.tool.executeProgrammableGoogleSearchEngineAction({
+    key: process.env.WIKIPEDIA_SEARCH_KEY ?? "",
+    cx: process.env.WIKIPEDIA_SEARCH_CX ?? "",
+  }),
+});
 
-const summarizeWebpageAction = new $.action.tool.SummarizeWebpageAction({
-  type: "tool.read-wikipedia-article",
+const summarizeWebpageAction = $.tool.summarizeWebpage({
+  id: "read-wikipedia-article",
   description:
     "Read a wikipedia article and summarize it considering the query.",
   inputExample: {
     url: "https://en.wikipedia.org/wiki/Artificial_intelligence",
     topic: "{query that you are answering}",
   },
-  executor: new $.action.tool.SummarizeWebpageExecutor({
+  execute: $.tool.executeSummarizeWebpage({
     webpageTextExtractor:
       new $.component.webpageTextExtractor.BasicWebpageTextExtractor(),
     summarizer: new $.component.textSummarizer.RecursiveSplitSummarizer({
@@ -44,7 +42,7 @@ const summarizeWebpageAction = new $.action.tool.SummarizeWebpageAction({
 });
 
 runCLIAgent({
-  agent: new Agent({
+  agent: new $.agent.Agent({
     name: "Wikipedia QA",
     execute: $.step.createGenerateNextStepLoop({
       prompt: new $.prompt.CompositePrompt(
@@ -66,7 +64,7 @@ You speak perfect JSON.`,
         new $.prompt.AvailableActionsSectionPrompt(),
         new $.prompt.RecentStepsPrompt({ maxSteps: 6 })
       ),
-      actionRegistry: new ActionRegistry({
+      actionRegistry: new $.action.ActionRegistry({
         actions: [searchWikipediaAction, summarizeWebpageAction],
         format: new $.action.format.JsonActionFormat(),
       }),

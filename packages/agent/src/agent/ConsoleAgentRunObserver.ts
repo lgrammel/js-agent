@@ -1,24 +1,13 @@
 import chalk from "chalk";
-import { ToolStep } from "../action/tool/ToolStep";
-import { AgentRunObserver } from "./AgentRunObserver";
-import { AgentRun } from "./AgentRun";
-import { Step, StepResult } from "../step";
-import { ResultFormatterRegistry } from "../action/ResultFormatterRegistry";
 import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
+import { Step } from "../step";
+import { ToolStep } from "../tool/ToolStep";
+import { AgentRun } from "./AgentRun";
+import { AgentRunObserver } from "./AgentRunObserver";
 
 const log = console.log;
 
 export class ConsoleAgentRunObserver implements AgentRunObserver {
-  private readonly resultFormatters: ResultFormatterRegistry;
-
-  constructor({
-    resultFormatters = new ResultFormatterRegistry(),
-  }: {
-    resultFormatters?: ResultFormatterRegistry;
-  } = {}) {
-    this.resultFormatters = resultFormatters;
-  }
-
   onAgentRunStarted({ run }: { run: AgentRun }) {
     log(chalk.green(`### ${run.agent.name} ###`));
     log(run.objective);
@@ -56,14 +45,7 @@ export class ConsoleAgentRunObserver implements AgentRunObserver {
 
       switch (resultType) {
         case "succeeded": {
-          const formatter = this.resultFormatters.getFormatter(step.type);
-
-          if (formatter == null) {
-            log(chalk.green(result.summary));
-          } else {
-            log(chalk.green(formatter.format(result as any)));
-          }
-
+          log(chalk.green(step.action.formatResult(result as any)));
           log();
           break;
         }
