@@ -5,7 +5,7 @@
   "scripts": {
     "build": "bin/build-executor-arm64.sh",
     "run-executor": "bin/run-executor-arm64.sh",
-    "run-agent": "node ./agent.mjs"
+    "run-agent": "ts-node ./src/main.ts"
   },
   "private": true,
   "dependencies": {

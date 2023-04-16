@@ -7,16 +7,20 @@ import { AgentRunObserver } from "./AgentRunObserver";
 
 const log = console.log;
 
-export class ConsoleAgentRunObserver implements AgentRunObserver {
+export const outputAgentRunOnConsole = ({
+  name,
+}: {
+  name: string;
+}): AgentRunObserver => ({
   onAgentRunStarted({ run }: { run: AgentRun }) {
-    // log(chalk.green(`### ${run.agent.name} ###`));
+    log(chalk.green(`### ${name} ###`));
     log(run.objective);
     log();
-  }
+  },
 
   onAgentRunFinished() {
     log(chalk.gray("Done"));
-  }
+  },
 
   onStepGenerationStarted({
     messages,
@@ -24,19 +28,19 @@ export class ConsoleAgentRunObserver implements AgentRunObserver {
     messages: Array<OpenAIChatMessage>;
   }) {
     log(chalk.gray("Thinking…"));
-  }
+  },
 
   onStepGenerationFinished({ generatedText }: { generatedText: string }) {
     log(chalk.cyanBright(generatedText));
     log();
-  }
+  },
 
   onStepExecutionStarted({ step }: { step: Step }) {
     if (step instanceof ToolStep) {
       log(chalk.gray(`Executing ${step.type}…`));
       return;
     }
-  }
+  },
 
   onStepExecutionFinished({ step }: { step: Step }) {
     if (step instanceof ToolStep) {
@@ -75,5 +79,5 @@ export class ConsoleAgentRunObserver implements AgentRunObserver {
       }
       return;
     }
-  }
-}
+  },
+});
