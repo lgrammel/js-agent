@@ -24,13 +24,13 @@ OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 pnpm install
 pnpm nx run-many --target=build
 
-# in examples/wikipedia-qa folder:
+# in examples/wikipedia folder:
 pnpm start "which town is bigger, Gummersbach or Bergneustadt?"
 ```
 
 ## Example Output
 
-![wikipedia-qa](https://github.com/lgrammel/gptagent.js/raw/main/examples/wikipedia-qa/screenshot/wikipedia-qa-001.png)
+![wikipedia](https://github.com/lgrammel/gptagent.js/raw/main/examples/wikipedia/screenshot/wikipedia-001.png)
 
 ```sh
 > node ./agent.mjs which town is bigger, Gummersbach or Bergneustadt?

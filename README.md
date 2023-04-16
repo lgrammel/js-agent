@@ -17,7 +17,7 @@ An automated developer agent that works in a docker container.
 It can read files, write files and execute commands.
 You can use it to document code, write tests, update tests and features, etc.
 
-**[Wikipedia Question-Answering](https://github.com/lgrammel/gptagent.js/tree/main/examples/wikipedia-qa)**:
+**[Wikipedia Question-Answering](https://github.com/lgrammel/gptagent.js/tree/main/examples/wikipedia)**:
 An agent that has access to a wikipedia search engine and can read wikipedia articles. You can use it to answer questions about wikipedia content.
 
 ## Usage
@@ -127,7 +127,7 @@ You speak perfect JSON.`,
 
 ## Example Output
 
-![wikipedia-qa](https://github.com/lgrammel/gptagent.js/raw/main/examples/wikipedia-qa/screenshot/wikipedia-qa-001.png)
+![wikipedia](https://github.com/lgrammel/gptagent.js/raw/main/examples/wikipedia/screenshot/wikipedia-001.png)
 
 ## Requirements
 

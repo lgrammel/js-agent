@@ -1,5 +1,5 @@
 {
-  "name": "@gptagent/example-wikipedia-qa",
+  "name": "@gptagent/example-wikipedia",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
