@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "bin/build-executor-arm64.sh",
-    "run-executor": "bin/run-executor-arm64.sh",
+    "build": "bin/build-executor.sh",
+    "run-executor": "bin/run-executor.sh",
     "run-agent": "ts-node ./src/main.ts"
   },
   "private": true,
