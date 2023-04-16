@@ -1,9 +1,9 @@
 import zod from "zod";
 import { FormatResultFunction } from "../../action/FormatResultFunction";
+import { SummarizeFunction } from "../../text/summarize/SummarizeFunction";
 import { ExecuteToolFunction } from "../ExecuteToolFunction";
 import { createToolAction } from "../ToolAction";
-import { SummarizeFunction } from "../../component/summarize/SummarizeFunction";
-import { ExtractWebpageTextFunction } from "../../component";
+import { ExtractWebpageTextFunction } from "../../text/extract-webpage-text/ExtractWebpageTextFunction";
 
 export type SummarizeWebpageInput = {
   topic: string;

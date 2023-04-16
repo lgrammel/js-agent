@@ -1,13 +1,12 @@
 import { ActionRegistry } from "../action/ActionRegistry";
 import { AgentRun } from "../agent/AgentRun";
 import { Prompt } from "../prompt/Prompt";
+import { GenerateChatTextFunction } from "../text/generate-text";
 import { ErrorStep } from "./ErrorStep";
+import { Loop } from "./Loop";
 import { NoopStep } from "./NoopStep";
 import { Step } from "./Step";
-import { StepResult } from "./StepResult";
 import { StepFactory } from "./StepFactory";
-import { Loop } from "./Loop";
-import { GenerateChatTextFunction } from "../component/generate-text";
 
 export type GenerateNextStepLoopContext = {
   actions: ActionRegistry;

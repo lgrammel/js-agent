@@ -1,6 +1,6 @@
 import { AgentRun } from "../agent";
 import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
-import { GenerateChatTextFunction } from "../component/generate-text";
+import { GenerateChatTextFunction } from "../text/generate-text";
 import { Step } from "./Step";
 import { StepResult } from "./StepResult";
 

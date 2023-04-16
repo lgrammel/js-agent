@@ -11,7 +11,7 @@ export async function addNewTasks({
   completedTask: string;
   completedTaskResult: string;
   existingTasks: string[];
-  generateText: $.GenerateChatTextFunction;
+  generateText: $.text.GenerateChatTextFunction;
 }) {
   const generatedNewTasksText = await generateText({
     messages: [

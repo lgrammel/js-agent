@@ -21,13 +21,13 @@ const readWikipediaArticleAction = $.tool.summarizeWebpage({
     topic: "{query that you are answering}",
   },
   execute: $.tool.executeSummarizeWebpage({
-    extractText: $.extractWebpageTextFromHtml(),
-    summarize: $.summarizeRecursively({
-      split: $.splitRecursivelyAtCharacter({
+    extractText: $.text.extractWebpageTextFromHtml(),
+    summarize: $.text.summarizeRecursively({
+      split: $.text.splitRecursivelyAtCharacter({
         // maxCharactersPerChunk can be increased to 4096 * 4 when you use gpt-4:
         maxCharactersPerChunk: 2048 * 4,
       }),
-      summarize: $.summarizeByGeneratingSummary({
+      summarize: $.text.summarizeByGeneratingSummary({
         generateText: $.ai.openai.generateChatText({
           apiKey: process.env.OPENAI_API_KEY ?? "",
           model: "gpt-3.5-turbo",

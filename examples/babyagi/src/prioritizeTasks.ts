@@ -7,7 +7,7 @@ export async function prioritizeTasks({
 }: {
   tasks: string[];
   objective: string;
-  generateText: $.GenerateChatTextFunction;
+  generateText: $.text.GenerateChatTextFunction;
 }) {
   const generatedPrioritizationText = await generateText({
     messages: [
