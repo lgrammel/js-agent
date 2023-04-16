@@ -18,8 +18,11 @@ export OPENAI_API_KEY=sk-...
 # in root folder:
 pnpm install
 pnpm nx run-many --target=build
+```
 
-# in examples/javascript-developer folder:
+Make sure to `cd examples/javascript-developer` before running the following commands:
+
+```sh
 mkdir drive
 
 pnpm build
