@@ -24,7 +24,7 @@ const setupCommands = ["pnpm install", "pnpm nx run agent:build"];
 
 dotenv.config();
 
-const textGenerator = new $.ai.openai.OpenAiChatTextGenerator({
+const generateText = $.ai.openai.generateChatText({
   apiKey: process.env.OPENAI_API_KEY,
   model: "gpt-4",
 });
@@ -75,7 +75,7 @@ runCLIAgent({
             ],
             format: new $.action.format.JsonActionFormat(),
           }),
-          textGenerator,
+          generateText,
         }),
       ],
     }),

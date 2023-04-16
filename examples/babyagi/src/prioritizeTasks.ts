@@ -3,13 +3,13 @@ import * as $ from "@gptagent/agent";
 export async function prioritizeTasks({
   tasks,
   objective,
-  textGenerator,
+  generateText,
 }: {
   tasks: string[];
   objective: string;
-  textGenerator: $.component.textGenerator.ChatTextGenerator;
+  generateText: $.GenerateChatTextFunction;
 }) {
-  const generatedPrioritizationText = await textGenerator.generateText({
+  const generatedPrioritizationText = await generateText({
     messages: [
       {
         role: "system",
@@ -23,8 +23,6 @@ Return the result as a numbered list, like:
 Start the task list with number 1.`,
       },
     ],
-    maxTokens: 1000,
-    temperature: 0.5,
   });
 
   const prioritizedTasksWithNumbers = generatedPrioritizationText

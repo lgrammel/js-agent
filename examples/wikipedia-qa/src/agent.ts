@@ -4,11 +4,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const textGenerator = new $.ai.openai.OpenAiChatTextGenerator({
-  apiKey: process.env.OPENAI_API_KEY ?? "",
-  model: "gpt-3.5-turbo",
-});
-
 const searchWikipediaAction = $.tool.programmableGoogleSearchEngineAction({
   id: "search-wikipedia",
   description: "Search wikipedia using a search term. Returns a list of pages.",
@@ -27,15 +22,17 @@ const readWikipediaArticleAction = $.tool.summarizeWebpage({
     topic: "{query that you are answering}",
   },
   execute: $.tool.executeSummarizeWebpage({
-    webpageTextExtractor:
-      new $.component.webpageTextExtractor.BasicWebpageTextExtractor(),
-    summarizer: new $.component.textSummarizer.RecursiveSplitSummarizer({
-      splitter: new $.component.splitter.RecursiveCharacterSplitter({
+    extractText: $.extractWebpageTextFromHtml(),
+    summarize: $.summarizeRecursively({
+      split: $.splitRecursivelyAtCharacter({
         // note: maxCharactersPerChunk can be increased to 4096 * 4 when you use gpt-4
         maxCharactersPerChunk: 2048 * 4,
       }),
-      summarizer: new $.component.textSummarizer.ChatTextSummarizer({
-        chatTextGenerator: textGenerator,
+      summarize: $.summarizeByGeneratingSummary({
+        generateText: $.ai.openai.generateChatText({
+          apiKey: process.env.OPENAI_API_KEY ?? "",
+          model: "gpt-3.5-turbo",
+        }),
       }),
     }),
   }),
@@ -68,7 +65,10 @@ You speak perfect JSON.`,
         actions: [searchWikipediaAction, readWikipediaArticleAction],
         format: new $.action.format.JsonActionFormat(),
       }),
-      textGenerator,
+      generateText: $.ai.openai.generateChatText({
+        apiKey: process.env.OPENAI_API_KEY ?? "",
+        model: "gpt-3.5-turbo",
+      }),
     }),
   }),
   observer: new $.agent.ConsoleAgentRunObserver(),

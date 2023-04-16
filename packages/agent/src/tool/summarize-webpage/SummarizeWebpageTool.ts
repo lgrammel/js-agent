@@ -1,9 +1,9 @@
 import zod from "zod";
 import { FormatResultFunction } from "../../action/FormatResultFunction";
-import { TextSummarizer } from "../../component/text-summarizer/TextSummarizer";
-import { WebpageTextExtractor } from "../../component/webpage-text-extractor/WebpageTextExtractor";
 import { ExecuteToolFunction } from "../ExecuteToolFunction";
 import { createToolAction } from "../ToolAction";
+import { SummarizeFunction } from "../../component/summarize/SummarizeFunction";
+import { ExtractWebpageTextFunction } from "../../component";
 
 export type SummarizeWebpageInput = {
   topic: string;
@@ -51,21 +51,18 @@ export const summarizeWebpage = ({
 
 export const executeSummarizeWebpage =
   ({
-    summarizer,
-    webpageTextExtractor,
+    summarize,
+    extractText,
   }: {
-    summarizer: TextSummarizer;
-    webpageTextExtractor: WebpageTextExtractor;
+    summarize: SummarizeFunction;
+    extractText: ExtractWebpageTextFunction;
   }): ExecuteToolFunction<SummarizeWebpageInput, SummarizeWebpageOutput> =>
   async ({ input: { topic, url } }: { input: SummarizeWebpageInput }) => ({
     summary: `Summarized website ${url} according to topic ${topic}.`,
     output: {
-      summary: await summarizer.summarizeText(
-        {
-          text: await webpageTextExtractor.extractText({ url }),
-          topic,
-        },
-        undefined
-      ),
+      summary: await summarize({
+        text: await extractText({ url }),
+        topic,
+      }),
     },
   });

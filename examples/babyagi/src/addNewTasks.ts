@@ -5,15 +5,15 @@ export async function addNewTasks({
   completedTask,
   completedTaskResult,
   existingTasks,
-  textGenerator,
+  generateText,
 }: {
   objective: string;
   completedTask: string;
   completedTaskResult: string;
   existingTasks: string[];
-  textGenerator: $.component.textGenerator.ChatTextGenerator;
+  generateText: $.GenerateChatTextFunction;
 }) {
-  const generatedNewTasksText = await textGenerator.generateText({
+  const generatedNewTasksText = await generateText({
     messages: [
       {
         role: "system",
@@ -25,8 +25,6 @@ Based on the result, create new tasks to be completed by the AI system that do n
 Return the tasks as an array.`,
       },
     ],
-    maxTokens: 100,
-    temperature: 0.5,
   });
 
   return existingTasks.concat(generatedNewTasksText.trim().split("\n"));

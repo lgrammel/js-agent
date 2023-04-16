@@ -1,4 +1,4 @@
-export * as splitter from "./splitter";
-export * as textGenerator from "./text-generator";
-export * as textSummarizer from "./text-summarizer";
-export * as webpageTextExtractor from "./webpage-text-extractor";
+export * from "./extract-webpage-text";
+export * from "./generate-text";
+export * from "./split";
+export * from "./summarize";

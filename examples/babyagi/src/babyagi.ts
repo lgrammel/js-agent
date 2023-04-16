@@ -7,11 +7,6 @@ import { addNewTasks } from "./addNewTasks";
 
 dotenv.config();
 
-const textGenerator = new $.ai.openai.OpenAiChatTextGenerator({
-  apiKey: process.env.OPENAI_API_KEY ?? "",
-  model: "gpt-3.5-turbo",
-});
-
 runCLIAgent({
   agent: new $.agent.Agent({
     name: "Baby AGI",
@@ -21,7 +16,12 @@ runCLIAgent({
         return new $.step.PromptStep({
           type: "execute-prompt",
           run,
-          textGenerator,
+          generateText: $.ai.openai.generateChatText({
+            apiKey: process.env.OPENAI_API_KEY ?? "",
+            model: "gpt-3.5-turbo",
+            maxTokens: 2000,
+            temperature: 0.7,
+          }),
           messages: [
             {
               role: "system",
@@ -30,8 +30,6 @@ Your task: ${task}
 Response:`,
             },
           ],
-          maxTokens: 2000,
-          temperature: 0.7,
         });
       },
       async updateTaskList({
@@ -46,10 +44,20 @@ Response:`,
             completedTask,
             completedTaskResult,
             existingTasks: remainingTasks,
-            textGenerator,
+            generateText: $.ai.openai.generateChatText({
+              apiKey: process.env.OPENAI_API_KEY ?? "",
+              model: "gpt-3.5-turbo",
+              maxTokens: 100,
+              temperature: 0.5,
+            }),
           }),
           objective,
-          textGenerator,
+          generateText: $.ai.openai.generateChatText({
+            apiKey: process.env.OPENAI_API_KEY ?? "",
+            model: "gpt-3.5-turbo",
+            maxTokens: 1000,
+            temperature: 0.5,
+          }),
         });
       },
     }),
