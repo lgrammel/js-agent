@@ -139,7 +139,7 @@ export async function runWikipediaAgent({
 
 ## Example Output
 
-![wikipedia](https://github.com/lgrammel/gptagent.js/raw/main/examples/wikipedia/screenshot/wikipedia-001.png)
+![wikipedia](https://github.com/lgrammel/gptagent.js/blob/main/examples/wikipedia/screenshot/wikipedia-qa-001.png)
 
 ## Requirements
 
