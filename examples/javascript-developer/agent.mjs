@@ -1,5 +1,4 @@
 import * as $ from "@gptagent/agent";
-import { runCLIAgent } from "@gptagent/agent";
 import dotenv from "dotenv";
 
 // PROJECT AND ROLE CONFIGURATION
@@ -33,52 +32,50 @@ const executeRemote = $.tool.executeRemoteTool({
   baseUrl: "http://localhost:3001",
 });
 
-runCLIAgent({
-  agent: new $.agent.Agent({
-    name: "JavaScript Developer",
-    execute: $.step.createFixedStepsLoop({
-      steps: [
-        $.step.createFixedStepsLoop({
-          type: "setup",
-          steps: setupCommands.map(
-            (command) => async (run) =>
-              $.tool.runCommand({ execute: executeRemote }).createStep({
-                input: { command },
-                run,
-              })
-          ),
-        }),
-        $.step.createGenerateNextStepLoop({
-          prompt: new $.prompt.CompositePrompt(
-            new $.prompt.FixedSectionsPrompt({
-              sections: [
-                { title: "role", content: role },
-                { title: "project", content: project },
-                { title: "constraints", content: constraints },
-              ],
-            }),
-            new $.prompt.AvailableActionsSectionPrompt(),
-            new $.prompt.TaskSectionPrompt(),
-            new $.prompt.RecentStepsPrompt({
-              stepRetention: 10,
+$.runAgent({
+  agent: $.step.createFixedStepsLoop({
+    steps: [
+      $.step.createFixedStepsLoop({
+        type: "setup",
+        steps: setupCommands.map(
+          (command) => async (run) =>
+            $.tool.runCommand({ execute: executeRemote }).createStep({
+              input: { command },
+              run,
             })
-          ),
-          actionRegistry: new $.action.ActionRegistry({
-            actions: [
-              $.tool.readFile({ execute: executeRemote }),
-              $.tool.writeFile({ execute: executeRemote }),
-              $.tool.runCommand({ execute: executeRemote }),
-              $.action.done({
-                type: "user-action",
-                text: "Indicate that the user needs to take an action.",
-              }),
+        ),
+      }),
+      $.step.createGenerateNextStepLoop({
+        prompt: new $.prompt.CompositePrompt(
+          new $.prompt.FixedSectionsPrompt({
+            sections: [
+              { title: "role", content: role },
+              { title: "project", content: project },
+              { title: "constraints", content: constraints },
             ],
-            format: new $.action.format.JsonActionFormat(),
           }),
-          generateText,
+          new $.prompt.AvailableActionsSectionPrompt(),
+          new $.prompt.TaskSectionPrompt(),
+          new $.prompt.RecentStepsPrompt({
+            stepRetention: 10,
+          })
+        ),
+        actionRegistry: new $.action.ActionRegistry({
+          actions: [
+            $.tool.readFile({ execute: executeRemote }),
+            $.tool.writeFile({ execute: executeRemote }),
+            $.tool.runCommand({ execute: executeRemote }),
+            $.action.done({
+              type: "user-action",
+              text: "Indicate that the user needs to take an action.",
+            }),
+          ],
+          format: new $.action.format.JsonActionFormat(),
         }),
-      ],
-    }),
+        generateText,
+      }),
+    ],
   }),
   observer: new $.agent.ConsoleAgentRunObserver(),
+  objective: process.argv.slice(2).join(" "),
 });

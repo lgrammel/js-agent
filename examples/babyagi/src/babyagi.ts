@@ -1,5 +1,4 @@
 import * as $ from "@gptagent/agent";
-import { runCLIAgent } from "@gptagent/agent";
 import chalk from "chalk";
 import dotenv from "dotenv";
 import { prioritizeTasks } from "./prioritizeTasks";
@@ -7,60 +6,57 @@ import { addNewTasks } from "./addNewTasks";
 
 dotenv.config();
 
-runCLIAgent({
-  agent: new $.agent.Agent({
-    name: "Baby AGI",
-    execute: $.step.createUpdateTasksLoop({
-      type: "main",
-      generateExecutionStep({ task, run }) {
-        return new $.step.PromptStep({
-          type: "execute-prompt",
-          run,
-          generateText: $.ai.openai.generateChatText({
-            apiKey: process.env.OPENAI_API_KEY ?? "",
-            model: "gpt-3.5-turbo",
-            maxTokens: 2000,
-            temperature: 0.7,
-          }),
-          messages: [
-            {
-              role: "system",
-              content: `You are an AI who performs one task based on the following objective: ${run.objective}.
+$.runAgent({
+  agent: $.step.createUpdateTasksLoop({
+    type: "main",
+    generateExecutionStep({ task, run }) {
+      return new $.step.PromptStep({
+        type: "execute-prompt",
+        run,
+        generateText: $.ai.openai.generateChatText({
+          apiKey: process.env.OPENAI_API_KEY ?? "",
+          model: "gpt-3.5-turbo",
+          maxTokens: 2000,
+          temperature: 0.7,
+        }),
+        messages: [
+          {
+            role: "system",
+            content: `You are an AI who performs one task based on the following objective: ${run.objective}.
 Your task: ${task}
 Response:`,
-            },
-          ],
-        });
-      },
-      async updateTaskList({
-        objective,
-        completedTask,
-        completedTaskResult,
-        remainingTasks,
-      }) {
-        return prioritizeTasks({
-          tasks: await addNewTasks({
-            objective,
-            completedTask,
-            completedTaskResult,
-            existingTasks: remainingTasks,
-            generateText: $.ai.openai.generateChatText({
-              apiKey: process.env.OPENAI_API_KEY ?? "",
-              model: "gpt-3.5-turbo",
-              maxTokens: 100,
-              temperature: 0.5,
-            }),
-          }),
+          },
+        ],
+      });
+    },
+    async updateTaskList({
+      objective,
+      completedTask,
+      completedTaskResult,
+      remainingTasks,
+    }) {
+      return prioritizeTasks({
+        tasks: await addNewTasks({
           objective,
+          completedTask,
+          completedTaskResult,
+          existingTasks: remainingTasks,
           generateText: $.ai.openai.generateChatText({
             apiKey: process.env.OPENAI_API_KEY ?? "",
             model: "gpt-3.5-turbo",
-            maxTokens: 1000,
+            maxTokens: 100,
             temperature: 0.5,
           }),
-        });
-      },
-    }),
+        }),
+        objective,
+        generateText: $.ai.openai.generateChatText({
+          apiKey: process.env.OPENAI_API_KEY ?? "",
+          model: "gpt-3.5-turbo",
+          maxTokens: 1000,
+          temperature: 0.5,
+        }),
+      });
+    },
   }),
   observer: {
     onLoopIterationStarted({ loop }) {
@@ -85,4 +81,5 @@ Response:`,
       }
     },
   },
+  objective: process.argv.slice(2).join(" "),
 });

@@ -9,7 +9,7 @@ const log = console.log;
 
 export class ConsoleAgentRunObserver implements AgentRunObserver {
   onAgentRunStarted({ run }: { run: AgentRun }) {
-    log(chalk.green(`### ${run.agent.name} ###`));
+    // log(chalk.green(`### ${run.agent.name} ###`));
     log(run.objective);
     log();
   }

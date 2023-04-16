@@ -1,6 +1,6 @@
 export * as action from "./action";
 export * as agent from "./agent";
-export * from "./agent/runCLIAgent";
+export * from "./agent/runAgent";
 export * as ai from "./ai";
 export * from "./component";
 export * as prompt from "./prompt";

@@ -4,29 +4,24 @@ import { Loop } from "../step/Loop";
 import { Step } from "../step/Step";
 import { StepResult } from "../step/StepResult";
 import { createNextId } from "../util/createNextId";
-import { Agent } from "./Agent";
 import { AgentRunObserver } from "./AgentRunObserver";
 
 export class AgentRun {
   private readonly observer?: AgentRunObserver;
   private readonly nextId = createNextId(1);
 
-  readonly agent: Agent;
   readonly controller: AbortController;
   readonly objective: string;
 
   constructor({
-    agent,
     controller,
     observer,
     objective,
   }: {
-    agent: Agent;
     controller: AbortController;
     observer?: AgentRunObserver;
     objective: string;
   }) {
-    this.agent = agent;
     this.controller = controller;
     this.observer = observer;
     this.objective = objective;
