@@ -25,7 +25,7 @@ const readWikipediaArticleAction = $.tool.summarizeWebpage({
     extractText: $.extractWebpageTextFromHtml(),
     summarize: $.summarizeRecursively({
       split: $.splitRecursivelyAtCharacter({
-        // note: maxCharactersPerChunk can be increased to 4096 * 4 when you use gpt-4
+        // maxCharactersPerChunk can be increased to 4096 * 4 when you use gpt-4:
         maxCharactersPerChunk: 2048 * 4,
       }),
       summarize: $.summarizeByGeneratingSummary({
