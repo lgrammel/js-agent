@@ -1,4 +1,4 @@
-FROM node:19.8.1-alpine
+FROM node:lts-alpine
 
 # Install dumb-init. Used to enable response to SIGTERM and SIGINT.
 RUN apk update && apk add dumb-init && apk add git && apk add ca-certificates
