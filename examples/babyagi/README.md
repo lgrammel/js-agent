@@ -1,6 +1,6 @@
-# GPTAgent.js BabyAGI
+# JS Agent BabyAGI
 
-A TypeScript / GPTAgent.js implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi) by [@yoheinakajima](https://twitter.com/yoheinakajima).
+A TypeScript / JS Agent implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi) by [@yoheinakajima](https://twitter.com/yoheinakajima).
 
 It is currently implemented as a single planner step, does not use memory (yet), and uses `gpt-3.5-turbo` instead of `davinci-003`. The main loop that executes the top task from a task list and then updates the task list was extracted into "UpdateTasksLoop" (gptindex.js).
 

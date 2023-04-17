@@ -1,23 +1,23 @@
-# GPTAgent.js: Automatic AI Agents with TS/JS
+# JS Agent: Automatic AI Agents with TS/JS
 
 ![Twitter Follow](https://img.shields.io/twitter/follow/lgrammel?style=social)
 
-GPTAgent.js is a composable and extensible framework for creating AI agents with TypeScript/JavaScript.
+JS Agent is a composable and extensible framework for creating AI agents with TypeScript/JavaScript.
 
 Creating AI agents requires considerable experimentation to achieve good results.
-GPTAgent.js makes the agent configuration explicit, so you can easily understand and adjust what the agent.
+JS Agent makes the agent configuration explicit, so you can easily understand and adjust what the agent.
 
 ## Examples
 
-**[BabyAGI](https://github.com/lgrammel/gptagent.js/tree/main/examples/babyagi)**:
-A TypeScript / GPTAgent.js implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi) by [@yoheinakajima](https://twitter.com/yoheinakajima).
+**[BabyAGI](https://github.com/lgrammel/js-agent/tree/main/examples/babyagi)**:
+A TypeScript / JS Agent implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi) by [@yoheinakajima](https://twitter.com/yoheinakajima).
 
-**[JavaScript/TypeScript developer](https://github.com/lgrammel/gptagent.js/tree/main/examples/javascript-developer)**:
+**[JavaScript/TypeScript developer](https://github.com/lgrammel/js-agent/tree/main/examples/javascript-developer)**:
 An automated developer agent that works in a docker container.
 It can read files, write files and execute commands.
 You can use it to document code, write tests, update tests and features, etc.
 
-**[Wikipedia Question-Answering](https://github.com/lgrammel/gptagent.js/tree/main/examples/wikipedia)**:
+**[Wikipedia Question-Answering](https://github.com/lgrammel/js-agent/tree/main/examples/wikipedia)**:
 An agent that has access to a wikipedia search engine and can read wikipedia articles. You can use it to answer questions about wikipedia content.
 
 ## Usage
@@ -28,7 +28,7 @@ npm install @gptagent/agent
 
 See examples for details on how to implement and run an agent.
 
-**GPTAgent.js is currently in its initial experimental phase. Prior to reaching version 0.1, there may breaking changes in each release.**
+**JS Agent is currently in its initial experimental phase. Prior to reaching version 0.1, there may breaking changes in each release.**
 
 ## Features
 
@@ -42,7 +42,7 @@ See examples for details on how to implement and run an agent.
 - **typed**: Provide as much typing as possible to support discovery and ensure safety.
 - **use functional programming for object assembly**: All objects that are immutable are assembled using functional programming. Object-orientation is only used for objects that have a changeable state (e.g. `Step` and `AgentRun`).
 - **support progressive refinement of agent specifications**: Agent specifications should be easy to write and every building block should provide good defaults. At the same time, it should be possible to easily override the defaults with specific settings, prompts, etc.
-- **build for production**: GPTAgent.js will have first-class support for logging, associating LLM calls and cost tracking with agent runs, etc.
+- **build for production**: JS Agent will have first-class support for logging, associating LLM calls and cost tracking with agent runs, etc.
 
 ## GPT-4 vs GPT-3.5-turbo
 
@@ -139,7 +139,7 @@ export async function runWikipediaAgent({
 
 ## Example Output
 
-![wikipedia](https://github.com/lgrammel/gptagent.js/blob/main/examples/wikipedia/screenshot/wikipedia-qa-001.png)
+![wikipedia](https://github.com/lgrammel/js-agent/blob/main/examples/wikipedia/screenshot/wikipedia-qa-001.png)
 
 ## Requirements
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "Run gptagent.js executor container"
+echo "Run js-agent executor container"
 echo "Drive: `pwd`/drive"
 echo ""
 

@@ -5,7 +5,7 @@ import * as $ from "@gptagent/agent";
 const role = `You are a software developer that creates and modifies JavaScript programs.
 You are working in a Linux environment.`;
 
-const project = `You are working on a JavaScript/TypeScript project called "gptagent.js".
+const project = `You are working on a JavaScript/TypeScript project called "js-agent".
 The project uses pnpm for package management.
 The main package is located in the "packages/agent" directory.
 

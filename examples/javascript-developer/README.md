@@ -1,4 +1,4 @@
-# GPTAgent.js JavaScript Developer
+# JS Agent JavaScript Developer
 
 An automated agent working in a Docker container.
 
@@ -33,10 +33,10 @@ pnpm run-agent `cat examples/helloworld/task.txt` # or any other instruction
 
 The `drive` folder contains the shared files between the host and the docker container.
 
-## How to use the gptagent.js developer for your own project
+## How to use the js-agent developer for your own project
 
 1. Clone the git repository that the agent should work on into the drive folder, e.g.,
-   `git clone https://github.com/lgrammel/gptagent.js.git drive`
+   `git clone https://github.com/lgrammel/js-agent.git drive`
 
 2. Configure the Dockerfile to install any libraries that you need
 
@@ -56,4 +56,4 @@ Write a unit test for packages/agent/src/action/format/JsonActionFormat. Cover t
 
 ## Example Output
 
-![javascript-developer](https://github.com/lgrammel/gptagent.js/raw/main/examples/javascript-developer/screenshot/autodev-001.png)
+![javascript-developer](https://github.com/lgrammel/js-agent/raw/main/examples/javascript-developer/screenshot/autodev-001.png)

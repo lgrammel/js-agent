@@ -1,4 +1,4 @@
-# GPTAgent.js Wikipedia Question-Answering
+# JS Agent Wikipedia Question-Answering
 
 Answers questions using Wikipedia articles. It searches using a Programmable Search Engine set up for en.wikipedia.org and reads (summarizes) articles to find the answer.
 
@@ -30,7 +30,7 @@ pnpm start "which town is bigger, Gummersbach or Bergneustadt?"
 
 ## Example Output
 
-![wikipedia](https://github.com/lgrammel/gptagent.js/raw/main/examples/wikipedia/screenshot/wikipedia-001.png)
+![wikipedia](https://github.com/lgrammel/js-agent/raw/main/examples/wikipedia/screenshot/wikipedia-001.png)
 
 ```sh
 > node ./agent.mjs which town is bigger, Gummersbach or Bergneustadt?
