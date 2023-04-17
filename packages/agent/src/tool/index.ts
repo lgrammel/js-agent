@@ -7,3 +7,4 @@ export * from "./read-file/ReadFileTool";
 export * from "./run-command/RunCommandTool";
 export * from "./summarize-webpage/SummarizeWebpageTool";
 export * from "./write-file/WriteFileTool";
+export * from "./user-input/UserInputTool";
