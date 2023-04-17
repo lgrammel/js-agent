@@ -145,3 +145,4 @@ export async function runWikipediaAgent({
 
 - node 18
 - pnpm
+- OpenAI API key
