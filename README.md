@@ -1,4 +1,4 @@
-# JS Agent: Automatic AI Agents with TS/JS
+# JS Agent: Build AI Agents with JS & TS
 
 ![Twitter Follow](https://img.shields.io/twitter/follow/lgrammel?style=social)
 
