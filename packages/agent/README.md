@@ -1,4 +1,4 @@
-# JS Agent: Build AI Agents with TS/JS
+# JS Agent: Build AI Agents with JS & TS
 
 JS Agent is a composable and extensible framework for creating AI agents with TypeScript/JavaScript.
 
@@ -26,7 +26,7 @@ npm install js-agent
 
 See examples for details on how to implement and run an agent.
 
-**JS Agent is currently in its initial experimental phase. Prior to reaching version 0.1, there may breaking changes in each release.**
+**⚠️ JS Agent is currently in its initial experimental phase. Prior to reaching version 0.1, there may breaking changes in each release.**
 
 ## Features
 
@@ -87,8 +87,9 @@ export async function runWikipediaAgent({
           // maxCharactersPerChunk can be increased to 4096 * 4 when you use gpt-4:
           maxCharactersPerChunk: 2048 * 4,
         }),
-        summarize: $.text.summarizeByGeneratingSummary({
-          generateText: $.ai.openai.generateChatText({
+        summarize: $.text.generate({
+          prompt: $.text.SummarizeChatPrompt,
+          generate: $.ai.openai.generateChatText({
             apiKey: openAiApiKey,
             model: "gpt-3.5-turbo",
           }),
@@ -99,14 +100,18 @@ export async function runWikipediaAgent({
 
   return $.runAgent({
     agent: $.step.createGenerateNextStepLoop({
-      prompt: new $.prompt.CompositePrompt(
-        new $.prompt.FixedSectionsPrompt({
+      actionRegistry: new $.action.ActionRegistry({
+        actions: [searchWikipediaAction, readWikipediaArticleAction],
+        format: new $.action.format.JsonActionFormat(),
+      }),
+      prompt: $.prompt.concatChatPrompts<$.step.GenerateNextStepLoopContext>(
+        $.prompt.fixedSectionsChatPrompt({
           sections: [
             {
               title: "Role",
               // "You speak perfect JSON" helps getting gpt-3.5-turbo to provide structured json at the end
               content: `You are an knowledge worker that answers questions using Wikipedia content.
-  You speak perfect JSON.`,
+    You speak perfect JSON.`,
             },
             {
               title: "Constraints",
@@ -114,15 +119,11 @@ export async function runWikipediaAgent({
             },
           ],
         }),
-        new $.prompt.TaskSectionPrompt(),
-        new $.prompt.AvailableActionsSectionPrompt(),
-        new $.prompt.RecentStepsPrompt({ maxSteps: 6 })
+        $.prompt.taskChatPrompt(),
+        $.prompt.availableActionsChatPrompt(),
+        $.prompt.recentStepsChatPrompt({ maxSteps: 6 })
       ),
-      actionRegistry: new $.action.ActionRegistry({
-        actions: [searchWikipediaAction, readWikipediaArticleAction],
-        format: new $.action.format.JsonActionFormat(),
-      }),
-      generateText: $.ai.openai.generateChatText({
+      generate: $.ai.openai.generateChatText({
         apiKey: openAiApiKey,
         model: "gpt-3.5-turbo",
       }),
@@ -137,9 +138,10 @@ export async function runWikipediaAgent({
 
 ## Example Output
 
-![wikipedia](https://github.com/lgrammel/js-agent/raw/main/examples/wikipedia/screenshot/wikipedia-001.png)
+![wikipedia](https://github.com/lgrammel/js-agent/blob/main/examples/wikipedia/screenshot/wikipedia-qa-001.png)
 
 ## Requirements
 
 - node 18
 - pnpm
+- OpenAI API key
