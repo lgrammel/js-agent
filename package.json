@@ -1,6 +1,7 @@
 {
   "name": "js-agent-repo",
   "version": "0.0.1",
+  "private": "true",
   "description": "",
   "scripts": {
     "start": "ts-node src/index.ts",
