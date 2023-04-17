@@ -1,9 +1,6 @@
-import {
-  OpenAIChatCompletionModel,
-  OpenAIChatMessage,
-  createChatCompletion,
-} from ".";
+import { OpenAIChatCompletionModel, createChatCompletion } from ".";
 import { retryWithExponentialBackoff } from "../../util/retryWithExponentialBackoff";
+import { OpenAIChatMessage } from "./OpenAIChatMessage";
 
 export type TextGenerationResult =
   | {
@@ -40,7 +37,7 @@ export const generateChatText =
     temperature?: number;
     maxTokens?: number;
   }) =>
-  async ({ messages }: { messages: OpenAIChatMessage[] }): Promise<string> => {
+  async (messages: OpenAIChatMessage[]): Promise<string> => {
     const startTime = performance.now();
     const startEpochSeconds = Math.floor(
       (performance.timeOrigin + startTime) / 1000

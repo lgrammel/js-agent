@@ -1,5 +1,9 @@
-import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
+import { OpenAIChatMessage } from "../ai/openai/OpenAIChatMessage";
 
-export interface Prompt<CONTEXT> {
-  generatePrompt(context: CONTEXT): Promise<Array<OpenAIChatMessage>>;
-}
+export type Prompt<INPUT, PROMPT_TYPE> = (
+  input: INPUT
+) => PromiseLike<PROMPT_TYPE>;
+
+export type ChatPrompt<INPUT> = Prompt<INPUT, Array<OpenAIChatMessage>>;
+
+export type TextPrompt<INPUT> = Prompt<INPUT, string>;

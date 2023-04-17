@@ -1,36 +1,37 @@
 import { AgentRun } from "../agent";
-import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
-import { GenerateChatTextFunction } from "../text/generate-text";
 import { Step } from "./Step";
 import { StepResult } from "./StepResult";
+import { generate as generateFunction } from "../text/generate/generate";
+import { Prompt } from "../prompt/Prompt";
 
-export class PromptStep extends Step {
-  private readonly generateText: GenerateChatTextFunction;
-  private readonly messages: OpenAIChatMessage[];
+export class PromptStep<INPUT, PROMPT_TYPE> extends Step {
+  private readonly generateText: (input: INPUT) => PromiseLike<string>;
+  private readonly input: INPUT;
 
   constructor({
     type = "prompt",
     run,
-    generateText,
-    messages,
+    prompt,
+    generate,
+    input,
   }: {
     type?: string;
     run: AgentRun;
-    generateText: GenerateChatTextFunction;
-    messages: OpenAIChatMessage[];
+    prompt: Prompt<INPUT, PROMPT_TYPE>;
+    generate: (value: PROMPT_TYPE) => PromiseLike<string>;
+    input: INPUT;
   }) {
     super({ type, run });
 
-    this.generateText = generateText;
-    this.messages = messages;
+    this.input = input;
+    this.generateText = generateFunction({
+      prompt,
+      generate,
+    });
   }
 
   protected async _execute(): Promise<StepResult> {
-    const generatedText = (
-      await this.generateText({
-        messages: this.messages,
-      })
-    ).trim();
+    const generatedText = (await this.generateText(this.input)).trim();
 
     return {
       type: "succeeded",

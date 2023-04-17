@@ -41,8 +41,6 @@ export abstract class Step {
     let result: StepResult;
     try {
       result = await this._execute();
-
-      return result;
     } catch (error: any) {
       result = {
         type: "failed",

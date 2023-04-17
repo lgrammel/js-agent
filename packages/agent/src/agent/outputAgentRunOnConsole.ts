@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
+import { OpenAIChatMessage } from "../ai/openai/OpenAIChatMessage";
 import { Step } from "../step";
 import { ToolStep } from "../tool/ToolStep";
 import { AgentRun } from "./AgentRun";
@@ -22,11 +22,7 @@ export const outputAgentRunOnConsole = ({
     log(chalk.gray("Done"));
   },
 
-  onStepGenerationStarted({
-    messages,
-  }: {
-    messages: Array<OpenAIChatMessage>;
-  }) {
+  onStepGenerationStarted() {
     log(chalk.gray("Thinking…"));
   },
 

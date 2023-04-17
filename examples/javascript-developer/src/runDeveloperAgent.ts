@@ -50,20 +50,20 @@ export async function runDeveloperAgent({
           ),
         }),
         $.step.createGenerateNextStepLoop({
-          prompt: new $.prompt.CompositePrompt(
-            new $.prompt.FixedSectionsPrompt({
-              sections: [
-                { title: "role", content: role },
-                { title: "project", content: project },
-                { title: "constraints", content: constraints },
-              ],
-            }),
-            new $.prompt.AvailableActionsSectionPrompt(),
-            new $.prompt.TaskSectionPrompt(),
-            new $.prompt.RecentStepsPrompt({
-              maxSteps: 10,
-            })
-          ),
+          prompt:
+            $.prompt.concatChatPrompts<$.step.GenerateNextStepLoopContext>(
+              $.prompt.fixedSectionsChatPrompt({
+                sections: [
+                  { title: "role", content: role },
+                  { title: "project", content: project },
+                  { title: "constraints", content: constraints },
+                ],
+              }),
+              $.prompt.availableActionsChatPrompt(),
+              $.prompt.taskChatPrompt(),
+              $.prompt.recentStepsChatPrompt({ maxSteps: 10 })
+            ),
+          generate: generateText,
           actionRegistry: new $.action.ActionRegistry({
             actions: [
               $.tool.readFile({ execute: executeRemote }),
@@ -75,7 +75,6 @@ export async function runDeveloperAgent({
             ],
             format: new $.action.format.JsonActionFormat(),
           }),
-          generateText,
         }),
       ],
     }),

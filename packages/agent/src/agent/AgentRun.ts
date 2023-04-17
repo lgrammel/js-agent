@@ -1,4 +1,3 @@
-import { OpenAIChatMessage } from "../ai/openai/createChatCompletion";
 import { AbortController } from "../step/AbortController";
 import { Loop } from "../step/Loop";
 import { Step } from "../step/Step";
@@ -71,7 +70,7 @@ export class AgentRun {
     result: StepResult;
   }) {
     try {
-      this.observer?.onStepExecutionFinished?.({ run: this, step });
+      this.observer?.onStepExecutionFinished?.({ run: this, step, result });
     } catch (error) {
       this.logError(error);
     }
@@ -93,13 +92,9 @@ export class AgentRun {
     }
   }
 
-  onStepGenerationStarted({
-    messages,
-  }: {
-    messages: Array<OpenAIChatMessage>;
-  }) {
+  onStepGenerationStarted() {
     try {
-      this.observer?.onStepGenerationStarted?.({ run: this, messages });
+      this.observer?.onStepGenerationStarted?.({ run: this });
     } catch (error: any) {
       this.logError(error);
     }

@@ -1,31 +1,19 @@
-import { OpenAIChatMessage } from "../ai/openai";
+import { OpenAIChatMessage } from "../ai/openai/OpenAIChatMessage";
 import { Step } from "../step";
 import { ToolStep } from "../tool/ToolStep";
-import { Prompt } from "./Prompt";
 
-export class RecentStepsPrompt
-  implements Prompt<{ completedSteps: Array<Step> }>
-{
-  readonly maxSteps: number;
-
-  constructor({
-    maxSteps = 10,
-  }: {
-    maxSteps?: number;
-  } = {}) {
-    this.maxSteps = maxSteps;
-  }
-
-  async generatePrompt({
+export const recentStepsChatPrompt =
+  ({ maxSteps = 10 }: { maxSteps?: number }) =>
+  async ({
     completedSteps,
     generatedTextsByStepId,
   }: {
     completedSteps: Array<Step>;
     generatedTextsByStepId: Map<string, string>;
-  }): Promise<OpenAIChatMessage[]> {
+  }): Promise<OpenAIChatMessage[]> => {
     const messages: OpenAIChatMessage[] = [];
 
-    for (const step of completedSteps.slice(-this.maxSteps)) {
+    for (const step of completedSteps.slice(-maxSteps)) {
       // repeat the original agent response to reinforce the action format and keep the conversation going:
       const generatedText = generatedTextsByStepId.get(step.id);
       if (generatedText != null) {
@@ -64,5 +52,4 @@ export class RecentStepsPrompt
     }
 
     return messages;
-  }
-}
+  };

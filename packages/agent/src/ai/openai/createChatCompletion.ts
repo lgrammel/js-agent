@@ -1,5 +1,6 @@
 import axios from "axios";
 import zod from "zod";
+import { OpenAIChatMessage } from "./OpenAIChatMessage";
 
 const OpenAIChatCompletionSchema = zod.object({
   id: zod.string(),
@@ -27,11 +28,6 @@ const OpenAIChatCompletionSchema = zod.object({
 export type OpenAIChatCompletion = zod.infer<typeof OpenAIChatCompletionSchema>;
 
 export type OpenAIChatCompletionModel = "gpt-4" | "gpt-3.5-turbo";
-
-export type OpenAIChatMessage = {
-  role: "user" | "assistant" | "system";
-  content: string;
-};
 
 export async function createChatCompletion({
   apiKey,
