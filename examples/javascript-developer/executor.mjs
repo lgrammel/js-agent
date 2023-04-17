@@ -1,4 +1,4 @@
-import $ from "@gptagent/agent";
+import $ from "js-agent";
 
 $.tool.executor.runToolExecutor({
   tools: [

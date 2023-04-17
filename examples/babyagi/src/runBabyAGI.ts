@@ -1,4 +1,4 @@
-import * as $ from "@gptagent/agent";
+import * as $ from "js-agent";
 import chalk from "chalk";
 import { addNewTasks } from "./addNewTasks";
 import { prioritizeTasks } from "./prioritizeTasks";

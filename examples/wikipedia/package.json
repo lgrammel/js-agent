@@ -8,7 +8,7 @@
   },
   "private": true,
   "dependencies": {
-    "@gptagent/agent": "*",
+    "js-agent": "*",
     "dotenv": "16.0.3"
   },
   "devDependencies": {}

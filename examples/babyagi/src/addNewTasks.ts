@@ -1,4 +1,4 @@
-import * as $ from "@gptagent/agent";
+import * as $ from "js-agent";
 
 export async function addNewTasks({
   objective,

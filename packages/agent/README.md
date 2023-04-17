@@ -21,7 +21,7 @@ An agent that has access to a wikipedia search engine and can read wikipedia art
 ## Usage
 
 ```sh
-npm install @gptagent/agent
+npm install js-agent
 ```
 
 See examples for details on how to implement and run an agent.
@@ -49,7 +49,7 @@ For agents, it is recommended to use GPT-4. GPT-3.5-Turbo has trouble following 
 ## Example Agent Definition
 
 ```ts
-import * as $ from "@gptagent/agent";
+import * as $ from "js-agent";
 
 export async function runWikipediaAgent({
   wikipediaSearchKey,
