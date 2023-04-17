@@ -56,4 +56,4 @@ Write a unit test for packages/agent/src/action/format/JsonActionFormat. Cover t
 
 ## Example Output
 
-![wikipedia](https://github.com/lgrammel/js-agent/blob/main/examples/wikipedia/screenshot/wikipedia-qa-001.png)
+![wikipedia](https://github.com/lgrammel/js-agent/blob/main/examples/javascript-developer/screenshot/autodev-001.png)
