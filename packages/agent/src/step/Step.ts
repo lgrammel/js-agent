@@ -38,9 +38,20 @@ export abstract class Step {
     this.state = { type: "running" };
     this.run.onStepExecutionStarted({ step: this });
 
-    const result = await this._execute();
-    this.state = result;
+    let result: StepResult;
+    try {
+      result = await this._execute();
 
+      return result;
+    } catch (error: any) {
+      result = {
+        type: "failed",
+        summary: error.message ?? "Step failed.",
+        error,
+      };
+    }
+
+    this.state = result;
     this.run.onStepExecutionFinished({ step: this, result });
 
     return result;

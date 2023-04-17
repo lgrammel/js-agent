@@ -55,6 +55,9 @@ export const executeRemoteTool =
           error.response?.headers
         );
       }
-      throw error;
+      return {
+        summary: "Error executing command",
+        output: error.response?.data,
+      };
     }
   };
