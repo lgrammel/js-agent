@@ -4,8 +4,10 @@ import { pino } from "pino";
 
 export function createToolPlugin({
   toolRegistry,
+  logger,
 }: {
   toolRegistry: ToolRegistry;
+  logger: pino.Logger;
 }) {
   return async function toolPlugin(fastify: FastifyInstance) {
     fastify.post<{ Params: { toolType: string } }>("/tool/:toolType", {
@@ -25,10 +27,6 @@ export function createToolPlugin({
 
           reply.status(200).send(textOutput);
         } catch (error: any) {
-          const logger = pino({
-            level: "debug",
-            messageKey: "message",
-          });
           logger.error(
             error,
             "An error occurred while processing the command."
