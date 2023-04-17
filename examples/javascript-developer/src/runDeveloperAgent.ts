@@ -69,9 +69,8 @@ export async function runDeveloperAgent({
               $.tool.readFile({ execute: executeRemote }),
               $.tool.writeFile({ execute: executeRemote }),
               $.tool.runCommand({ execute: executeRemote }),
-              $.action.done({
-                id: "user-action",
-                description: "Indicate that the user needs to take an action.",
+              $.tool.getUserInput({
+                execute: $.tool.executeUserInput(),
               }),
             ],
             format: new $.action.format.JsonActionFormat(),
