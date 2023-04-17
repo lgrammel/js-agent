@@ -34,6 +34,7 @@ export const runToolExecutor = async ({
   server.register(
     createToolPlugin({
       toolRegistry: new ToolRegistry({ tools }),
+      logger,
     })
   );
 
