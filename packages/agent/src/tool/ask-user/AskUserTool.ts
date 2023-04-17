@@ -4,28 +4,29 @@ import { ExecuteToolFunction } from "../ExecuteToolFunction";
 import { FormatResultFunction } from "../../action";
 import readline from "readline";
 
-export type UserInputInput = {
+export type AskUserInput = {
   query: string;
 };
 
-export type UserInputOutput = {
-  text: string;
+export type AskUserOutput = {
+  response: string;
 };
 
-export const getUserInput = ({
+export const askUser = ({
   id = "ask-user",
   description = "Ask the user for input or to take an action.",
   inputExample = {
     query: "{question or action description}",
   },
   execute,
-  formatResult = ({ input, output: { text } }) => `${input.query}: ${text}`,
+  formatResult = ({ input, output: { response } }) =>
+    `${input.query}: ${response}`,
 }: {
   id?: string;
   description?: string;
-  inputExample?: UserInputInput;
-  execute: ExecuteToolFunction<UserInputInput, UserInputOutput>;
-  formatResult?: FormatResultFunction<UserInputInput, UserInputOutput>;
+  inputExample?: AskUserInput;
+  execute: ExecuteToolFunction<AskUserInput, AskUserOutput>;
+  formatResult?: FormatResultFunction<AskUserInput, AskUserOutput>;
 }) =>
   createToolAction({
     id,
@@ -34,30 +35,30 @@ export const getUserInput = ({
       query: zod.string(),
     }),
     outputSchema: zod.object({
-      text: zod.string(),
+      response: zod.string(),
     }),
     inputExample,
     execute,
     formatResult,
   });
 
-export const executeUserInput =
-  (): ExecuteToolFunction<UserInputInput, UserInputOutput> =>
+export const executeAskUser =
+  (): ExecuteToolFunction<AskUserInput, AskUserOutput> =>
   async ({ input: { query } }) => {
-    const rl = readline.createInterface({
+    const userInput = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
     });
 
-    const text = await new Promise<string>((resolve) => {
-      rl.question(query, (answer) => {
+    const response = await new Promise<string>((resolve) => {
+      userInput.question(query, (answer) => {
         resolve(answer);
-        rl.close();
+        userInput.close();
       });
     });
 
     return {
-      summary: `User input: ${text}`,
-      output: { text },
+      summary: `User response: ${response}`,
+      output: { response },
     };
   };
