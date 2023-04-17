@@ -69,8 +69,8 @@ export async function runDeveloperAgent({
               $.tool.readFile({ execute: executeRemote }),
               $.tool.writeFile({ execute: executeRemote }),
               $.tool.runCommand({ execute: executeRemote }),
-              $.tool.getUserInput({
-                execute: $.tool.executeUserInput(),
+              $.tool.askUser({
+                execute: $.tool.executeAskUser(),
               }),
             ],
             format: new $.action.format.JsonActionFormat(),
