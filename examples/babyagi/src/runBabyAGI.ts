@@ -68,6 +68,7 @@ Start the task list with number 1.`;
   });
 
   return $.runAgent({
+    objective,
     agent: $.step.createUpdateTasksLoop({
       type: "main",
       generateExecutionStep({ task, run }) {
@@ -140,6 +141,5 @@ Response:`;
         }
       },
     },
-    objective,
   });
 }

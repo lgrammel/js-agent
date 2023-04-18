@@ -37,6 +37,7 @@ export async function runDeveloperAgent({
   }) as any;
 
   return $.runAgent({
+    objective,
     agent: $.step.createFixedStepsLoop({
       steps: [
         $.step.createFixedStepsLoop({
@@ -82,6 +83,5 @@ export async function runDeveloperAgent({
     observer: $.agent.showRunInConsole({
       name: "JavaScript Developer Agent",
     }),
-    objective,
   });
 }

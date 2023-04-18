@@ -49,6 +49,7 @@ export async function runWikipediaAgent({
   });
 
   return $.runAgent({
+    objective,
     agent: $.step.createGenerateNextStepLoop({
       actionRegistry: new $.action.ActionRegistry({
         actions: [searchWikipediaAction, readWikipediaArticleAction],
@@ -78,10 +79,9 @@ export async function runWikipediaAgent({
         model: "gpt-3.5-turbo",
       }),
     }),
+    controller: $.agent.controller.maxSteps(20),
     observer: $.agent.showRunInConsole({
       name: "Wikipedia Agent",
     }),
-    objective,
-    controller: $.agent.controller.maxSteps(20),
   });
 }
