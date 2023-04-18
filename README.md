@@ -7,6 +7,8 @@ JS Agent is a composable and extensible framework for creating AI agents with Ty
 Creating AI agents requires considerable experimentation to achieve good results.
 JS Agent makes the agent configuration explicit, so you can easily understand and adjust what the agent.
 
+**⚠️ JS Agent is currently in its initial experimental phase. Prior to reaching version 0.1, there may breaking changes in each release.**
+
 ## Features
 
 - Agent definition and execution
@@ -55,5 +57,3 @@ npm install js-agent
 ```
 
 See examples for details on how to implement and run an agent.
-
-**⚠️ JS Agent is currently in its initial experimental phase. Prior to reaching version 0.1, there may breaking changes in each release.**
