@@ -31,6 +31,7 @@ An agent that has access to a wikipedia search engine and can read wikipedia art
   - Create templates for text prompts and chat prompts
 - Actions and Tools
   - Read file, write file, run command, use programmable search engine, summarize website according to topic, ask user for input
+  - Optional agent/executor separation (e.g. run the executor in a sandbox environment such as a Docker container)
 - Text functions
   - Extract text from webpage
   - Split text into chunks
@@ -48,16 +49,10 @@ See examples for details on how to implement and run an agent.
 
 **⚠️ JS Agent is currently in its initial experimental phase. Prior to reaching version 0.1, there may breaking changes in each release.**
 
-## Features
-
-- **agents and agent runs**
-- **dynamic loops**
-- **tools**: read file, write file, run command, use programmable search engine, summarize website according to topic
-- **agent/executor separation (optional)**: Run the executor in a safe environment (e.g. Docker container) where it can use the command line, install libraries, etc.
-
 ## Design Principles
 
 - **typed**: Provide as much typing as possible to support discovery and ensure safety.
+- **composable**: The individual pieces should have a good separation of concerns and be easy to combine.
 - **use functional programming for object assembly**: All objects that are immutable are assembled using functional programming. Object-orientation is only used for objects that have a changeable state (e.g. `Step` and `AgentRun`).
 - **support progressive refinement of agent specifications**: Agent specifications should be easy to write and every building block should provide good defaults. At the same time, it should be possible to easily override the defaults with specific settings, prompts, etc.
 - **build for production**: JS Agent will have first-class support for logging, associating LLM calls and cost tracking with agent runs, etc.
