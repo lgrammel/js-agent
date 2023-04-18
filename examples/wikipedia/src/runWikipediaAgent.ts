@@ -33,8 +33,7 @@ export async function runWikipediaAgent({
       extractText: $.text.extractWebpageTextFromHtml(),
       summarize: $.text.summarizeRecursively({
         split: $.text.splitRecursivelyAtCharacter({
-          // maxCharactersPerChunk can be increased to 4096 * 4 when you use gpt-4:
-          maxCharactersPerChunk: 2048 * 4,
+          maxCharactersPerChunk: 2048 * 4, // needs to fit into a gpt-3.5-turbo prompt
         }),
         summarize: $.text.generate({
           prompt: $.text.SummarizeChatPrompt,
@@ -52,7 +51,7 @@ export async function runWikipediaAgent({
     agent: $.step.createGenerateNextStepLoop({
       actionRegistry: new $.action.ActionRegistry({
         actions: [searchWikipediaAction, readWikipediaArticleAction],
-        format: new $.action.format.JsonActionFormat(),
+        format: new $.action.format.FlexibleJsonActionFormat(),
       }),
       prompt: $.prompt.concatChatPrompts<$.step.GenerateNextStepLoopContext>(
         $.prompt.sectionsChatPrompt({
