@@ -2,17 +2,27 @@
 
 ![Twitter Follow](https://img.shields.io/twitter/follow/lgrammel?style=social)
 
-JS Agent is a composable and extensible framework for creating AI agents with TypeScript/JavaScript.
+JS Agent is a composable and extensible framework for creating AI agents with JavaScript and TypeScript.
 
-Creating AI agents requires considerable experimentation to achieve good results.
-JS Agent makes the agent configuration explicit, so you can easily understand and adjust what the agent.
+While creating an AI agent prototype is easy, increasing its reliability and robustness is very hard
+and requires considerable experimentation. JS Agent provides building blocks and tooling to help you develop rock-solid agents faster.
 
 **⚠️ JS Agent is currently in its initial experimental phase. Prior to reaching version 0.1, there may breaking changes in each release.**
+
+## Quick Start
+
+```sh
+npm install js-agent
+```
+
+See examples below for details on how to implement and run an agent.
 
 ## Features
 
 - Agent definition and execution
   - Observable agent runs (to support console output, UIs, server runs, webapps, etc.)
+  - Recording of LLM calls for each agent run
+  - Controller to limit the number of steps
 - Supported LLM models
   - OpenAI text completion models (`text-davinci-003` etc.)
   - OpenAI chat completion models (`gpt-4`, `gpt-3.5-turbo`)
@@ -50,10 +60,94 @@ An agent that has access to a wikipedia search engine and can read wikipedia art
 - **support progressive refinement of agent specifications**: Agent specifications should be easy to write and every building block should provide good defaults. At the same time, it should be possible to easily override the defaults with specific settings, prompts, etc.
 - **build for production**: JS Agent will have first-class support for logging, associating LLM calls and cost tracking with agent runs, etc.
 
-## Getting Started
+## Example Agent
 
-```sh
-npm install js-agent
+```ts
+import * as $ from "js-agent";
+
+export async function runWikipediaAgent({
+  wikipediaSearchKey,
+  wikipediaSearchCx,
+  openAiApiKey,
+  objective,
+}: {
+  openAiApiKey: string;
+  wikipediaSearchKey: string;
+  wikipediaSearchCx: string;
+  objective: string;
+}) {
+  const searchWikipediaAction = $.tool.programmableGoogleSearchEngineAction({
+    id: "search-wikipedia",
+    description:
+      "Search wikipedia using a search term. Returns a list of pages.",
+    execute: $.tool.executeProgrammableGoogleSearchEngineAction({
+      key: wikipediaSearchKey,
+      cx: wikipediaSearchCx,
+    }),
+  });
+
+  const readWikipediaArticleAction = $.tool.summarizeWebpage({
+    id: "read-wikipedia-article",
+    description:
+      "Read a wikipedia article and summarize it considering the query.",
+    inputExample: {
+      url: "https://en.wikipedia.org/wiki/Artificial_intelligence",
+      topic: "{query that you are answering}",
+    },
+    execute: $.tool.executeSummarizeWebpage({
+      extractText: $.text.extractWebpageTextFromHtml(),
+      summarize: $.text.summarizeRecursively({
+        split: $.text.splitRecursivelyAtCharacter({
+          maxCharactersPerChunk: 2048 * 4, // needs to fit into a gpt-3.5-turbo prompt
+        }),
+        summarize: $.text.generate({
+          id: "summarize-wikipedia-article-chunk",
+          prompt: $.text.SummarizeChatPrompt,
+          model: $.provider.openai.chatModel({
+            apiKey: openAiApiKey,
+            model: "gpt-3.5-turbo",
+          }),
+          processOutput: async (output) => output.trim(),
+        }),
+      }),
+    }),
+  });
+
+  return $.runAgent({
+    objective,
+    agent: $.step.createGenerateNextStepLoop({
+      actionRegistry: new $.action.ActionRegistry({
+        actions: [searchWikipediaAction, readWikipediaArticleAction],
+        format: new $.action.format.FlexibleJsonActionFormat(),
+      }),
+      prompt: $.prompt.concatChatPrompts<$.step.GenerateNextStepLoopContext>(
+        $.prompt.sectionsChatPrompt({
+          role: "system",
+          getSections: async () => [
+            {
+              title: "Role",
+              // "You speak perfect JSON" helps getting gpt-3.5-turbo to provide structured json at the end
+              content: `You are an knowledge worker that answers questions using Wikipedia content. You speak perfect JSON.`,
+            },
+            {
+              title: "Constraints",
+              content: `Make sure all facts for your answer are from Wikipedia articles that you have read.`,
+            },
+          ],
+        }),
+        $.prompt.taskChatPrompt(),
+        $.prompt.availableActionsChatPrompt(),
+        $.prompt.recentStepsChatPrompt({ maxSteps: 6 })
+      ),
+      model: $.provider.openai.chatModel({
+        apiKey: openAiApiKey,
+        model: "gpt-3.5-turbo",
+      }),
+    }),
+    controller: $.agent.controller.maxSteps(20),
+    observer: $.agent.showRunInConsole({
+      name: "Wikipedia Agent",
+    }),
+  });
+}
 ```
-
-See examples for details on how to implement and run an agent.
