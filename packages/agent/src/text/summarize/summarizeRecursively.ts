@@ -1,3 +1,4 @@
+import { RunContext } from "../../agent/RunContext";
 import { SplitFunction } from "../split";
 import { SummarizeFunction } from "./SummarizeFunction";
 
@@ -9,12 +10,13 @@ export const summarizeRecursively =
     summarize: SummarizeFunction;
     split: SplitFunction;
   }): SummarizeFunction =>
-  async ({ text, topic }) =>
+  async ({ text, topic }, context: RunContext) =>
     _summarizeRecursively({
       text,
       topic,
-      summarize: summarize,
-      split: split,
+      summarize,
+      split,
+      context,
     });
 
 async function _summarizeRecursively({
@@ -22,17 +24,19 @@ async function _summarizeRecursively({
   split,
   text,
   topic,
+  context,
 }: {
   summarize: SummarizeFunction;
   split: SplitFunction;
   text: string;
   topic: string;
+  context: RunContext;
 }): Promise<string> {
   const chunks = await split({ text });
 
   const chunkSummaries = [];
   for (const chunk of chunks) {
-    chunkSummaries.push(await summarize({ text: chunk, topic }));
+    chunkSummaries.push(await summarize({ text: chunk, topic }, context));
   }
 
   if (chunkSummaries.length === 1) {
@@ -44,7 +48,8 @@ async function _summarizeRecursively({
   return _summarizeRecursively({
     text: chunkSummaries.join("\n\n"),
     topic,
-    summarize: summarize,
-    split: split,
+    summarize,
+    split,
+    context,
   });
 }

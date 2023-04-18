@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export async function retryWithExponentialBackoff<T>(
-  f: () => Promise<T>,
+  f: () => PromiseLike<T>,
   maxTries = 5,
   tryNumber = 1,
   delay = 2000

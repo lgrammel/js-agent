@@ -36,8 +36,9 @@ export async function runWikipediaAgent({
           maxCharactersPerChunk: 2048 * 4, // needs to fit into a gpt-3.5-turbo prompt
         }),
         summarize: $.text.generate({
+          id: "summarize-wikipedia-article-chunk",
           prompt: $.text.SummarizeChatPrompt,
-          generate: $.provider.openai.generateChatText({
+          model: $.provider.openai.chatModel({
             apiKey: openAiApiKey,
             model: "gpt-3.5-turbo",
           }),
@@ -72,12 +73,12 @@ export async function runWikipediaAgent({
         $.prompt.availableActionsChatPrompt(),
         $.prompt.recentStepsChatPrompt({ maxSteps: 6 })
       ),
-      generate: $.provider.openai.generateChatText({
+      model: $.provider.openai.chatModel({
         apiKey: openAiApiKey,
         model: "gpt-3.5-turbo",
       }),
     }),
-    observer: $.agent.outputAgentRunOnConsole({
+    observer: $.agent.showRunInConsole({
       name: "Wikipedia Agent",
     }),
     objective,

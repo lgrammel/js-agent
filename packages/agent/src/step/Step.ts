@@ -1,15 +1,16 @@
-import { AgentRun } from "../agent/AgentRun";
+import { Run } from "../agent/Run";
+import { RunContext } from "../agent/RunContext";
 import { StepResult } from "./StepResult";
 import { StepState } from "./StepState";
 
 export abstract class Step {
   readonly id: string;
   readonly type: string;
-  readonly run: AgentRun;
+  readonly run: Run;
 
   state: StepState;
 
-  constructor({ type, run }: { type: string; run: AgentRun }) {
+  constructor({ type, run }: { type: string; run: Run }) {
     if (type == null) {
       throw new Error(`Step type is required`);
     }
@@ -24,7 +25,7 @@ export abstract class Step {
     this.state = { type: "pending" };
   }
 
-  protected abstract _execute(): Promise<StepResult>;
+  protected abstract _execute(context: RunContext): Promise<StepResult>;
 
   async execute(): Promise<StepResult> {
     if (this.run.isAborted()) {
@@ -40,7 +41,7 @@ export abstract class Step {
 
     let result: StepResult;
     try {
-      result = await this._execute();
+      result = await this._execute(this.run);
     } catch (error: any) {
       result = {
         type: "failed",

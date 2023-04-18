@@ -1,7 +1,11 @@
 import { ActionRegistry } from "../action/ActionRegistry";
-import { AgentRun } from "../agent/AgentRun";
+import { Run } from "../agent/Run";
+import { RunContext } from "../agent/RunContext";
 import { Prompt } from "../prompt/Prompt";
-import { generate as generateFunction } from "../text/generate/generate";
+import {
+  GeneratorModel,
+  generate as generateFunction,
+} from "../text/generate/generate";
 import { ErrorStep } from "./ErrorStep";
 import { Loop } from "./Loop";
 import { NoopStep } from "./NoopStep";
@@ -20,12 +24,12 @@ export const createGenerateNextStepLoop =
     type,
     actionRegistry,
     prompt,
-    generate,
+    model,
   }: {
     type?: string;
     actionRegistry: ActionRegistry;
     prompt: Prompt<GenerateNextStepLoopContext, PROMPT_TYPE>;
-    generate: (value: PROMPT_TYPE) => PromiseLike<string>;
+    model: GeneratorModel<PROMPT_TYPE, any, string>;
   }): StepFactory =>
   async (run) =>
     new GenerateNextStepLoop({
@@ -33,11 +37,13 @@ export const createGenerateNextStepLoop =
       run,
       actionRegistry,
       prompt,
-      generate,
+      model,
     });
 
-type NextStepLoopGenerateTextFunction =
-  ({}: GenerateNextStepLoopContext) => PromiseLike<string>;
+type NextStepLoopGenerateTextFunction = (
+  _0: GenerateNextStepLoopContext,
+  _1: RunContext
+) => PromiseLike<string>;
 
 export class GenerateNextStepLoop<PROMPT_TYPE> extends Loop {
   private readonly generatedTextsByStepId = new Map<string, string>();
@@ -50,13 +56,13 @@ export class GenerateNextStepLoop<PROMPT_TYPE> extends Loop {
     run,
     actionRegistry,
     prompt,
-    generate,
+    model,
   }: {
     type?: string;
-    run: AgentRun;
+    run: Run;
     actionRegistry: ActionRegistry;
     prompt: Prompt<GenerateNextStepLoopContext, PROMPT_TYPE>;
-    generate: (value: PROMPT_TYPE) => PromiseLike<string>;
+    model: GeneratorModel<PROMPT_TYPE, any, string>;
   }) {
     super({ type, run });
 
@@ -66,14 +72,15 @@ export class GenerateNextStepLoop<PROMPT_TYPE> extends Loop {
     if (prompt == null) {
       throw new Error("prompt is required");
     }
-    if (generate == null) {
-      throw new Error("generate is required");
+    if (model == null) {
+      throw new Error("model is required");
     }
 
     this.actionRegistry = actionRegistry;
     this.generateText = generateFunction({
+      id: `step/${this.id}/generate-text`,
       prompt,
-      generate,
+      model,
       processOutput: async (output) => output,
     });
   }
@@ -86,12 +93,15 @@ export class GenerateNextStepLoop<PROMPT_TYPE> extends Loop {
   async getNextStep(): Promise<Step> {
     this.run.onStepGenerationStarted();
 
-    const generatedText = await this.generateText({
-      actions: this.actionRegistry,
-      task: this.run.objective,
-      completedSteps: this.completedSteps,
-      generatedTextsByStepId: this.generatedTextsByStepId,
-    });
+    const generatedText = await this.generateText(
+      {
+        actions: this.actionRegistry,
+        task: this.run.objective,
+        completedSteps: this.completedSteps,
+        generatedTextsByStepId: this.generatedTextsByStepId,
+      },
+      this.run
+    );
 
     const actionParameters = this.actionRegistry.format.parse(generatedText);
 

@@ -1,4 +1,5 @@
-import { AgentRun } from "../agent/AgentRun";
+import { Run } from "../agent/Run";
+import { RunContext } from "../agent/RunContext";
 import { Loop } from "./Loop";
 import { Step } from "./Step";
 import { StepFactory } from "./StepFactory";
@@ -13,7 +14,7 @@ export const createUpdateTasksLoop =
   }: {
     type?: string;
     initialTasks?: string[];
-    generateExecutionStep: ({}: { task: string; run: AgentRun }) => Step;
+    generateExecutionStep: ({}: { task: string; run: Run }) => Step;
     updateTaskList: updateTaskList;
   }): StepFactory =>
   async (run) =>
@@ -25,12 +26,15 @@ export const createUpdateTasksLoop =
       run,
     });
 
-export type updateTaskList = ({}: {
-  objective: string;
-  completedTask: string;
-  completedTaskResult: string;
-  remainingTasks: string[];
-}) => PromiseLike<Array<string>>;
+export type updateTaskList = (
+  {}: {
+    objective: string;
+    completedTask: string;
+    completedTaskResult: string;
+    remainingTasks: string[];
+  },
+  context: RunContext
+) => PromiseLike<Array<string>>;
 
 export class UpdateTasksLoop extends Loop {
   tasks: Array<string>;
@@ -38,7 +42,7 @@ export class UpdateTasksLoop extends Loop {
 
   private readonly generateExecutionStep: ({}: {
     task: string;
-    run: AgentRun;
+    run: Run;
   }) => Step;
 
   private readonly updateTaskList: updateTaskList;
@@ -52,9 +56,9 @@ export class UpdateTasksLoop extends Loop {
   }: {
     type?: string;
     initialTasks?: string[];
-    generateExecutionStep: ({}: { task: string; run: AgentRun }) => Step;
+    generateExecutionStep: ({}: { task: string; run: Run }) => Step;
     updateTaskList: updateTaskList;
-    run: AgentRun;
+    run: Run;
   }) {
     super({ type, run });
 
@@ -85,12 +89,15 @@ export class UpdateTasksLoop extends Loop {
       type: "succeeded" | "failed";
     };
   }) {
-    this.tasks = await this.updateTaskList({
-      objective: this.run.objective,
-      completedTask: this.currentTask!,
-      completedTaskResult: result.summary,
-      remainingTasks: this.tasks,
-    });
+    this.tasks = await this.updateTaskList(
+      {
+        objective: this.run.objective,
+        completedTask: this.currentTask!,
+        completedTaskResult: result.summary,
+        remainingTasks: this.tasks,
+      },
+      this.run
+    );
     this.currentTask = undefined;
   }
 }

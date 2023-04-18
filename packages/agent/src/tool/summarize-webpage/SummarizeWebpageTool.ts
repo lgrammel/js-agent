@@ -4,6 +4,7 @@ import { SummarizeFunction } from "../../text/summarize/SummarizeFunction";
 import { ExecuteToolFunction } from "../ExecuteToolFunction";
 import { createToolAction } from "../ToolAction";
 import { ExtractWebpageTextFunction } from "../../text/extract-webpage-text/ExtractWebpageTextFunction";
+import { RunContext } from "../../agent/RunContext";
 
 export type SummarizeWebpageInput = {
   topic: string;
@@ -57,12 +58,18 @@ export const executeSummarizeWebpage =
     summarize: SummarizeFunction;
     extractText: ExtractWebpageTextFunction;
   }): ExecuteToolFunction<SummarizeWebpageInput, SummarizeWebpageOutput> =>
-  async ({ input: { topic, url } }: { input: SummarizeWebpageInput }) => ({
+  async (
+    { input: { topic, url } }: { input: SummarizeWebpageInput },
+    context: RunContext
+  ) => ({
     summary: `Summarized website ${url} according to topic ${topic}.`,
     output: {
-      summary: await summarize({
-        text: await extractText({ url }),
-        topic,
-      }),
+      summary: await summarize(
+        {
+          text: await extractText({ url }),
+          topic,
+        },
+        context
+      ),
     },
   });

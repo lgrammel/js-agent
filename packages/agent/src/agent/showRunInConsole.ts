@@ -1,23 +1,19 @@
 import chalk from "chalk";
 import { Step } from "../step";
 import { ToolStep } from "../tool/ToolStep";
-import { AgentRun } from "./AgentRun";
-import { AgentRunObserver } from "./AgentRunObserver";
+import { Run } from "./Run";
+import { RunObserver } from "./RunObserver";
 
 const log = console.log;
 
-export const outputAgentRunOnConsole = ({
-  name,
-}: {
-  name: string;
-}): AgentRunObserver => ({
-  onAgentRunStarted({ run }: { run: AgentRun }) {
+export const showRunInConsole = ({ name }: { name: string }): RunObserver => ({
+  onRunStarted({ run }: { run: Run }) {
     log(chalk.green(`### ${name} ###`));
     log(run.objective);
     log();
   },
 
-  onAgentRunFinished() {
+  onRunFinished() {
     log(chalk.gray("Done"));
   },
 

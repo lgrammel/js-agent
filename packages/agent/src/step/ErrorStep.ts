@@ -1,4 +1,4 @@
-import { AgentRun } from "../agent";
+import { Run } from "../agent";
 import { Step } from "./Step";
 import { StepResult } from "./StepResult";
 
@@ -13,7 +13,7 @@ export class ErrorStep extends Step {
     error,
   }: {
     type?: string;
-    run: AgentRun;
+    run: Run;
     errorMessage?: string;
     error: unknown;
   }) {

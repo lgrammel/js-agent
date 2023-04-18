@@ -3,14 +3,17 @@ import { Loop } from "../step/Loop";
 import { Step } from "../step/Step";
 import { StepResult } from "../step/StepResult";
 import { createNextId } from "../util/createNextId";
-import { AgentRunObserver } from "./AgentRunObserver";
+import { GenerateCall } from "./GenerateCall";
+import { RunObserver } from "./RunObserver";
 
-export class AgentRun {
-  private readonly observer?: AgentRunObserver;
+export class Run {
+  private readonly observer?: RunObserver;
   private readonly nextId = createNextId(1);
 
   readonly controller: AbortController;
   readonly objective: string;
+
+  readonly recordedCalls: GenerateCall[] = [];
 
   constructor({
     controller,
@@ -18,7 +21,7 @@ export class AgentRun {
     objective,
   }: {
     controller: AbortController;
-    observer?: AgentRunObserver;
+    observer?: RunObserver;
     objective: string;
   }) {
     this.controller = controller;
@@ -78,7 +81,7 @@ export class AgentRun {
 
   onStart() {
     try {
-      this.observer?.onAgentRunStarted?.({ run: this });
+      this.observer?.onRunStarted?.({ run: this });
     } catch (error) {
       this.logError(error);
     }
@@ -86,7 +89,7 @@ export class AgentRun {
 
   onFinish({ result }: { result: StepResult }) {
     try {
-      this.observer?.onAgentRunFinished?.({ run: this, result });
+      this.observer?.onRunFinished?.({ run: this, result });
     } catch (error) {
       this.logError(error);
     }
@@ -116,5 +119,10 @@ export class AgentRun {
     } catch (error: any) {
       this.logError(error);
     }
+  }
+
+  recordCall(call: GenerateCall) {
+    // TODO associate with currently active step
+    this.recordedCalls.push(call);
   }
 }

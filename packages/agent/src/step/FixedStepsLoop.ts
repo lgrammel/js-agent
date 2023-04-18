@@ -1,4 +1,4 @@
-import { AgentRun } from "../agent";
+import { Run } from "../agent";
 import { Loop } from "./Loop";
 import { Step } from "./Step";
 import { StepFactory } from "./StepFactory";
@@ -30,7 +30,7 @@ export class FixedStepsLoop extends Loop {
     steps,
   }: {
     type?: string;
-    run: AgentRun;
+    run: Run;
     steps: Array<Step>;
   }) {
     super({ type, run });

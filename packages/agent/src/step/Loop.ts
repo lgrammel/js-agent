@@ -1,11 +1,11 @@
-import { AgentRun } from "../agent/AgentRun";
+import { Run } from "../agent/Run";
 import { Step } from "./Step";
 import { StepResult } from "./StepResult";
 
 export abstract class Loop extends Step {
   readonly completedSteps: Array<Step> = [];
 
-  constructor({ type, run }: { type: string; run: AgentRun }) {
+  constructor({ type, run }: { type: string; run: Run }) {
     super({ type, run });
   }
 

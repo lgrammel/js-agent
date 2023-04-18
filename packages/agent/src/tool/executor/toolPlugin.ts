@@ -18,10 +18,13 @@ export function createToolPlugin({
 
           const input = tool.inputSchema.parse(request.body);
 
-          const output = await tool.execute({
-            input,
-            action: tool,
-          });
+          const output = await tool.execute(
+            {
+              input,
+              action: tool,
+            },
+            null
+          );
 
           const textOutput = JSON.stringify(output);
 

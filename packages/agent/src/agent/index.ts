@@ -1,4 +1,4 @@
-export * from "./AgentRun";
-export * from "./AgentRunObserver";
-export * from "./outputAgentRunOnConsole";
+export * from "./Run";
+export * from "./RunObserver";
+export * from "./showRunInConsole";
 export * from "./runAgent";

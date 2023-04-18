@@ -11,6 +11,7 @@ export async function runBabyAGI({
   objective: string;
 }) {
   const generateNewTasks = $.text.generate({
+    id: "generate-new-tasks",
     async prompt({
       objective,
       completedTask,
@@ -29,7 +30,7 @@ These are the incomplete tasks: ${existingTasks.join(", ")}.
 Based on the result, create new tasks to be completed by the AI system that do not overlap with incomplete tasks.
 Return the tasks as an array.`;
     },
-    generate: $.provider.openai.generateText({
+    model: $.provider.openai.completionModel({
       apiKey: openAiApiKey,
       model: "text-davinci-003",
       maxTokens: 100,
@@ -39,6 +40,7 @@ Return the tasks as an array.`;
   });
 
   const prioritizeTasks = $.text.generate({
+    id: "prioritize-tasks",
     async prompt({ tasks, objective }: { tasks: string[]; objective: string }) {
       return `You are an task prioritization AI tasked with cleaning the formatting of and reprioritizing the following tasks:
 ${tasks.join(", ")}.
@@ -49,7 +51,7 @@ Return the result as a numbered list, like:
 #. Second task
 Start the task list with number 1.`;
     },
-    generate: $.provider.openai.generateText({
+    model: $.provider.openai.completionModel({
       apiKey: openAiApiKey,
       model: "text-davinci-003",
       maxTokens: 1000,
@@ -78,7 +80,7 @@ Your task: ${task}
 Response:`;
           },
           input: { task },
-          generate: $.provider.openai.generateText({
+          model: $.provider.openai.completionModel({
             apiKey: openAiApiKey,
             model: "text-davinci-003",
             maxTokens: 2000,
@@ -86,27 +88,31 @@ Response:`;
           }),
         });
       },
-      async updateTaskList({
-        objective,
-        completedTask,
-        completedTaskResult,
-        remainingTasks,
-      }) {
-        return prioritizeTasks({
-          tasks: remainingTasks.concat(
-            await generateNewTasks({
-              objective,
-              completedTask,
-              completedTaskResult,
-              existingTasks: remainingTasks,
-            })
-          ),
-          objective,
-        });
+      async updateTaskList(
+        { objective, completedTask, completedTaskResult, remainingTasks },
+        context
+      ) {
+        const newTasks = await generateNewTasks(
+          {
+            objective,
+            completedTask,
+            completedTaskResult,
+            existingTasks: remainingTasks,
+          },
+          context
+        );
+
+        return prioritizeTasks(
+          {
+            tasks: remainingTasks.concat(newTasks),
+            objective,
+          },
+          context
+        );
       },
     }),
     observer: {
-      onAgentRunStarted({ run }) {
+      onRunStarted({ run }) {
         log(chalk.green("*****BABY AGI *****"));
         log();
         log(chalk.green("*****OBJECTIVE*****"));

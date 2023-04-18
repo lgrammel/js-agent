@@ -1,4 +1,4 @@
-import { AgentRun } from "../agent";
+import { Run } from "../agent";
 import { NoopStep } from "../step/NoopStep";
 import { Action } from "./Action";
 import zod from "zod";
@@ -18,7 +18,7 @@ export const done = ({
     input,
     run,
   }: {
-    run: AgentRun;
+    run: Run;
     input: { _freeText?: string };
   }) {
     return new NoopStep({

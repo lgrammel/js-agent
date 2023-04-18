@@ -27,7 +27,7 @@ export async function runDeveloperAgent({
   openAiApiKey: string;
   objective: string;
 }) {
-  const generateText = $.provider.openai.generateChatText({
+  const model = $.provider.openai.chatModel({
     apiKey: openAiApiKey,
     model: "gpt-4",
   });
@@ -64,7 +64,7 @@ export async function runDeveloperAgent({
               $.prompt.taskChatPrompt(),
               $.prompt.recentStepsChatPrompt({ maxSteps: 10 })
             ),
-          generate: generateText,
+          model,
           actionRegistry: new $.action.ActionRegistry({
             actions: [
               $.tool.readFile({ execute: executeRemote }),
@@ -79,7 +79,7 @@ export async function runDeveloperAgent({
         }),
       ],
     }),
-    observer: $.agent.outputAgentRunOnConsole({
+    observer: $.agent.showRunInConsole({
       name: "JavaScript Developer Agent",
     }),
     objective,

@@ -1,4 +1,5 @@
-import { AgentRun } from "../agent/AgentRun";
+import { Run } from "../agent/Run";
+import { RunContext } from "../agent/RunContext";
 import { Step } from "../step/Step";
 import { StepResult } from "../step/StepResult";
 import { ToolAction } from "./ToolAction";
@@ -15,7 +16,7 @@ export class ToolStep<
     action,
     input,
   }: {
-    run: AgentRun;
+    run: Run;
     action: ToolAction<INPUT, OUTPUT>;
     input: INPUT;
   }) {
@@ -25,12 +26,15 @@ export class ToolStep<
     this.input = input;
   }
 
-  protected async _execute(): Promise<StepResult> {
+  protected async _execute(context: RunContext): Promise<StepResult> {
     try {
-      const { output, summary } = await this.action.execute({
-        input: this.input,
-        action: this.action,
-      });
+      const { output, summary } = await this.action.execute(
+        {
+          input: this.input,
+          action: this.action,
+        },
+        context
+      );
 
       return {
         type: "succeeded",

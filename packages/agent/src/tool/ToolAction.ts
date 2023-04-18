@@ -2,7 +2,7 @@ import zod from "zod";
 import { Action } from "../action/Action.js";
 import { ActionParameters } from "../action/ActionParameters.js";
 import { FormatResultFunction } from "../action/FormatResultFunction.js";
-import { AgentRun } from "../agent/AgentRun.js";
+import { Run } from "../agent/Run.js";
 import { ExecuteToolFunction } from "./ExecuteToolFunction.js";
 import { ToolStep } from "./ToolStep.js";
 
@@ -43,7 +43,7 @@ export const createToolAction = <INPUT extends ActionParameters, OUTPUT>({
     run,
   }: {
     input: INPUT;
-    run: AgentRun;
+    run: Run;
   }): Promise<ToolStep<INPUT, OUTPUT>> {
     return new ToolStep({
       action: this,

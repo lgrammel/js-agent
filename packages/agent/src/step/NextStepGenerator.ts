@@ -1,9 +1,9 @@
-import { AgentRun } from "../agent/AgentRun";
+import { Run } from "../agent/Run";
 import { Step } from "./Step";
 
 export interface NextStepGenerator {
   generateNextStep({}: {
-    run: AgentRun;
+    run: Run;
     completedSteps: Array<Step>;
   }): PromiseLike<Step>;
 }
