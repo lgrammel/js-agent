@@ -1,11 +1,12 @@
-# JS Agent Wikipedia Question-Answering
+# JS Agent Wikipedia
 
 Answers questions using Wikipedia articles. It searches using a Programmable Search Engine set up for en.wikipedia.org and reads (summarizes) articles to find the answer.
 
-## Requirements
+## JS Agent features used
 
-- **GPT-4 access**
-- pnpm
+- OpenAI chat completion model (`gpt-3.5-turbo`)
+- Custom tool configuration (`readWikipediaArticleAction`, `searchWikipediaAction`)
+- `GenerateNextStepLoop` loop with tools and custom prompt
 
 ## Usage
 

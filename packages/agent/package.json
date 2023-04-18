@@ -10,6 +10,15 @@
   "bugs": {
     "url": "https://github.com/lgrammel/js-agent/issues"
   },
+  "keywords": [
+    "llm",
+    "gpt3",
+    "gpt4",
+    "agent",
+    "autogpt",
+    "babyagi",
+    "openai"
+  ],
   "license": "MIT",
   "main": ".build/js/index.js",
   "scripts": {

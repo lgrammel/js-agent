@@ -1,8 +1,15 @@
 # JS Agent BabyAGI
 
-A TypeScript / JS Agent implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi) by [@yoheinakajima](https://twitter.com/yoheinakajima).
+JS Agent implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi) by [@yoheinakajima](https://twitter.com/yoheinakajima).
 
-It is currently implemented as a single planner step, does not use memory (yet), and uses `gpt-3.5-turbo` instead of `davinci-003`. The main loop that executes the top task from a task list and then updates the task list was extracted into "UpdateTasksLoop" (gptindex.js).
+It is implemented as a single planner step and does not use memory or actions. The main loop that executes the top task from a task list and then updates the task list was extracted into "UpdateTasksLoop".
+
+## JS Agent features used
+
+- OpenAI text completion model (`text-davinci-003`)
+- Custom console output with AgentRunObserver
+- `UpdateTasksLoop` planning loop
+- Creating typed LLM functions with prompt and output processor using `$.text.generate`
 
 ## Usage
 

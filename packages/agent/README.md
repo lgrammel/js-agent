@@ -8,7 +8,7 @@ JS Agent makes the agent configuration explicit, so you can easily understand an
 ## Examples
 
 **[BabyAGI](https://github.com/lgrammel/js-agent/tree/main/examples/babyagi)**:
-A TypeScript / JS Agent implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi) by [@yoheinakajima](https://twitter.com/yoheinakajima).
+JS Agent implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi).
 
 **[JavaScript/TypeScript developer](https://github.com/lgrammel/js-agent/tree/main/examples/javascript-developer)**:
 An automated developer agent that works in a docker container.
@@ -17,6 +17,23 @@ You can use it to document code, write tests, update tests and features, etc.
 
 **[Wikipedia Question-Answering](https://github.com/lgrammel/js-agent/tree/main/examples/wikipedia)**:
 An agent that has access to a wikipedia search engine and can read wikipedia articles. You can use it to answer questions about wikipedia content.
+
+## Features
+
+- Agent definition and execution
+  - Observable agent runs
+- Supported LLM models
+  - OpenAI text completion models (`text-davinci-003` etc.)
+  - OpenAI chat completion models (`gpt-4`, `gpt-3.5-turbo`)
+- Prompt template creation
+- Actions and Tools
+  - Read file, write file, run command, use programmable search engine, summarize website according to topic, ask user for input
+- Text functions
+  - Extract text from webpage
+  - Split text into chunks
+  - Summarize text recursively
+- General utils
+  - LLM call retry with exponential backoff
 
 ## Usage
 
