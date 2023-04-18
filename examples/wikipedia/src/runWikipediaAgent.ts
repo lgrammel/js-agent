@@ -42,6 +42,7 @@ export async function runWikipediaAgent({
             apiKey: openAiApiKey,
             model: "gpt-3.5-turbo",
           }),
+          processOutput: async (output) => output.trim(),
         }),
       }),
     }),

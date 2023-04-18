@@ -74,6 +74,7 @@ export class GenerateNextStepLoop<PROMPT_TYPE> extends Loop {
     this.generateText = generateFunction({
       prompt,
       generate,
+      processOutput: async (output) => output,
     });
   }
 

@@ -1,7 +1,5 @@
 import chalk from "chalk";
 import * as $ from "js-agent";
-import { addNewTasks } from "./addNewTasks";
-import { prioritizeTasks } from "./prioritizeTasks";
 
 export async function runBabyAGI({
   openAiApiKey,
@@ -10,6 +8,74 @@ export async function runBabyAGI({
   openAiApiKey: string;
   objective: string;
 }) {
+  const generateNewTasks = $.text.generate({
+    prompt: async ({
+      objective,
+      completedTask,
+      completedTaskResult,
+      existingTasks,
+    }: {
+      objective: string;
+      completedTask: string;
+      completedTaskResult: string;
+      existingTasks: string[];
+    }) => [
+      {
+        role: "system" as const,
+        content: `You are an task creation AI that uses the result of an execution agent to create new tasks with the following objective: ${objective}.
+The last completed task has the result: ${completedTaskResult}.
+This result was based on this task description: ${completedTask}.
+These are the incomplete tasks: ${existingTasks.join(", ")}. 
+Based on the result, create new tasks to be completed by the AI system that do not overlap with incomplete tasks.
+Return the tasks as an array.`,
+      },
+    ],
+    generate: $.ai.openai.generateChatText({
+      apiKey: openAiApiKey,
+      model: "gpt-3.5-turbo",
+      maxTokens: 100,
+      temperature: 0.5,
+    }),
+    processOutput: async (output) => output.trim().split("\n"),
+  });
+
+  const prioritizeTasks = $.text.generate({
+    prompt: async ({
+      tasks,
+      objective,
+    }: {
+      tasks: string[];
+      objective: string;
+    }) => [
+      {
+        role: "system" as const,
+        content: `You are an task prioritization AI tasked with cleaning the formatting of and reprioritizing the following tasks:
+${tasks.join(", ")}.
+Consider the ultimate objective of your team:${objective}.
+Do not remove any tasks. 
+Return the result as a numbered list, like:
+#. First task
+#. Second task
+Start the task list with number 1.`,
+      },
+    ],
+    generate: $.ai.openai.generateChatText({
+      apiKey: openAiApiKey,
+      model: "gpt-3.5-turbo",
+      maxTokens: 1000,
+      temperature: 0.5,
+    }),
+    processOutput: async (output) => {
+      return output
+        .trim()
+        .split("\n")
+        .map((task) => {
+          const [idPart, ...rest] = task.trim().split(".");
+          return rest.join(".").trim();
+        });
+    },
+  });
+
   return $.runAgent({
     agent: $.step.createUpdateTasksLoop({
       type: "main",
@@ -43,25 +109,15 @@ Response:`,
         remainingTasks,
       }) {
         return prioritizeTasks({
-          tasks: await addNewTasks({
-            objective,
-            completedTask,
-            completedTaskResult,
-            existingTasks: remainingTasks,
-            generateText: $.ai.openai.generateChatText({
-              apiKey: openAiApiKey,
-              model: "gpt-3.5-turbo",
-              maxTokens: 100,
-              temperature: 0.5,
-            }),
-          }),
+          tasks: remainingTasks.concat(
+            await generateNewTasks({
+              objective,
+              completedTask,
+              completedTaskResult,
+              existingTasks: remainingTasks,
+            })
+          ),
           objective,
-          generateText: $.ai.openai.generateChatText({
-            apiKey: openAiApiKey,
-            model: "gpt-3.5-turbo",
-            maxTokens: 1000,
-            temperature: 0.5,
-          }),
         });
       },
     }),

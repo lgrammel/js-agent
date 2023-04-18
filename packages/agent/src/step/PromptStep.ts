@@ -27,6 +27,7 @@ export class PromptStep<INPUT, PROMPT_TYPE> extends Step {
     this.generateText = generateFunction({
       prompt,
       generate,
+      processOutput: async (output) => output,
     });
   }
 
