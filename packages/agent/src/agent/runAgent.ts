@@ -1,13 +1,13 @@
 import { StepFactory } from "../step/StepFactory";
-import { MaxStepsRunController } from "./MaxStepsRunController";
+import { maxSteps } from "./controller/maxSteps";
 import { Run } from "./Run";
-import { RunController } from "./RunController";
+import { RunController } from "./controller/RunController";
 import { RunObserver } from "./RunObserver";
 
 export const runAgent = async ({
   agent,
   observer,
-  controller = new MaxStepsRunController({ maxSteps: 100 }),
+  controller = maxSteps(100),
   objective,
 }: {
   agent: StepFactory;

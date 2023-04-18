@@ -7,6 +7,7 @@ Answers questions using Wikipedia articles. It searches using a Programmable Sea
 - OpenAI chat completion model (`gpt-3.5-turbo`)
 - Custom tool configuration (`readWikipediaArticleAction`, `searchWikipediaAction`)
 - `GenerateNextStepLoop` loop with tools and custom prompt
+- `maxSteps` `RunController` to limit the maximum number of steps
 
 ## Usage
 

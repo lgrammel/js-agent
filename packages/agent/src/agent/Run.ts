@@ -1,4 +1,4 @@
-import { RunController } from "./RunController";
+import { RunController } from "./controller/RunController";
 import { Loop } from "../step/Loop";
 import { Step } from "../step/Step";
 import { StepResult } from "../step/StepResult";
