@@ -35,8 +35,8 @@ export class Run {
     return `${this.nextId()}-${type}`;
   }
 
-  isAborted() {
-    return this.controller.shouldAbort(this);
+  checkAbort() {
+    return this.controller.checkAbort(this);
   }
 
   private logError(error: unknown) {

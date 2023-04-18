@@ -15,10 +15,11 @@ export const showRunInConsole = ({ name }: { name: string }): RunObserver => ({
 
   onRunFinished({ result }: { result: StepResult }) {
     if (result.type === "aborted") {
-      log(chalk.gray("Aborted"));
-    } else {
-      log(chalk.gray("Done"));
+      log(chalk.gray(`Aborted: ${result.reason}`));
+      return;
     }
+
+    log(chalk.gray("Done"));
   },
 
   onStepGenerationStarted() {

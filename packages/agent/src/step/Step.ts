@@ -28,8 +28,9 @@ export abstract class Step {
   protected abstract _execute(context: RunContext): Promise<StepResult>;
 
   async execute(): Promise<StepResult> {
-    if (this.run.isAborted()) {
-      return { type: "aborted" };
+    const abortCheck = this.run.checkAbort();
+    if (abortCheck.shouldAbort) {
+      return { type: "aborted", reason: abortCheck.reason };
     }
 
     if (this.state.type !== "pending") {

@@ -8,7 +8,14 @@ export class MaxStepsRunController implements RunController {
     this.maxSteps = maxSteps;
   }
 
-  shouldAbort(run: Run): boolean {
-    return run.root!.getStepCount() >= this.maxSteps;
+  checkAbort(run: Run) {
+    if (run.root!.getStepCount() < this.maxSteps) {
+      return { shouldAbort: false as const };
+    }
+
+    return {
+      shouldAbort: true as const,
+      reason: `Maximum number of steps (${this.maxSteps}) exceeded.`,
+    };
   }
 }

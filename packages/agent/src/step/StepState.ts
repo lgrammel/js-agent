@@ -1,6 +1,10 @@
 export type StepState =
   | {
-      type: "pending" | "running" | "aborted";
+      type: "pending" | "running";
+    }
+  | {
+      type: "aborted";
+      reason: string;
     }
   | {
       type: "succeeded";

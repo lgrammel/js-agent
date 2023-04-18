@@ -28,8 +28,9 @@ export abstract class Loop extends Step {
   protected async _execute(): Promise<StepResult> {
     try {
       while (this.hasMoreSteps()) {
-        if (this.run.isAborted()) {
-          return { type: "aborted" };
+        const abortCheck = this.run.checkAbort();
+        if (abortCheck.shouldAbort) {
+          return { type: "aborted", reason: abortCheck.reason };
         }
 
         this.run.onLoopIterationStarted({ loop: this });
@@ -40,7 +41,7 @@ export abstract class Loop extends Step {
         this.completedSteps.push(step);
 
         if (result.type === "aborted") {
-          return { type: "aborted" };
+          return result;
         }
 
         await this.update({ step, result });

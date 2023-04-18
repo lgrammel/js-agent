@@ -1,5 +1,7 @@
 import { Run } from ".";
 
 export type RunController = {
-  shouldAbort(run: Run): boolean;
+  checkAbort(
+    run: Run
+  ): { shouldAbort: false } | { shouldAbort: true; reason: string };
 };
