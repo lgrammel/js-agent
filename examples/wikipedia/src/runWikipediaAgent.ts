@@ -82,5 +82,6 @@ export async function runWikipediaAgent({
       name: "Wikipedia Agent",
     }),
     objective,
+    controller: new $.agent.MaxStepsRunController({ maxSteps: 2 }),
   });
 }

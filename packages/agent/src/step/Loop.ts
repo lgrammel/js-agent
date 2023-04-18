@@ -58,4 +58,11 @@ export abstract class Loop extends Step {
     // TODO have a final result
     return { type: "succeeded", summary: "Completed all tasks." };
   }
+
+  getStepCount(): number {
+    return this.completedSteps.reduce(
+      (sum, step) => sum + step.getStepCount(),
+      0
+    );
+  }
 }

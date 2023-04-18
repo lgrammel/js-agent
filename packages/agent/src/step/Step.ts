@@ -59,4 +59,8 @@ export abstract class Step {
   isDoneStep() {
     return false;
   }
+
+  getStepCount() {
+    return 1;
+  }
 }

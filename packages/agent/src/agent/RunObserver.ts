@@ -5,8 +5,7 @@ import { Run } from "./Run";
 
 export type RunObserver = {
   onRunStarted?: ({}: { run: Run }) => void;
-  // TODO result should be a StepResult:
-  onRunFinished?: ({}: { run: Run; result: unknown }) => void;
+  onRunFinished?: ({}: { run: Run; result: StepResult }) => void;
 
   onStepGenerationStarted?: ({}: { run: Run }) => void;
   onStepGenerationFinished?: ({}: {

@@ -1,4 +1,4 @@
-import { AbortController } from "../step/AbortController";
+import { RunController } from "./RunController";
 import { Loop } from "../step/Loop";
 import { Step } from "../step/Step";
 import { StepResult } from "../step/StepResult";
@@ -10,17 +10,19 @@ export class Run {
   private readonly observer?: RunObserver;
   private readonly nextId = createNextId(1);
 
-  readonly controller: AbortController;
+  readonly controller: RunController;
   readonly objective: string;
 
   readonly recordedCalls: GenerateCall[] = [];
+
+  root: Step | undefined;
 
   constructor({
     controller,
     observer,
     objective,
   }: {
-    controller: AbortController;
+    controller: RunController;
     observer?: RunObserver;
     objective: string;
   }) {
@@ -34,7 +36,7 @@ export class Run {
   }
 
   isAborted() {
-    return this.controller.isRunAborted();
+    return this.controller.shouldAbort(this);
   }
 
   private logError(error: unknown) {

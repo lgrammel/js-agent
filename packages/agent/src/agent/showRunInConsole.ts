@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { Step } from "../step";
+import { Step, StepResult } from "../step";
 import { ToolStep } from "../tool/ToolStep";
 import { Run } from "./Run";
 import { RunObserver } from "./RunObserver";
@@ -13,8 +13,12 @@ export const showRunInConsole = ({ name }: { name: string }): RunObserver => ({
     log();
   },
 
-  onRunFinished() {
-    log(chalk.gray("Done"));
+  onRunFinished({ result }: { result: StepResult }) {
+    if (result.type === "aborted") {
+      log(chalk.gray("Aborted"));
+    } else {
+      log(chalk.gray("Done"));
+    }
   },
 
   onStepGenerationStarted() {
