@@ -1,6 +1,8 @@
 import chalk from "chalk";
 import * as $ from "js-agent";
 
+const log = console.log;
+
 export async function runBabyAGI({
   openAiApiKey,
   objective,
@@ -123,31 +125,30 @@ Response:`,
     }),
     observer: {
       onAgentRunStarted({ run }) {
-        console.log(chalk.green("*****BABY AGI *****"));
-        console.log();
-        console.log(chalk.green("*****OBJECTIVE*****"));
-        console.log(run.objective);
-        console.log();
+        log(chalk.green("*****BABY AGI *****"));
+        log();
+        log(chalk.green("*****OBJECTIVE*****"));
+        log(run.objective);
+        log();
       },
       onLoopIterationStarted({ loop }) {
         if (loop.type === "main" && loop instanceof $.step.UpdateTasksLoop) {
-          console.log(chalk.green("*****TASK LIST*****"));
-          console.log(
+          log(chalk.green("*****TASK LIST*****"));
+          log(
             `${loop.tasks
               .map((task, index) => `${index + 1}: ${task}`)
               .join("\n")}\n`
           );
 
-          const nextTask = loop.tasks[0];
-          console.log(chalk.green("*****NEXT TASK*****"));
-          console.log(`${nextTask}\n`);
+          log(chalk.green("*****NEXT TASK*****"));
+          log(`${loop.tasks[0]}\n`);
         }
       },
       onStepExecutionFinished({ step }) {
         if (step.state.type === "succeeded" || step.state.type === "failed") {
-          console.log(chalk.green("*****TASK RESULT*****"));
-          console.log(step.state.summary);
-          console.log();
+          log(chalk.green("*****TASK RESULT*****"));
+          log(step.state.summary);
+          log();
         }
       },
     },
