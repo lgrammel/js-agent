@@ -1,18 +1,14 @@
 import axios from "axios";
 import zod from "zod";
-import { OpenAIChatMessage } from "./OpenAIChatMessage";
 
-const OpenAIChatCompletionSchema = zod.object({
+const OpenAICompletionSchema = zod.object({
   id: zod.string(),
-  object: zod.literal("chat.completion"),
+  object: zod.literal("text_completion"),
   created: zod.number(),
   model: zod.string(),
   choices: zod.array(
     zod.object({
-      message: zod.object({
-        role: zod.literal("assistant"),
-        content: zod.string(),
-      }),
+      text: zod.string(),
       index: zod.number(),
       logprobs: zod.nullable(zod.any()),
       finish_reason: zod.string(),
@@ -25,14 +21,25 @@ const OpenAIChatCompletionSchema = zod.object({
   }),
 });
 
-export type OpenAIChatCompletion = zod.infer<typeof OpenAIChatCompletionSchema>;
+export type OpenAICompletion = zod.infer<typeof OpenAICompletionSchema>;
 
-export type OpenAIChatCompletionModel = "gpt-4" | "gpt-3.5-turbo";
+export type OpenAICompletionModel =
+  | "text-davinci-003"
+  | "text-davinci-002"
+  | "code-davinci-002"
+  | "code-davinci-002"
+  | "text-curie-001"
+  | "text-babbage-001"
+  | "text-ada-001"
+  | "davinci"
+  | "curie"
+  | "babbage"
+  | "ada";
 
-export async function createChatCompletion({
+export async function generateCompletion({
   apiKey,
+  prompt,
   model,
-  messages,
   n,
   temperature,
   maxTokens,
@@ -40,19 +47,19 @@ export async function createChatCompletion({
   frequencyPenalty,
 }: {
   apiKey: string;
-  messages: Array<OpenAIChatMessage>;
-  model: OpenAIChatCompletionModel;
+  prompt: string;
+  model: OpenAICompletionModel;
   n?: number;
   temperature?: number;
   maxTokens?: number;
   presencePenalty?: number;
   frequencyPenalty?: number;
-}): Promise<OpenAIChatCompletion> {
+}): Promise<OpenAICompletion> {
   const response = await axios.post(
-    "https://api.openai.com/v1/chat/completions",
+    "https://api.openai.com/v1/completions",
     JSON.stringify({
       model,
-      messages,
+      prompt,
       n,
       temperature,
       max_tokens: maxTokens,
@@ -67,5 +74,5 @@ export async function createChatCompletion({
     }
   );
 
-  return OpenAIChatCompletionSchema.parse(response.data);
+  return OpenAICompletionSchema.parse(response.data);
 }

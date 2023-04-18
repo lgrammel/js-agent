@@ -1,4 +1,4 @@
-import { OpenAIChatMessage } from "../ai/openai/OpenAIChatMessage";
+import { OpenAIChatMessage } from "../provider/openai/OpenAIChatMessage";
 import { ChatPrompt } from "./Prompt";
 
 export function concatChatPrompts<INPUT>(...prompts: Array<ChatPrompt<INPUT>>) {

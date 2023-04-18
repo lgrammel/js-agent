@@ -1,5 +1,4 @@
 import chalk from "chalk";
-import { OpenAIChatMessage } from "../ai/openai/OpenAIChatMessage";
 import { Step } from "../step";
 import { ToolStep } from "../tool/ToolStep";
 import { AgentRun } from "./AgentRun";

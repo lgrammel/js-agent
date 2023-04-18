@@ -1,4 +1,4 @@
-import { OpenAIChatMessage } from "../../ai/openai/OpenAIChatMessage";
+import { OpenAIChatMessage } from "../../provider/openai/OpenAIChatMessage";
 import { Prompt } from "../../prompt/Prompt";
 
 export const SummarizeChatPrompt: Prompt<

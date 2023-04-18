@@ -2,10 +2,12 @@
   "editor.formatOnSave": true,
   "cSpell.words": [
     "Backoff",
+    "davinci",
     "Fastify",
     "gptagent",
     "hyperid",
     "openai",
-    "pino"
+    "pino",
+    "reprioritizing"
   ]
 }

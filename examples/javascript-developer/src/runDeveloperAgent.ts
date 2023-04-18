@@ -27,7 +27,7 @@ export async function runDeveloperAgent({
   openAiApiKey: string;
   objective: string;
 }) {
-  const generateText = $.ai.openai.generateChatText({
+  const generateText = $.provider.openai.generateChatText({
     apiKey: openAiApiKey,
     model: "gpt-4",
   });

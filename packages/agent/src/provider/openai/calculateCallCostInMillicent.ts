@@ -1,4 +1,4 @@
-import { OpenAIChatCompletionModel } from "./createChatCompletion";
+import { OpenAIChatCompletionModel } from "./api/generateChatCompletion";
 
 export function calculateCallCostInMillicent(parameters: {
   model: OpenAIChatCompletionModel;

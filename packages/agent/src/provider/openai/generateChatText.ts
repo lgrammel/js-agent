@@ -1,6 +1,9 @@
-import { OpenAIChatCompletionModel, createChatCompletion } from ".";
 import { retryWithExponentialBackoff } from "../../util/retryWithExponentialBackoff";
 import { OpenAIChatMessage } from "./OpenAIChatMessage";
+import {
+  OpenAIChatCompletionModel,
+  generateChatCompletion,
+} from "./api/generateChatCompletion";
 
 export type TextGenerationResult =
   | {
@@ -44,7 +47,7 @@ export const generateChatText =
     );
 
     const response = await retryWithExponentialBackoff(() =>
-      createChatCompletion({
+      generateChatCompletion({
         apiKey,
         messages,
         model,

@@ -11,7 +11,7 @@ export async function runBabyAGI({
   objective: string;
 }) {
   const generateNewTasks = $.text.generate({
-    prompt: async ({
+    async prompt({
       objective,
       completedTask,
       completedTaskResult,
@@ -21,20 +21,17 @@ export async function runBabyAGI({
       completedTask: string;
       completedTaskResult: string;
       existingTasks: string[];
-    }) => [
-      {
-        role: "system" as const,
-        content: `You are an task creation AI that uses the result of an execution agent to create new tasks with the following objective: ${objective}.
+    }) {
+      return `You are an task creation AI that uses the result of an execution agent to create new tasks with the following objective: ${objective}.
 The last completed task has the result: ${completedTaskResult}.
 This result was based on this task description: ${completedTask}.
 These are the incomplete tasks: ${existingTasks.join(", ")}. 
 Based on the result, create new tasks to be completed by the AI system that do not overlap with incomplete tasks.
-Return the tasks as an array.`,
-      },
-    ],
-    generate: $.ai.openai.generateChatText({
+Return the tasks as an array.`;
+    },
+    generate: $.provider.openai.generateText({
       apiKey: openAiApiKey,
-      model: "gpt-3.5-turbo",
+      model: "text-davinci-003",
       maxTokens: 100,
       temperature: 0.5,
     }),
@@ -42,40 +39,30 @@ Return the tasks as an array.`,
   });
 
   const prioritizeTasks = $.text.generate({
-    prompt: async ({
-      tasks,
-      objective,
-    }: {
-      tasks: string[];
-      objective: string;
-    }) => [
-      {
-        role: "system" as const,
-        content: `You are an task prioritization AI tasked with cleaning the formatting of and reprioritizing the following tasks:
+    async prompt({ tasks, objective }: { tasks: string[]; objective: string }) {
+      return `You are an task prioritization AI tasked with cleaning the formatting of and reprioritizing the following tasks:
 ${tasks.join(", ")}.
 Consider the ultimate objective of your team:${objective}.
 Do not remove any tasks. 
 Return the result as a numbered list, like:
 #. First task
 #. Second task
-Start the task list with number 1.`,
-      },
-    ],
-    generate: $.ai.openai.generateChatText({
+Start the task list with number 1.`;
+    },
+    generate: $.provider.openai.generateText({
       apiKey: openAiApiKey,
-      model: "gpt-3.5-turbo",
+      model: "text-davinci-003",
       maxTokens: 1000,
       temperature: 0.5,
     }),
-    processOutput: async (output) => {
-      return output
+    processOutput: async (output) =>
+      output
         .trim()
         .split("\n")
         .map((task) => {
           const [idPart, ...rest] = task.trim().split(".");
           return rest.join(".").trim();
-        });
-    },
+        }),
   });
 
   return $.runAgent({
@@ -86,19 +73,14 @@ Start the task list with number 1.`,
           type: "execute-prompt",
           run,
           async prompt({ task }: { task: string }) {
-            return [
-              {
-                role: "system" as const,
-                content: `You are an AI who performs one task based on the following objective: ${run.objective}.
+            return `You are an AI who performs one task based on the following objective: ${run.objective}.
 Your task: ${task}
-Response:`,
-              },
-            ];
+Response:`;
           },
           input: { task },
-          generate: $.ai.openai.generateChatText({
+          generate: $.provider.openai.generateText({
             apiKey: openAiApiKey,
-            model: "gpt-3.5-turbo",
+            model: "text-davinci-003",
             maxTokens: 2000,
             temperature: 0.7,
           }),

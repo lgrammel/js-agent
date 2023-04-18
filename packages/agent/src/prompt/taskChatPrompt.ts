@@ -1,4 +1,4 @@
-import { OpenAIChatMessage } from "../ai/openai/OpenAIChatMessage";
+import { OpenAIChatMessage } from "../provider/openai/OpenAIChatMessage";
 import { FormatSectionFunction } from "./FormatSectionFunction";
 import { sectionsChatPrompt } from "./sectionsChatPrompt";
 

@@ -1,4 +1,4 @@
-import { OpenAIChatMessage } from "../ai/openai/OpenAIChatMessage";
+import { OpenAIChatMessage } from "../provider/openai/OpenAIChatMessage";
 import { Step } from "../step";
 import { ToolStep } from "../tool/ToolStep";
 

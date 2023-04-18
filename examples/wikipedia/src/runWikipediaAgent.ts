@@ -38,7 +38,7 @@ export async function runWikipediaAgent({
         }),
         summarize: $.text.generate({
           prompt: $.text.SummarizeChatPrompt,
-          generate: $.ai.openai.generateChatText({
+          generate: $.provider.openai.generateChatText({
             apiKey: openAiApiKey,
             model: "gpt-3.5-turbo",
           }),
@@ -73,7 +73,7 @@ export async function runWikipediaAgent({
         $.prompt.availableActionsChatPrompt(),
         $.prompt.recentStepsChatPrompt({ maxSteps: 6 })
       ),
-      generate: $.ai.openai.generateChatText({
+      generate: $.provider.openai.generateChatText({
         apiKey: openAiApiKey,
         model: "gpt-3.5-turbo",
       }),

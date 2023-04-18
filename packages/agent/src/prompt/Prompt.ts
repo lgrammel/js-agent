@@ -1,4 +1,4 @@
-import { OpenAIChatMessage } from "../ai/openai/OpenAIChatMessage";
+import { OpenAIChatMessage } from "../provider/openai/OpenAIChatMessage";
 
 export type Prompt<INPUT, PROMPT_TYPE> = (
   input: INPUT
