@@ -55,13 +55,13 @@ export async function runWikipediaAgent({
         format: new $.action.format.JsonActionFormat(),
       }),
       prompt: $.prompt.concatChatPrompts<$.step.GenerateNextStepLoopContext>(
-        $.prompt.fixedSectionsChatPrompt({
-          sections: [
+        $.prompt.sectionsChatPrompt({
+          role: "system",
+          getSections: async () => [
             {
               title: "Role",
               // "You speak perfect JSON" helps getting gpt-3.5-turbo to provide structured json at the end
-              content: `You are an knowledge worker that answers questions using Wikipedia content.
-    You speak perfect JSON.`,
+              content: `You are an knowledge worker that answers questions using Wikipedia content. You speak perfect JSON.`,
             },
             {
               title: "Constraints",

@@ -23,11 +23,12 @@ An agent that has access to a wikipedia search engine and can read wikipedia art
 ## Features
 
 - Agent definition and execution
-  - Observable agent runs
+  - Observable agent runs (to support console output, UIs, server runs, webapps, etc.)
 - Supported LLM models
   - OpenAI text completion models (`text-davinci-003` etc.)
   - OpenAI chat completion models (`gpt-4`, `gpt-3.5-turbo`)
 - Prompt template creation
+  - Create templates for text prompts and chat prompts
 - Actions and Tools
   - Read file, write file, run command, use programmable search engine, summarize website according to topic, ask user for input
 - Text functions
@@ -108,10 +109,11 @@ export async function runWikipediaAgent({
         }),
         summarize: $.text.generate({
           prompt: $.text.SummarizeChatPrompt,
-          generate: $.ai.openai.generateChatText({
+          generate: $.provider.openai.generateChatText({
             apiKey: openAiApiKey,
             model: "gpt-3.5-turbo",
           }),
+          processOutput: async (output) => output.trim(),
         }),
       }),
     }),
@@ -124,13 +126,13 @@ export async function runWikipediaAgent({
         format: new $.action.format.JsonActionFormat(),
       }),
       prompt: $.prompt.concatChatPrompts<$.step.GenerateNextStepLoopContext>(
-        $.prompt.fixedSectionsChatPrompt({
-          sections: [
+        $.prompt.sectionsChatPrompt({
+          role: "system",
+          getSections: async () => [
             {
               title: "Role",
               // "You speak perfect JSON" helps getting gpt-3.5-turbo to provide structured json at the end
-              content: `You are an knowledge worker that answers questions using Wikipedia content.
-    You speak perfect JSON.`,
+              content: `You are an knowledge worker that answers questions using Wikipedia content. You speak perfect JSON.`,
             },
             {
               title: "Constraints",
@@ -142,7 +144,7 @@ export async function runWikipediaAgent({
         $.prompt.availableActionsChatPrompt(),
         $.prompt.recentStepsChatPrompt({ maxSteps: 6 })
       ),
-      generate: $.ai.openai.generateChatText({
+      generate: $.provider.openai.generateChatText({
         apiKey: openAiApiKey,
         model: "gpt-3.5-turbo",
       }),

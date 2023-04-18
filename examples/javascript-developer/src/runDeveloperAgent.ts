@@ -52,8 +52,9 @@ export async function runDeveloperAgent({
         $.step.createGenerateNextStepLoop({
           prompt:
             $.prompt.concatChatPrompts<$.step.GenerateNextStepLoopContext>(
-              $.prompt.fixedSectionsChatPrompt({
-                sections: [
+              $.prompt.sectionsChatPrompt({
+                role: "system",
+                getSections: async () => [
                   { title: "role", content: role },
                   { title: "project", content: project },
                   { title: "constraints", content: constraints },
