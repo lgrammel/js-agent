@@ -1,10 +1,10 @@
-# JS Agent: Build AI Agents with JS & TS
+# JS Agent: Build GPT Agents with JS & TS
 
 ![Twitter Follow](https://img.shields.io/twitter/follow/lgrammel?style=social)
 
-JS Agent is a composable and extensible framework for creating AI agents with JavaScript and TypeScript.
+JS Agent is a composable and extensible framework for creating GPT agents with JavaScript and TypeScript.
 
-While creating an AI agent prototype is easy, increasing its reliability and robustness is very hard
+While creating an agent prototype is easy, increasing its reliability and robustness is very hard
 and requires considerable experimentation. JS Agent provides building blocks and tooling to help you develop rock-solid agents faster.
 
 **⚠️ JS Agent is currently in its initial experimental phase. Prior to reaching version 0.1, there may breaking changes in each release.**
