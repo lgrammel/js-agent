@@ -1,6 +1,6 @@
 # JS Agent: Build GPT Agents with JS & TS
 
-![Twitter Follow](https://img.shields.io/twitter/follow/lgrammel?style=social)
+[![Twitter Follow](https://img.shields.io/twitter/follow/lgrammel?style=social)](https://twitter.com/intent/follow?screen_name=lgrammel)
 
 JS Agent is a composable and extensible framework for creating GPT agents with JavaScript and TypeScript.
 
