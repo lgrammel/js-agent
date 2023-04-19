@@ -21,6 +21,11 @@ export async function runWikipediaAgent({
     }),
   });
 
+  const chatGpt = $.provider.openai.chatModel({
+    apiKey: openAiApiKey,
+    model: "gpt-3.5-turbo",
+  });
+
   const readWikipediaArticleAction = $.tool.summarizeWebpage({
     id: "read-wikipedia-article",
     description:
@@ -38,10 +43,7 @@ export async function runWikipediaAgent({
         summarize: $.text.generate({
           id: "summarize-wikipedia-article-chunk",
           prompt: $.text.SummarizeChatPrompt,
-          model: $.provider.openai.chatModel({
-            apiKey: openAiApiKey,
-            model: "gpt-3.5-turbo",
-          }),
+          model: chatGpt,
           processOutput: async (output) => output.trim(),
         }),
       }),
@@ -74,10 +76,7 @@ export async function runWikipediaAgent({
         $.prompt.availableActionsChatPrompt(),
         $.prompt.recentStepsChatPrompt({ maxSteps: 6 })
       ),
-      model: $.provider.openai.chatModel({
-        apiKey: openAiApiKey,
-        model: "gpt-3.5-turbo",
-      }),
+      model: chatGpt,
     }),
     controller: $.agent.controller.maxSteps(20),
     observer: $.agent.observer.combineObservers(
