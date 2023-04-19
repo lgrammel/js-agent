@@ -8,6 +8,7 @@ Answers questions using Wikipedia articles. It searches using a Programmable Sea
 - Custom tool configuration (`readWikipediaArticleAction`, `searchWikipediaAction`)
 - `GenerateNextStepLoop` loop with tools and custom prompt
 - `maxSteps` `RunController` to limit the maximum number of steps
+- Cost calculation and extracting information from LLM calls after the run
 
 ## Usage
 

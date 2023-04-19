@@ -1,7 +1,7 @@
 import axios from "axios";
 import zod from "zod";
 
-const OpenAICompletionSchema = zod.object({
+export const OpenAITextCompletionSchema = zod.object({
   id: zod.string(),
   object: zod.literal("text_completion"),
   created: zod.number(),
@@ -21,9 +21,9 @@ const OpenAICompletionSchema = zod.object({
   }),
 });
 
-export type OpenAICompletion = zod.infer<typeof OpenAICompletionSchema>;
+export type OpenAITextCompletion = zod.infer<typeof OpenAITextCompletionSchema>;
 
-export type OpenAICompletionModel =
+export type OpenAITextCompletionModel =
   | "text-davinci-003"
   | "text-davinci-002"
   | "code-davinci-002"
@@ -36,7 +36,7 @@ export type OpenAICompletionModel =
   | "babbage"
   | "ada";
 
-export async function generateCompletion({
+export async function generateTextCompletion({
   apiKey,
   prompt,
   model,
@@ -48,13 +48,13 @@ export async function generateCompletion({
 }: {
   apiKey: string;
   prompt: string;
-  model: OpenAICompletionModel;
+  model: OpenAITextCompletionModel;
   n?: number;
   temperature?: number;
   maxTokens?: number;
   presencePenalty?: number;
   frequencyPenalty?: number;
-}): Promise<OpenAICompletion> {
+}): Promise<OpenAITextCompletion> {
   const response = await axios.post(
     "https://api.openai.com/v1/completions",
     JSON.stringify({
@@ -74,5 +74,5 @@ export async function generateCompletion({
     }
   );
 
-  return OpenAICompletionSchema.parse(response.data);
+  return OpenAITextCompletionSchema.parse(response.data);
 }

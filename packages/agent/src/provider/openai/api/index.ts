@@ -1,2 +1,2 @@
 export * from "./generateChatCompletion.js";
-export * from "./generateCompletion.js";
+export * from "./generateTextCompletion.js";

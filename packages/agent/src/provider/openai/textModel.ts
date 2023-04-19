@@ -1,9 +1,9 @@
 import { GeneratorModel } from "../../text/generate/generate";
 import {
-  OpenAICompletion,
-  OpenAICompletionModel,
-  generateCompletion,
-} from "./api/generateCompletion";
+  OpenAITextCompletion,
+  OpenAITextCompletionModel,
+  generateTextCompletion,
+} from "./api/generateTextCompletion";
 
 export const completionModel = ({
   apiKey,
@@ -12,21 +12,21 @@ export const completionModel = ({
   maxTokens,
 }: {
   apiKey: string;
-  model: OpenAICompletionModel;
+  model: OpenAITextCompletionModel;
   temperature?: number;
   maxTokens?: number;
-}): GeneratorModel<string, OpenAICompletion, string> => ({
+}): GeneratorModel<string, OpenAITextCompletion, string> => ({
   vendor: "openai",
   name: model,
-  generate: async (input: string): Promise<OpenAICompletion> =>
-    generateCompletion({
+  generate: async (input: string): Promise<OpenAITextCompletion> =>
+    generateTextCompletion({
       apiKey,
       prompt: input,
       model,
       temperature,
       maxTokens,
     }),
-  extractOutput: async (rawOutput: OpenAICompletion): Promise<string> => {
+  extractOutput: async (rawOutput: OpenAITextCompletion): Promise<string> => {
     return rawOutput.choices[0].text;
   },
 });

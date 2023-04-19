@@ -4,8 +4,7 @@
 
 JS Agent is a composable and extensible framework for creating GPT agents with JavaScript and TypeScript.
 
-While creating an agent prototype is easy, increasing its reliability and robustness is very hard
-and requires considerable experimentation. JS Agent provides building blocks and tooling to help you develop rock-solid agents faster.
+While creating an agent prototype is easy, increasing its reliability and robustness is difficult and requires considerable experimentation. JS Agent provides robust building blocks and tooling to help you develop rock-solid agents faster.
 
 **⚠️ JS Agent is currently in its initial experimental phase. Prior to reaching version 0.1, there may breaking changes in each release.**
 
@@ -20,9 +19,10 @@ See examples below for details on how to implement and run an agent.
 ## Features
 
 - Agent definition and execution
-  - Observable agent runs (to support console output, UIs, server runs, webapps, etc.)
-  - Recording of LLM calls for each agent run
-  - Controller to limit the number of steps
+  - Observe agent runs (to support console output, UIs, server runs, webapps, etc.)
+  - Record all LLM calls of an agent run
+  - Calculate the cost of LLM calls and agent runs
+  - Stop agent runs when certain criteria are met, e.g. to limit the number of steps
 - Supported LLM models
   - OpenAI text completion models (`text-davinci-003` etc.)
   - OpenAI chat completion models (`gpt-4`, `gpt-3.5-turbo`)
@@ -145,9 +145,26 @@ export async function runWikipediaAgent({
       }),
     }),
     controller: $.agent.controller.maxSteps(20),
-    observer: $.agent.showRunInConsole({
-      name: "Wikipedia Agent",
-    }),
+    observer: $.agent.observer.combineObservers(
+      $.agent.observer.showRunInConsole({ name: "Wikipedia Agent" }),
+      {
+        async onRunFinished({ run }) {
+          const runCostInMillicent = await $.agent.calculateRunCostInMillicent({
+            run,
+          });
+
+          console.log(
+            `Run cost: $${(runCostInMillicent / 1000 / 100).toFixed(2)}`
+          );
+
+          console.log(
+            `LLM calls: ${
+              run.recordedCalls.filter((call) => call.success).length
+            }`
+          );
+        },
+      }
+    ),
   });
 }
 ```

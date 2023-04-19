@@ -2,7 +2,7 @@ import axios from "axios";
 import zod from "zod";
 import { OpenAIChatMessage } from "../OpenAIChatMessage";
 
-const OpenAIChatCompletionSchema = zod.object({
+export const OpenAIChatCompletionSchema = zod.object({
   id: zod.string(),
   object: zod.literal("chat.completion"),
   created: zod.number(),
