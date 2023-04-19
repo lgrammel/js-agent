@@ -80,8 +80,6 @@ export async function runWikipediaAgent({
       }),
     }),
     controller: $.agent.controller.maxSteps(20),
-    observer: $.agent.showRunInConsole({
-      name: "Wikipedia Agent",
-    }),
+    observer: $.agent.observer.showRunInConsole({ name: "Wikipedia Agent" }),
   });
 }

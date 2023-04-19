@@ -2,7 +2,7 @@ import { StepFactory } from "../step/StepFactory";
 import { maxSteps } from "./controller/maxSteps";
 import { Run } from "./Run";
 import { RunController } from "./controller/RunController";
-import { RunObserver } from "./RunObserver";
+import { RunObserver } from "./observer/RunObserver";
 
 export const runAgent = async ({
   agent,

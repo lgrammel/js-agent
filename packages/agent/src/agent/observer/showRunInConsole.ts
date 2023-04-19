@@ -1,7 +1,7 @@
 import chalk from "chalk";
-import { Step, StepResult } from "../step";
-import { ToolStep } from "../tool/ToolStep";
-import { Run } from "./Run";
+import { Step, StepResult } from "../../step";
+import { ToolStep } from "../../tool/ToolStep";
+import { Run } from "../Run";
 import { RunObserver } from "./RunObserver";
 
 const log = console.log;

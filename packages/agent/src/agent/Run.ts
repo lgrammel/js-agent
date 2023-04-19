@@ -4,7 +4,7 @@ import { Step } from "../step/Step";
 import { StepResult } from "../step/StepResult";
 import { createNextId } from "../util/createNextId";
 import { GenerateCall } from "./GenerateCall";
-import { RunObserver } from "./RunObserver";
+import { RunObserver } from "./observer/RunObserver";
 
 export class Run {
   private readonly observer?: RunObserver;

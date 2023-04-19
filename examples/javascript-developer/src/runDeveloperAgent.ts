@@ -80,7 +80,7 @@ export async function runDeveloperAgent({
         }),
       ],
     }),
-    observer: $.agent.showRunInConsole({
+    observer: $.agent.observer.showRunInConsole({
       name: "JavaScript Developer Agent",
     }),
   });
