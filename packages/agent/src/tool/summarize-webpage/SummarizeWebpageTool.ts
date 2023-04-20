@@ -15,7 +15,7 @@ export type SummarizeWebpageOutput = {
   summary: string;
 };
 
-export const summarizeWebpage = ({
+export const summarizeWebpage = <RUN_PROPERTIES>({
   id = "summarize-website",
   description = "Summarize a webpage considering a topic.",
   inputExample = {
@@ -29,7 +29,11 @@ export const summarizeWebpage = ({
   id?: string;
   description?: string;
   inputExample?: SummarizeWebpageInput;
-  execute: ExecuteToolFunction<SummarizeWebpageInput, SummarizeWebpageOutput>;
+  execute: ExecuteToolFunction<
+    SummarizeWebpageInput,
+    SummarizeWebpageOutput,
+    RUN_PROPERTIES
+  >;
   formatResult?: FormatResultFunction<
     SummarizeWebpageInput,
     SummarizeWebpageOutput
@@ -51,13 +55,17 @@ export const summarizeWebpage = ({
   });
 
 export const executeSummarizeWebpage =
-  ({
+  <RUN_PROPERTIES>({
     summarize,
     extractText,
   }: {
     summarize: SummarizeFunction;
     extractText: ExtractWebpageTextFunction;
-  }): ExecuteToolFunction<SummarizeWebpageInput, SummarizeWebpageOutput> =>
+  }): ExecuteToolFunction<
+    SummarizeWebpageInput,
+    SummarizeWebpageOutput,
+    RUN_PROPERTIES
+  > =>
   async (
     { input: { topic, url } }: { input: SummarizeWebpageInput },
     context: RunContext

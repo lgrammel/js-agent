@@ -22,10 +22,10 @@ const setupCommands = ["pnpm install", "pnpm nx run agent:build"];
 
 export async function runDeveloperAgent({
   openAiApiKey,
-  objective,
+  task,
 }: {
   openAiApiKey: string;
-  objective: string;
+  task: string;
 }) {
   const model = $.provider.openai.chatModel({
     apiKey: openAiApiKey,
@@ -37,7 +37,7 @@ export async function runDeveloperAgent({
   }) as any;
 
   return $.runAgent({
-    objective,
+    properties: { task },
     agent: $.step.createFixedStepsLoop({
       steps: [
         $.step.createFixedStepsLoop({
@@ -47,24 +47,30 @@ export async function runDeveloperAgent({
               $.tool.runCommand({ execute: executeRemote }).createStep({
                 input: { command },
                 run,
-              })
+              }) as Promise<$.step.Step<{ task: string }>>
           ),
         }),
         $.step.createGenerateNextStepLoop({
-          prompt:
-            $.prompt.concatChatPrompts<$.step.GenerateNextStepLoopContext>(
-              $.prompt.sectionsChatPrompt({
-                role: "system",
-                getSections: async () => [
-                  { title: "role", content: role },
-                  { title: "project", content: project },
-                  { title: "constraints", content: constraints },
-                ],
-              }),
-              $.prompt.availableActionsChatPrompt(),
-              $.prompt.taskChatPrompt(),
-              $.prompt.recentStepsChatPrompt({ maxSteps: 10 })
-            ),
+          prompt: $.prompt.concatChatPrompts<
+            $.step.GenerateNextStepLoopContext<{ task: string }>
+          >(
+            $.prompt.sectionsChatPrompt({
+              role: "system",
+              getSections: async () => [
+                { title: "role", content: role },
+                { title: "project", content: project },
+                { title: "constraints", content: constraints },
+              ],
+            }),
+            $.prompt.availableActionsChatPrompt(),
+            $.prompt.sectionsChatPrompt({
+              role: "user",
+              getSections: async ({ runProperties: { task } }) => {
+                return [{ title: "Task", content: task }];
+              },
+            }),
+            $.prompt.recentStepsChatPrompt({ maxSteps: 10 })
+          ),
           model,
           actionRegistry: new $.action.ActionRegistry({
             actions: [

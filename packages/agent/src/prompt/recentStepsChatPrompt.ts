@@ -3,12 +3,12 @@ import { Step } from "../step";
 import { ToolStep } from "../tool/ToolStep";
 
 export const recentStepsChatPrompt =
-  ({ maxSteps = 10 }: { maxSteps?: number }) =>
+  <RUN_PROPERTIES>({ maxSteps = 10 }: { maxSteps?: number }) =>
   async ({
     completedSteps,
     generatedTextsByStepId,
   }: {
-    completedSteps: Array<Step>;
+    completedSteps: Array<Step<RUN_PROPERTIES>>;
     generatedTextsByStepId: Map<string, string>;
   }): Promise<OpenAIChatMessage[]> => {
     const messages: OpenAIChatMessage[] = [];

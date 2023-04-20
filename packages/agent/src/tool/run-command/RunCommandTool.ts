@@ -13,7 +13,7 @@ export type RunCommandOutput = {
   stderr: string;
 };
 
-export const runCommand = ({
+export const runCommand = <RUN_PROPERTIES>({
   id = "run-command",
   description = `Run a shell command. The output is shown. Useful commands include:
 - ls: list files
@@ -35,7 +35,11 @@ export const runCommand = ({
   id?: string;
   description?: string;
   inputExample?: RunCommandInput;
-  execute: ExecuteToolFunction<RunCommandInput, RunCommandOutput>;
+  execute: ExecuteToolFunction<
+    RunCommandInput,
+    RunCommandOutput,
+    RUN_PROPERTIES
+  >;
   formatResult?: FormatResultFunction<RunCommandInput, RunCommandOutput>;
 }) =>
   createToolAction({
@@ -54,11 +58,11 @@ export const runCommand = ({
   });
 
 export const executeRunCommand =
-  ({
+  <RUN_PROPERTIES>({
     workspacePath,
   }: {
     workspacePath: string;
-  }): ExecuteToolFunction<RunCommandInput, RunCommandOutput> =>
+  }): ExecuteToolFunction<RunCommandInput, RunCommandOutput, RUN_PROPERTIES> =>
   async ({ input: { command } }: { input: RunCommandInput }) => {
     const { stdout, stderr } = await new Promise<{
       stdout: string;

@@ -1,14 +1,18 @@
 import { Run } from "../agent";
-import { Step } from "./Step";
-import { StepResult } from "./StepResult";
+import { RunContext } from "../agent/RunContext";
+import { Prompt } from "../prompt/Prompt";
 import {
   GeneratorModel,
   generate as generateFunction,
 } from "../text/generate/generate";
-import { Prompt } from "../prompt/Prompt";
-import { RunContext } from "../agent/RunContext";
+import { Step } from "./Step";
+import { StepResult } from "./StepResult";
 
-export class PromptStep<INPUT, PROMPT_TYPE> extends Step {
+export class PromptStep<
+  INPUT,
+  PROMPT_TYPE,
+  RUN_PROPERTIES
+> extends Step<RUN_PROPERTIES> {
   private readonly generateText: (
     _0: INPUT,
     _1: RunContext
@@ -23,7 +27,7 @@ export class PromptStep<INPUT, PROMPT_TYPE> extends Step {
     input,
   }: {
     type?: string;
-    run: Run;
+    run: Run<RUN_PROPERTIES>;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, any, string>;
     input: INPUT;

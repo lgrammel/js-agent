@@ -6,9 +6,10 @@ import { ToolAction } from "./ToolAction";
 
 export class ToolStep<
   INPUT extends Record<string, string | undefined>,
-  OUTPUT
-> extends Step {
-  readonly action: ToolAction<INPUT, OUTPUT>;
+  OUTPUT,
+  RUN_PROPERTIES
+> extends Step<RUN_PROPERTIES> {
+  readonly action: ToolAction<INPUT, OUTPUT, RUN_PROPERTIES>;
   readonly input: INPUT;
 
   constructor({
@@ -16,8 +17,8 @@ export class ToolStep<
     action,
     input,
   }: {
-    run: Run;
-    action: ToolAction<INPUT, OUTPUT>;
+    run: Run<RUN_PROPERTIES>;
+    action: ToolAction<INPUT, OUTPUT, RUN_PROPERTIES>;
     input: INPUT;
   }) {
     super({ type: action.id, run });

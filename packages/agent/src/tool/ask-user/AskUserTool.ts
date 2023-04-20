@@ -12,7 +12,7 @@ export type AskUserOutput = {
   response: string;
 };
 
-export const askUser = ({
+export const askUser = <RUN_PROPERTIES>({
   id = "ask-user",
   description = "Ask the user for input or to take an action.",
   inputExample = {
@@ -25,7 +25,7 @@ export const askUser = ({
   id?: string;
   description?: string;
   inputExample?: AskUserInput;
-  execute: ExecuteToolFunction<AskUserInput, AskUserOutput>;
+  execute: ExecuteToolFunction<AskUserInput, AskUserOutput, RUN_PROPERTIES>;
   formatResult?: FormatResultFunction<AskUserInput, AskUserOutput>;
 }) =>
   createToolAction({
@@ -43,7 +43,11 @@ export const askUser = ({
   });
 
 export const executeAskUser =
-  (): ExecuteToolFunction<AskUserInput, AskUserOutput> =>
+  <RUN_PROPERTIES>(): ExecuteToolFunction<
+    AskUserInput,
+    AskUserOutput,
+    RUN_PROPERTIES
+  > =>
   async ({ input: { query } }) => {
     const userInput = readline.createInterface({
       input: process.stdin,

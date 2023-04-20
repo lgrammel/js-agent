@@ -1,8 +1,10 @@
 import { Run } from "..";
 import { RunController } from "./RunController";
 
-export const maxSteps = (maxSteps: number): RunController => ({
-  checkAbort(run: Run) {
+export const maxSteps = <RUN_PROPERTIES>(
+  maxSteps: number
+): RunController<RUN_PROPERTIES> => ({
+  checkAbort(run: Run<RUN_PROPERTIES>) {
     if (run.root!.getStepCount() < maxSteps) {
       return { shouldAbort: false as const };
     }

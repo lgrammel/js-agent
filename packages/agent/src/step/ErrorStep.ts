@@ -2,7 +2,7 @@ import { Run } from "../agent";
 import { Step } from "./Step";
 import { StepResult } from "./StepResult";
 
-export class ErrorStep extends Step {
+export class ErrorStep<RUN_PROPERTIES> extends Step<RUN_PROPERTIES> {
   readonly errorMessage: string | undefined;
   readonly error: unknown;
 
@@ -13,7 +13,7 @@ export class ErrorStep extends Step {
     error,
   }: {
     type?: string;
-    run: Run;
+    run: Run<RUN_PROPERTIES>;
     errorMessage?: string;
     error: unknown;
   }) {

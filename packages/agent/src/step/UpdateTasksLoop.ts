@@ -6,7 +6,7 @@ import { StepFactory } from "./StepFactory";
 import { StepResult } from "./StepResult";
 
 export const createUpdateTasksLoop =
-  ({
+  <RUN_PROPERTIES>({
     type,
     initialTasks,
     generateExecutionStep,
@@ -14,9 +14,12 @@ export const createUpdateTasksLoop =
   }: {
     type?: string;
     initialTasks?: string[];
-    generateExecutionStep: ({}: { task: string; run: Run }) => Step;
-    updateTaskList: updateTaskList;
-  }): StepFactory =>
+    generateExecutionStep: ({}: {
+      task: string;
+      run: Run<RUN_PROPERTIES>;
+    }) => Step<RUN_PROPERTIES>;
+    updateTaskList: updateTaskList<RUN_PROPERTIES>;
+  }): StepFactory<RUN_PROPERTIES> =>
   async (run) =>
     new UpdateTasksLoop({
       type,
@@ -26,9 +29,9 @@ export const createUpdateTasksLoop =
       run,
     });
 
-export type updateTaskList = (
-  {}: {
-    objective: string;
+export type updateTaskList<RUN_PROPERTIES> = (
+  _: {
+    runProperties: RUN_PROPERTIES;
     completedTask: string;
     completedTaskResult: string;
     remainingTasks: string[];
@@ -36,16 +39,16 @@ export type updateTaskList = (
   context: RunContext
 ) => PromiseLike<Array<string>>;
 
-export class UpdateTasksLoop extends Loop {
+export class UpdateTasksLoop<RUN_PROPERTIES> extends Loop<RUN_PROPERTIES> {
   tasks: Array<string>;
   currentTask: string | undefined;
 
   private readonly generateExecutionStep: ({}: {
     task: string;
-    run: Run;
-  }) => Step;
+    run: Run<RUN_PROPERTIES>;
+  }) => Step<RUN_PROPERTIES>;
 
-  private readonly updateTaskList: updateTaskList;
+  private readonly updateTaskList: updateTaskList<RUN_PROPERTIES>;
 
   constructor({
     type = "loop.update-tasks",
@@ -56,9 +59,12 @@ export class UpdateTasksLoop extends Loop {
   }: {
     type?: string;
     initialTasks?: string[];
-    generateExecutionStep: ({}: { task: string; run: Run }) => Step;
-    updateTaskList: updateTaskList;
-    run: Run;
+    generateExecutionStep: ({}: {
+      task: string;
+      run: Run<RUN_PROPERTIES>;
+    }) => Step<RUN_PROPERTIES>;
+    updateTaskList: updateTaskList<RUN_PROPERTIES>;
+    run: Run<RUN_PROPERTIES>;
   }) {
     super({ type, run });
 
@@ -84,14 +90,14 @@ export class UpdateTasksLoop extends Loop {
     step,
     result,
   }: {
-    step: Step;
+    step: Step<RUN_PROPERTIES>;
     result: StepResult & {
       type: "succeeded" | "failed";
     };
   }) {
     this.tasks = await this.updateTaskList(
       {
-        objective: this.run.objective,
+        runProperties: this.run.properties,
         completedTask: this.currentTask!,
         completedTaskResult: result.summary,
         remainingTasks: this.tasks,

@@ -7,4 +7,3 @@ export * from "./chatPromptFromTextPrompt";
 export * from "./formatSectionAsMarkdown";
 export * from "./recentStepsChatPrompt";
 export * from "./sectionsPrompt";
-export * from "./taskPrompt";

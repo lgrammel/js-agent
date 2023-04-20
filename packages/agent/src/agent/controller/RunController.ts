@@ -1,7 +1,7 @@
 import { Run } from "..";
 
-export type RunController = {
+export type RunController<RUN_PROPERTIES> = {
   checkAbort(
-    run: Run
+    run: Run<RUN_PROPERTIES>
   ): { shouldAbort: false } | { shouldAbort: true; reason: string };
 };

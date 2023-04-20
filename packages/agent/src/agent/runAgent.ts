@@ -4,21 +4,21 @@ import { Run } from "./Run";
 import { RunController } from "./controller/RunController";
 import { RunObserver } from "./observer/RunObserver";
 
-export const runAgent = async ({
+export const runAgent = async <RUN_PROPERTIES>({
   agent,
   observer,
   controller = maxSteps(100),
-  objective,
+  properties,
 }: {
-  agent: StepFactory;
-  controller?: RunController;
-  observer: RunObserver;
-  objective: string;
+  agent: StepFactory<RUN_PROPERTIES>;
+  controller?: RunController<RUN_PROPERTIES>;
+  observer: RunObserver<RUN_PROPERTIES>;
+  properties: RUN_PROPERTIES;
 }) => {
-  const run = new Run({
+  const run = new Run<RUN_PROPERTIES>({
     controller,
     observer,
-    objective,
+    properties,
   });
 
   const rootStep = await agent(run);

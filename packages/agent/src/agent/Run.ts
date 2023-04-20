@@ -1,34 +1,36 @@
-import { RunController } from "./controller/RunController";
 import { Loop } from "../step/Loop";
 import { Step } from "../step/Step";
 import { StepResult } from "../step/StepResult";
 import { createNextId } from "../util/createNextId";
 import { GenerateCall } from "./GenerateCall";
+import { RunController } from "./controller/RunController";
 import { RunObserver } from "./observer/RunObserver";
 
-export class Run {
-  private readonly observer?: RunObserver;
+export type PrimitiveRecord = Record<string, string | boolean | number | null>;
+
+export class Run<PROPERTIES> {
+  private readonly observer?: RunObserver<PROPERTIES>;
   private readonly nextId = createNextId(1);
 
-  readonly controller: RunController;
-  readonly objective: string;
+  readonly controller: RunController<PROPERTIES>;
+  readonly properties: PROPERTIES;
 
   readonly recordedCalls: GenerateCall[] = [];
 
-  root: Step | undefined;
+  root: Step<PROPERTIES> | undefined;
 
   constructor({
     controller,
     observer,
-    objective,
+    properties,
   }: {
-    controller: RunController;
-    observer?: RunObserver;
-    objective: string;
+    controller: RunController<PROPERTIES>;
+    observer?: RunObserver<PROPERTIES>;
+    properties: PROPERTIES;
   }) {
     this.controller = controller;
     this.observer = observer;
-    this.objective = objective;
+    this.properties = properties;
   }
 
   generateId({ type }: { type: string }) {
@@ -43,7 +45,7 @@ export class Run {
     console.error(error); // TODO logger
   }
 
-  onLoopIterationStarted({ loop }: { loop: Loop }) {
+  onLoopIterationStarted({ loop }: { loop: Loop<PROPERTIES> }) {
     try {
       this.observer?.onLoopIterationStarted?.({ run: this, loop });
     } catch (error) {
@@ -51,7 +53,7 @@ export class Run {
     }
   }
 
-  onLoopIterationFinished({ loop }: { loop: Loop }) {
+  onLoopIterationFinished({ loop }: { loop: Loop<PROPERTIES> }) {
     try {
       this.observer?.onLoopIterationFinished?.({ run: this, loop });
     } catch (error) {
@@ -59,7 +61,7 @@ export class Run {
     }
   }
 
-  onStepExecutionStarted({ step }: { step: Step }) {
+  onStepExecutionStarted({ step }: { step: Step<PROPERTIES> }) {
     try {
       this.observer?.onStepExecutionStarted?.({ run: this, step });
     } catch (error) {
@@ -71,7 +73,7 @@ export class Run {
     step,
     result,
   }: {
-    step: Step;
+    step: Step<PROPERTIES>;
     result: StepResult;
   }) {
     try {
@@ -110,7 +112,7 @@ export class Run {
     step,
   }: {
     generatedText: string;
-    step: Step;
+    step: Step<PROPERTIES>;
   }) {
     try {
       this.observer?.onStepGenerationFinished?.({

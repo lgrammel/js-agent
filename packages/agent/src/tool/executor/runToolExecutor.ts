@@ -7,10 +7,10 @@ import { ToolAction } from "../ToolAction";
 import { createToolPlugin } from "./toolPlugin";
 import { ToolRegistry } from "./ToolRegistry";
 
-export const runToolExecutor = async ({
+export const runToolExecutor = async <RUN_PROPERTIES>({
   tools,
 }: {
-  tools: Array<ToolAction<any, any>>;
+  tools: Array<ToolAction<any, any, RUN_PROPERTIES>>;
 }) => {
   const environmentSchema = zod.object({
     WORKSPACE: zod.string(),

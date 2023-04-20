@@ -14,7 +14,7 @@ export type ReadFileOutput = {
   error?: string;
 };
 
-export const readFile = ({
+export const readFile = <RUN_PROPERTIES>({
   id = "read-file",
   description = "Read file content.",
   inputExample = {
@@ -29,7 +29,7 @@ export const readFile = ({
   id?: string;
   description?: string;
   inputExample?: ReadFileInput;
-  execute: ExecuteToolFunction<ReadFileInput, ReadFileOutput>;
+  execute: ExecuteToolFunction<ReadFileInput, ReadFileOutput, RUN_PROPERTIES>;
   formatResult?: FormatResultFunction<ReadFileInput, ReadFileOutput>;
 }) =>
   createToolAction({
@@ -48,11 +48,11 @@ export const readFile = ({
   });
 
 export const executeReadFile =
-  ({
+  <RUN_PROPERTIES>({
     workspacePath,
   }: {
     workspacePath: string;
-  }): ExecuteToolFunction<ReadFileInput, ReadFileOutput> =>
+  }): ExecuteToolFunction<ReadFileInput, ReadFileOutput, RUN_PROPERTIES> =>
   async ({ input: { filePath } }) => {
     const fullPath = path.join(workspacePath, filePath);
     try {

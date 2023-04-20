@@ -1,15 +1,16 @@
 import { ToolAction } from "../ToolAction";
 
-export class ToolRegistry {
-  private readonly tools: Map<string, ToolAction<any, any>> = new Map();
+export class ToolRegistry<RUN_PROPERTIES> {
+  private readonly tools: Map<string, ToolAction<any, any, RUN_PROPERTIES>> =
+    new Map();
 
-  constructor({ tools }: { tools: ToolAction<any, any>[] }) {
+  constructor({ tools }: { tools: ToolAction<any, any, RUN_PROPERTIES>[] }) {
     for (const tool of tools) {
       this.register(tool);
     }
   }
 
-  register(tool: ToolAction<any, any>) {
+  register(tool: ToolAction<any, any, RUN_PROPERTIES>) {
     if (this.tools.has(tool.id)) {
       throw new Error(
         `A tool with the id '${tool.id}' has already been registered.`

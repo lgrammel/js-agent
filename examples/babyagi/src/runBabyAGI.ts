@@ -68,7 +68,7 @@ Start the task list with number 1.`;
   });
 
   return $.runAgent({
-    objective,
+    properties: { objective },
     agent: $.step.createUpdateTasksLoop({
       type: "main",
       generateExecutionStep({ task, run }) {
@@ -76,7 +76,7 @@ Start the task list with number 1.`;
           type: "execute-prompt",
           run,
           async prompt({ task }: { task: string }) {
-            return `You are an AI who performs one task based on the following objective: ${run.objective}.
+            return `You are an AI who performs one task based on the following objective: ${run.properties.objective}.
 Your task: ${task}
 Response:`;
           },
@@ -90,12 +90,12 @@ Response:`;
         });
       },
       async updateTaskList(
-        { objective, completedTask, completedTaskResult, remainingTasks },
+        { runProperties, completedTask, completedTaskResult, remainingTasks },
         context
       ) {
         const newTasks = await generateNewTasks(
           {
-            objective,
+            objective: runProperties.objective,
             completedTask,
             completedTaskResult,
             existingTasks: remainingTasks,
@@ -117,7 +117,7 @@ Response:`;
         log(chalk.green("*****BABY AGI *****"));
         log();
         log(chalk.green("*****OBJECTIVE*****"));
-        log(run.objective);
+        log(run.properties.objective);
         log();
       },
       onLoopIterationStarted({ loop }) {

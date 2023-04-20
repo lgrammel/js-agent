@@ -1,6 +1,8 @@
 import { RunObserver } from "./RunObserver";
 
-export const combineObservers = (...observers: RunObserver[]): RunObserver => ({
+export const combineObservers = <RUN_PROPERTIES>(
+  ...observers: RunObserver<RUN_PROPERTIES>[]
+): RunObserver<RUN_PROPERTIES> => ({
   onRunStarted: ({ run }) => {
     observers.forEach((observer) => observer.onRunStarted?.({ run }));
   },

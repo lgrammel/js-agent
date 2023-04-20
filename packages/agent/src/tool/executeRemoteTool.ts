@@ -4,17 +4,17 @@ import { ActionParameters } from "../action/ActionParameters";
 import { Action } from "../action/Action";
 
 export const executeRemoteTool =
-  <INPUT extends ActionParameters, OUTPUT>({
+  <INPUT extends ActionParameters, OUTPUT, RUN_PROPERTIES>({
     baseUrl,
   }: {
     baseUrl: string;
-  }): ExecuteToolFunction<INPUT, OUTPUT> =>
+  }): ExecuteToolFunction<INPUT, OUTPUT, RUN_PROPERTIES> =>
   async ({
     input,
     action,
   }: {
     input: INPUT;
-    action: Action<INPUT, OUTPUT>;
+    action: Action<INPUT, OUTPUT, RUN_PROPERTIES>;
   }): Promise<{ output: OUTPUT; summary: string }> => {
     try {
       const parametersJson = JSON.stringify(input);

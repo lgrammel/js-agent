@@ -2,19 +2,21 @@ import { Action } from "./Action";
 import { done } from "./DoneAction";
 import { ActionFormat } from "./format/ActionFormat";
 
-export class ActionRegistry {
-  readonly format: ActionFormat;
-  readonly doneAction: Action<any, any>;
+type AnyAction<RUN_PROPERTIES> = Action<any, any, RUN_PROPERTIES>;
 
-  private readonly actions: Map<string, Action<any, any>> = new Map();
+export class ActionRegistry<RUN_PROPERTIES> {
+  readonly format: ActionFormat;
+  readonly doneAction: AnyAction<RUN_PROPERTIES>;
+
+  private readonly actions: Map<string, AnyAction<RUN_PROPERTIES>> = new Map();
 
   constructor({
     actions,
     doneAction = done(),
     format,
   }: {
-    actions: Action<any, any>[];
-    doneAction?: Action<any, any>;
+    actions: AnyAction<RUN_PROPERTIES>[];
+    doneAction?: AnyAction<RUN_PROPERTIES>;
     format: ActionFormat;
   }) {
     for (const action of actions) {
@@ -25,7 +27,7 @@ export class ActionRegistry {
     this.format = format;
   }
 
-  register(action: Action<any, any>) {
+  register(action: AnyAction<RUN_PROPERTIES>) {
     if (this.actions.has(action.id)) {
       throw new Error(
         `An action with the name '${action.id}' has already been registered.`

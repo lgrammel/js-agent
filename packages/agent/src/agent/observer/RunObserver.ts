@@ -3,24 +3,33 @@ import { Loop } from "../../step/Loop";
 import { Step } from "../../step/Step";
 import { Run } from "../Run";
 
-export type RunObserver = {
-  onRunStarted?: ({}: { run: Run }) => void;
-  onRunFinished?: ({}: { run: Run; result: StepResult }) => void;
+export type RunObserver<RUN_PROPERTIES> = {
+  onRunStarted?: (_: { run: Run<RUN_PROPERTIES> }) => void;
+  onRunFinished?: (_: { run: Run<RUN_PROPERTIES>; result: StepResult }) => void;
 
-  onStepGenerationStarted?: ({}: { run: Run }) => void;
-  onStepGenerationFinished?: ({}: {
-    run: Run;
+  onStepGenerationStarted?: (_: { run: Run<RUN_PROPERTIES> }) => void;
+  onStepGenerationFinished?: (_: {
+    run: Run<RUN_PROPERTIES>;
     generatedText: string;
-    step: Step;
+    step: Step<RUN_PROPERTIES>;
   }) => void;
 
-  onLoopIterationStarted?: ({}: { run: Run; loop: Loop }) => void;
-  onLoopIterationFinished?: ({}: { run: Run; loop: Loop }) => void;
+  onLoopIterationStarted?: (_: {
+    run: Run<RUN_PROPERTIES>;
+    loop: Loop<RUN_PROPERTIES>;
+  }) => void;
+  onLoopIterationFinished?: (_: {
+    run: Run<RUN_PROPERTIES>;
+    loop: Loop<RUN_PROPERTIES>;
+  }) => void;
 
-  onStepExecutionStarted?: ({}: { run: Run; step: Step }) => void;
-  onStepExecutionFinished?: ({}: {
-    run: Run;
-    step: Step;
+  onStepExecutionStarted?: (_: {
+    run: Run<RUN_PROPERTIES>;
+    step: Step<RUN_PROPERTIES>;
+  }) => void;
+  onStepExecutionFinished?: (_: {
+    run: Run<RUN_PROPERTIES>;
+    step: Step<RUN_PROPERTIES>;
     result: StepResult;
   }) => void;
 };

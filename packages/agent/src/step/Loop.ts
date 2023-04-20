@@ -2,22 +2,22 @@ import { Run } from "../agent/Run";
 import { Step } from "./Step";
 import { StepResult } from "./StepResult";
 
-export abstract class Loop extends Step {
-  readonly completedSteps: Array<Step> = [];
+export abstract class Loop<RUN_PROPERTIES> extends Step<RUN_PROPERTIES> {
+  readonly completedSteps: Array<Step<RUN_PROPERTIES>> = [];
 
-  constructor({ type, run }: { type: string; run: Run }) {
+  constructor({ type, run }: { type: string; run: Run<RUN_PROPERTIES> }) {
     super({ type, run });
   }
 
   protected abstract hasMoreSteps(): boolean;
 
-  protected abstract getNextStep(): PromiseLike<Step>;
+  protected abstract getNextStep(): PromiseLike<Step<RUN_PROPERTIES>>;
 
   protected async update({
     step,
     result,
   }: {
-    step: Step;
+    step: Step<RUN_PROPERTIES>;
     result: StepResult & {
       type: "succeeded" | "failed";
     };

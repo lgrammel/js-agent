@@ -22,7 +22,7 @@ runWikipediaAgent({
   wikipediaSearchCx,
   wikipediaSearchKey,
   openAiApiKey,
-  objective,
+  task: objective,
 })
   .then(() => {})
   .catch((error) => {
