@@ -1,4 +1,6 @@
+import { AnyAction } from "../action/Action";
 import { ActionRegistry } from "../action/ActionRegistry";
+import { ActionFormat } from "../action/format/ActionFormat";
 import { Run } from "../agent/Run";
 import { RunContext } from "../agent/RunContext";
 import { Prompt } from "../prompt/Prompt";
@@ -19,15 +21,19 @@ export type GenerateNextStepLoopContext<RUN_PROPERTIES> = {
   generatedTextsByStepId: Map<string, string>;
 };
 
-export const createGenerateNextStepLoop =
+export const generateNextStepLoop =
   <PROMPT_TYPE, RUN_PROPERTIES>({
     type,
-    actionRegistry,
+    actions,
+    actionFormat,
+    doneAction,
     prompt,
     model,
   }: {
     type?: string;
-    actionRegistry: ActionRegistry<RUN_PROPERTIES>;
+    doneAction?: AnyAction<RUN_PROPERTIES>;
+    actions: AnyAction<RUN_PROPERTIES>[];
+    actionFormat: ActionFormat;
     prompt: Prompt<GenerateNextStepLoopContext<RUN_PROPERTIES>, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, any, string>;
   }): StepFactory<RUN_PROPERTIES> =>
@@ -35,7 +41,8 @@ export const createGenerateNextStepLoop =
     new GenerateNextStepLoop({
       type,
       run,
-      actionRegistry,
+      actions,
+      actionFormat,
       prompt,
       model,
     });
@@ -57,21 +64,22 @@ export class GenerateNextStepLoop<
   constructor({
     type = "loop.generate-next-step",
     run,
-    actionRegistry,
+    doneAction,
+    actions,
+    actionFormat,
     prompt,
     model,
   }: {
     type?: string;
     run: Run<RUN_PROPERTIES>;
-    actionRegistry: ActionRegistry<RUN_PROPERTIES>;
+    doneAction?: AnyAction<RUN_PROPERTIES>;
+    actions: AnyAction<RUN_PROPERTIES>[];
+    actionFormat: ActionFormat;
     prompt: Prompt<GenerateNextStepLoopContext<RUN_PROPERTIES>, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, any, string>;
   }) {
     super({ type, run });
 
-    if (actionRegistry == null) {
-      throw new Error("actionRegistry is required");
-    }
     if (prompt == null) {
       throw new Error("prompt is required");
     }
@@ -79,7 +87,11 @@ export class GenerateNextStepLoop<
       throw new Error("model is required");
     }
 
-    this.actionRegistry = actionRegistry;
+    this.actionRegistry = new ActionRegistry({
+      doneAction,
+      actions,
+      format: actionFormat,
+    });
     this.generateText = generateFunction({
       id: `step/${this.id}/generate-text`,
       prompt,

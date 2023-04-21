@@ -39,10 +39,17 @@ export async function runDeveloperAgent({
               }) as Promise<$.step.Step<RunProperties>>
           ),
         }),
-        $.step.createGenerateNextStepLoop({
-          prompt: $.prompt.concatChatPrompts<
-            $.step.GenerateNextStepLoopContext<RunProperties>
-          >(
+        $.step.generateNextStepLoop({
+          actions: [
+            $.tool.readFile({ execute: executeRemote }),
+            $.tool.writeFile({ execute: executeRemote }),
+            $.tool.runCommand({ execute: executeRemote }),
+            $.tool.askUser({
+              execute: $.tool.executeAskUser(),
+            }),
+          ],
+          actionFormat: new $.action.format.JsonActionFormat(),
+          prompt: $.prompt.concatChatPrompts(
             $.prompt.sectionsChatPrompt({
               role: "system",
               getSections: async ({
@@ -63,24 +70,13 @@ You are working in a Linux environment.`,
             $.prompt.availableActionsChatPrompt(),
             $.prompt.sectionsChatPrompt({
               role: "user",
-              getSections: async ({ runProperties: { task } }) => {
-                return [{ title: "Task", content: task }];
-              },
+              getSections: async ({ runProperties: { task } }) => [
+                { title: "Task", content: task },
+              ],
             }),
             $.prompt.recentStepsChatPrompt({ maxSteps: 10 })
           ),
           model,
-          actionRegistry: new $.action.ActionRegistry({
-            actions: [
-              $.tool.readFile({ execute: executeRemote }),
-              $.tool.writeFile({ execute: executeRemote }),
-              $.tool.runCommand({ execute: executeRemote }),
-              $.tool.askUser({
-                execute: $.tool.executeAskUser(),
-              }),
-            ],
-            format: new $.action.format.JsonActionFormat(),
-          }),
         }),
       ],
     }),

@@ -1,8 +1,6 @@
-import { Action } from "./Action";
+import { AnyAction } from "./Action";
 import { done } from "./DoneAction";
 import { ActionFormat } from "./format/ActionFormat";
-
-type AnyAction<RUN_PROPERTIES> = Action<any, any, RUN_PROPERTIES>;
 
 export class ActionRegistry<RUN_PROPERTIES> {
   readonly format: ActionFormat;

@@ -56,20 +56,11 @@ export async function runWikipediaAgent({
       }),
     });
 
-  return $.runAgent<{
-    task: string;
-  }>({
-    properties: {
-      task,
-    },
-    agent: $.step.createGenerateNextStepLoop<
-      $.provider.openai.OpenAIChatMessage[],
-      WikipediaAgentRunProperties
-    >({
-      actionRegistry: new $.action.ActionRegistry<WikipediaAgentRunProperties>({
-        actions: [searchWikipediaAction, readWikipediaArticleAction],
-        format: new $.action.format.FlexibleJsonActionFormat(),
-      }),
+  return $.runAgent<{ task: string }>({
+    properties: { task },
+    agent: $.step.generateNextStepLoop({
+      actions: [searchWikipediaAction, readWikipediaArticleAction],
+      actionFormat: new $.action.format.FlexibleJsonActionFormat(),
       prompt: $.prompt.concatChatPrompts(
         async ({ runProperties: { task } }) => [
           {
