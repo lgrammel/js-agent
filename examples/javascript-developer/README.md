@@ -9,6 +9,7 @@ It acts as a JavaScript/TypeScript developer right now, but can be extended to o
 - OpenAI chat completion model (`gpt-4`)
 - Tool execution separation with executor running in Docker container (to prevent command line actions and file edits from affecting the host machine)
 - Agent starts with setup steps (`FixedStepsLoop`)
+- Multiple agent run properties
 - `GenerateNextStepLoop` loop with tools and custom prompt
 
 ## Usage

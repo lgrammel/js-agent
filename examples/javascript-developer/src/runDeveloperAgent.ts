@@ -1,31 +1,15 @@
 import * as $ from "js-agent";
 
-// PROJECT AND ROLE CONFIGURATION
-
-const role = `You are a software developer that creates and modifies JavaScript programs.
-You are working in a Linux environment.`;
-
-const project = `You are working on a JavaScript/TypeScript project called "js-agent".
-The project uses pnpm for package management.
-The main package is located in the "packages/agent" directory.
-
-Unit tests are written using jest and have a .test.ts ending.
-Unit tests are in the same folder as the files that are tested.
-When writing tests, first read the production code and then write the tests.
-You can run the tests with "ai-bin/test-agent.sh".`;
-
-const constraints = `You must verify that the changes that you make are working.`;
-
-const setupCommands = ["pnpm install", "pnpm nx run agent:build"];
-
-// AGENT
-
 export async function runDeveloperAgent({
   openAiApiKey,
   task,
+  projectInstructions,
+  setupCommands,
 }: {
   openAiApiKey: string;
   task: string;
+  projectInstructions: string;
+  setupCommands: string[];
 }) {
   const model = $.provider.openai.chatModel({
     apiKey: openAiApiKey,
@@ -36,8 +20,13 @@ export async function runDeveloperAgent({
     baseUrl: "http://localhost:3001",
   }) as any;
 
+  type RunProperties = {
+    task: string;
+    projectInstructions: string;
+  };
+
   return $.runAgent({
-    properties: { task },
+    properties: { task, projectInstructions },
     agent: $.step.createFixedStepsLoop({
       steps: [
         $.step.createFixedStepsLoop({
@@ -47,19 +36,28 @@ export async function runDeveloperAgent({
               $.tool.runCommand({ execute: executeRemote }).createStep({
                 input: { command },
                 run,
-              }) as Promise<$.step.Step<{ task: string }>>
+              }) as Promise<$.step.Step<RunProperties>>
           ),
         }),
         $.step.createGenerateNextStepLoop({
           prompt: $.prompt.concatChatPrompts<
-            $.step.GenerateNextStepLoopContext<{ task: string }>
+            $.step.GenerateNextStepLoopContext<RunProperties>
           >(
             $.prompt.sectionsChatPrompt({
               role: "system",
-              getSections: async () => [
-                { title: "role", content: role },
-                { title: "project", content: project },
-                { title: "constraints", content: constraints },
+              getSections: async ({
+                runProperties: { projectInstructions },
+              }) => [
+                {
+                  title: "role",
+                  content: `You are a software developer that creates and modifies JavaScript programs.
+You are working in a Linux environment.`,
+                },
+                { title: "project", content: projectInstructions },
+                {
+                  title: "constraints",
+                  content: `You must verify that the changes that you make are working.`,
+                },
               ],
             }),
             $.prompt.availableActionsChatPrompt(),
