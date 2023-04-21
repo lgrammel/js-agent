@@ -19,17 +19,24 @@ See examples below for details on how to implement and run an agent.
 ## Features
 
 - Agent definition and execution
+  - Configurable agent run properties that can be accessed by prompts
   - Observe agent runs (to support console output, UIs, server runs, webapps, etc.)
   - Record all LLM calls of an agent run
   - Calculate the cost of LLM calls and agent runs
   - Stop agent runs when certain criteria are met, e.g. to limit the number of steps
+  - Use several different LLM models in one agent
 - Supported LLM models
   - OpenAI text completion models (`text-davinci-003` etc.)
   - OpenAI chat completion models (`gpt-4`, `gpt-3.5-turbo`)
 - Prompt template creation
   - Create templates for text prompts and chat prompts
+  - Utility functions to combine and convert prompts
 - Actions and Tools
-  - Read file, write file, run command, use programmable search engine, summarize website according to topic, ask user for input
+  - Read and write file
+  - Run CLI command
+  - Use programmable search engine
+  - Summarize website according to topic
+  - Ask user for input
   - Optional agent/executor separation (e.g. run the executor in a sandbox environment such as a Docker container)
 - Text functions
   - Extract text from webpage
