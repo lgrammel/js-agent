@@ -5,7 +5,7 @@ import { Step } from "./Step";
 import { StepFactory } from "./StepFactory";
 import { StepResult } from "./StepResult";
 
-export const createUpdateTasksLoop =
+export const updateTasksLoop =
   <RUN_PROPERTIES>({
     type,
     initialTasks,

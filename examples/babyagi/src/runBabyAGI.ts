@@ -69,13 +69,13 @@ Start the task list with number 1.`;
 
   return $.runAgent({
     properties: { objective },
-    agent: $.step.createUpdateTasksLoop({
+    agent: $.step.updateTasksLoop({
       type: "main",
       generateExecutionStep({ task, run }) {
         return new $.step.PromptStep({
           type: "execute-prompt",
           run,
-          async prompt({ task }: { task: string }) {
+          async prompt({ task }) {
             return `You are an AI who performs one task based on the following objective: ${run.properties.objective}.
 Your task: ${task}
 Response:`;
