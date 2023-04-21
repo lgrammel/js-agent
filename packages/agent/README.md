@@ -17,17 +17,24 @@ See examples below for details on how to implement and run an agent.
 ## Features
 
 - Agent definition and execution
+  - Configurable agent run properties that can be accessed by prompts
   - Observe agent runs (to support console output, UIs, server runs, webapps, etc.)
   - Record all LLM calls of an agent run
   - Calculate the cost of LLM calls and agent runs
   - Stop agent runs when certain criteria are met, e.g. to limit the number of steps
+  - Use several different LLM models in one agent
 - Supported LLM models
   - OpenAI text completion models (`text-davinci-003` etc.)
   - OpenAI chat completion models (`gpt-4`, `gpt-3.5-turbo`)
 - Prompt template creation
   - Create templates for text prompts and chat prompts
+  - Utility functions to combine and convert prompts
 - Actions and Tools
-  - Read file, write file, run command, use programmable search engine, summarize website according to topic, ask user for input
+  - Read and write file
+  - Run CLI command
+  - Use programmable search engine
+  - Summarize website according to topic
+  - Ask user for input
   - Optional agent/executor separation (e.g. run the executor in a sandbox environment such as a Docker container)
 - Text functions
   - Extract text from webpage
@@ -67,80 +74,80 @@ export async function runWikipediaAgent({
   wikipediaSearchKey,
   wikipediaSearchCx,
   openAiApiKey,
-  objective,
+  task,
 }: {
   openAiApiKey: string;
   wikipediaSearchKey: string;
   wikipediaSearchCx: string;
-  objective: string;
+  task: string;
 }) {
-  const searchWikipediaAction = $.tool.programmableGoogleSearchEngineAction({
-    id: "search-wikipedia",
-    description:
-      "Search wikipedia using a search term. Returns a list of pages.",
-    execute: $.tool.executeProgrammableGoogleSearchEngineAction({
-      key: wikipediaSearchKey,
-      cx: wikipediaSearchCx,
-    }),
+  type WikipediaAgentRunProperties = { task: string };
+
+  const chatGpt = $.provider.openai.chatModel({
+    apiKey: openAiApiKey,
+    model: "gpt-3.5-turbo",
   });
 
-  const readWikipediaArticleAction = $.tool.summarizeWebpage({
-    id: "read-wikipedia-article",
-    description:
-      "Read a wikipedia article and summarize it considering the query.",
-    inputExample: {
-      url: "https://en.wikipedia.org/wiki/Artificial_intelligence",
-      topic: "{query that you are answering}",
-    },
-    execute: $.tool.executeSummarizeWebpage({
-      extractText: $.text.extractWebpageTextFromHtml(),
-      summarize: $.text.summarizeRecursively({
-        split: $.text.splitRecursivelyAtCharacter({
-          maxCharactersPerChunk: 2048 * 4, // needs to fit into a gpt-3.5-turbo prompt
-        }),
-        summarize: $.text.generate({
-          id: "summarize-wikipedia-article-chunk",
-          prompt: $.text.SummarizeChatPrompt,
-          model: $.provider.openai.chatModel({
-            apiKey: openAiApiKey,
-            model: "gpt-3.5-turbo",
+  const searchWikipediaAction =
+    $.tool.programmableGoogleSearchEngineAction<WikipediaAgentRunProperties>({
+      id: "search-wikipedia",
+      description:
+        "Search wikipedia using a search term. Returns a list of pages.",
+      execute: $.tool.executeProgrammableGoogleSearchEngineAction({
+        key: wikipediaSearchKey,
+        cx: wikipediaSearchCx,
+      }),
+    });
+
+  const readWikipediaArticleAction =
+    $.tool.summarizeWebpage<WikipediaAgentRunProperties>({
+      id: "read-wikipedia-article",
+      description:
+        "Read a wikipedia article and summarize it considering the query.",
+      inputExample: {
+        url: "https://en.wikipedia.org/wiki/Artificial_intelligence",
+        topic: "{query that you are answering}",
+      },
+      execute: $.tool.executeSummarizeWebpage({
+        extractText: $.text.extractWebpageTextFromHtml(),
+        summarize: $.text.summarizeRecursively({
+          split: $.text.splitRecursivelyAtCharacter({
+            maxCharactersPerChunk: 2048 * 4, // needs to fit into a gpt-3.5-turbo prompt
           }),
-          processOutput: async (output) => output.trim(),
+          summarize: $.text.generate({
+            id: "summarize-wikipedia-article-chunk",
+            prompt: $.text.SummarizeChatPrompt,
+            model: chatGpt,
+            processOutput: async (output) => output.trim(),
+          }),
         }),
       }),
-    }),
-  });
+    });
 
-  return $.runAgent({
-    objective,
-    agent: $.step.createGenerateNextStepLoop({
-      actionRegistry: new $.action.ActionRegistry({
-        actions: [searchWikipediaAction, readWikipediaArticleAction],
-        format: new $.action.format.FlexibleJsonActionFormat(),
-      }),
-      prompt: $.prompt.concatChatPrompts<$.step.GenerateNextStepLoopContext>(
-        $.prompt.sectionsChatPrompt({
-          role: "system",
-          getSections: async () => [
-            {
-              title: "Role",
-              // "You speak perfect JSON" helps getting gpt-3.5-turbo to provide structured json at the end
-              content: `You are an knowledge worker that answers questions using Wikipedia content. You speak perfect JSON.`,
-            },
-            {
-              title: "Constraints",
-              content: `Make sure all facts for your answer are from Wikipedia articles that you have read.`,
-            },
-          ],
-        }),
-        $.prompt.taskChatPrompt(),
+  return $.runAgent<{ task: string }>({
+    properties: { task },
+    agent: $.step.generateNextStepLoop({
+      actions: [searchWikipediaAction, readWikipediaArticleAction],
+      actionFormat: $.action.format.flexibleJson(),
+      prompt: $.prompt.concatChatPrompts(
+        async ({ runProperties: { task } }) => [
+          {
+            role: "system",
+            content: `## ROLE
+You are an knowledge worker that answers questions using Wikipedia content. You speak perfect JSON.
+
+## CONSTRAINTS
+Make sure all facts for your answer are from Wikipedia articles that you have read.`,
+          },
+          {
+            role: "user",
+            content: `## TASK\n${task}`,
+          },
+        ],
         $.prompt.availableActionsChatPrompt(),
         $.prompt.recentStepsChatPrompt({ maxSteps: 6 })
       ),
-      model: $.provider.openai.chatModel({
-        apiKey: openAiApiKey,
-        model: "gpt-3.5-turbo",
-      }),
+      model: chatGpt,
     }),
     controller: $.agent.controller.maxSteps(20),
     observer: $.agent.observer.combineObservers(
