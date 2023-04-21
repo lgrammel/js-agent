@@ -5,7 +5,7 @@ import { ActionParameters } from "../ActionParameters";
  *
  * This is used to instruct the LLM how to execute actions and to parse the actions that the LLM wants to execute.
  */
-export interface ActionFormat {
+export type ActionFormat = {
   /**
    * A description of the action format.
    */
@@ -26,4 +26,4 @@ export interface ActionFormat {
    * @returns The parsed action parameters.
    */
   parse(text: string): ActionParameters;
-}
+};

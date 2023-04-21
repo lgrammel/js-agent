@@ -11,9 +11,12 @@ export async function runWikipediaAgent({
   wikipediaSearchCx: string;
   task: string;
 }) {
-  type WikipediaAgentRunProperties = {
-    task: string;
-  };
+  type WikipediaAgentRunProperties = { task: string };
+
+  const chatGpt = $.provider.openai.chatModel({
+    apiKey: openAiApiKey,
+    model: "gpt-3.5-turbo",
+  });
 
   const searchWikipediaAction =
     $.tool.programmableGoogleSearchEngineAction<WikipediaAgentRunProperties>({
@@ -25,11 +28,6 @@ export async function runWikipediaAgent({
         cx: wikipediaSearchCx,
       }),
     });
-
-  const chatGpt = $.provider.openai.chatModel({
-    apiKey: openAiApiKey,
-    model: "gpt-3.5-turbo",
-  });
 
   const readWikipediaArticleAction =
     $.tool.summarizeWebpage<WikipediaAgentRunProperties>({
@@ -60,7 +58,7 @@ export async function runWikipediaAgent({
     properties: { task },
     agent: $.step.generateNextStepLoop({
       actions: [searchWikipediaAction, readWikipediaArticleAction],
-      actionFormat: new $.action.format.FlexibleJsonActionFormat(),
+      actionFormat: $.action.format.flexibleJson(),
       prompt: $.prompt.concatChatPrompts(
         async ({ runProperties: { task } }) => [
           {

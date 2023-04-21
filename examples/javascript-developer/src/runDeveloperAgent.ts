@@ -48,7 +48,7 @@ export async function runDeveloperAgent({
               execute: $.tool.executeAskUser(),
             }),
           ],
-          actionFormat: new $.action.format.JsonActionFormat(),
+          actionFormat: $.action.format.json(),
           prompt: $.prompt.concatChatPrompts(
             $.prompt.sectionsChatPrompt({
               role: "system",

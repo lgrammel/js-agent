@@ -2,14 +2,11 @@ import { ActionParameters, actionParametersSchema } from "../ActionParameters";
 import { ActionFormat } from "./ActionFormat";
 import SecureJSON from "secure-json-parse";
 
-/**
- * Class for handling JSON action formats.
- */
-export class JsonActionFormat implements ActionFormat {
+export const json = (): ActionFormat => ({
   /**
    * A description of the JSON action format.
    */
-  description = "JSON";
+  description: "JSON",
 
   /**
    * Formats the given action parameters into a JSON string.
@@ -19,7 +16,7 @@ export class JsonActionFormat implements ActionFormat {
    */
   format(parameters: ActionParameters): string {
     return JSON.stringify(parameters, null, 2);
-  }
+  },
 
   /**
    * Parses the given text into action parameters, handling JSON objects and free text.
@@ -47,5 +44,5 @@ export class JsonActionFormat implements ActionFormat {
         `${text} could not be parsed as JSON: ${error?.message ?? error}`
       );
     }
-  }
-}
+  },
+});

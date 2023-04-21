@@ -1,3 +1,3 @@
 export * from "./ActionFormat";
-export * from "./FlexibleJsonActionFormat";
-export * from "./JsonActionFormat";
+export * from "./flexibleJson";
+export * from "./json";

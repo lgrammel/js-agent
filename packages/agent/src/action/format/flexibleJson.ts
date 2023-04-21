@@ -3,19 +3,19 @@ import { ActionFormat } from "./ActionFormat";
 import SecureJSON from "secure-json-parse";
 
 /**
- * This class parses the first JSON object that it
+ * Parses the first JSON object that it
  * finds in the response and is better suited for `gpt-3.5-turbo`, which does not
  * reliably insert the JSON object at the end of the response.
  */
-export class FlexibleJsonActionFormat implements ActionFormat {
-  description = "JSON";
+export const flexibleJson = (): ActionFormat => ({
+  description: "JSON",
 
   format(parameters: ActionParameters): string {
     return JSON.stringify(parameters, null, 2);
-  }
+  },
 
   parse(text: string): ActionParameters {
-    const [jsonObject, freeText] = extractFirstJsonObject(text);
+    const [jsonObject, freeText] = extractFirstSingleLevelJsonObject(text);
 
     if (jsonObject == null) {
       return { _freeText: freeText };
@@ -31,11 +31,15 @@ export class FlexibleJsonActionFormat implements ActionFormat {
         `${text} could not be parsed as JSON: ${error?.message ?? error}`
       );
     }
-  }
-}
+  },
+});
 
-function extractFirstJsonObject(text: string): [object | null, string] {
+function extractFirstSingleLevelJsonObject(
+  text: string
+): [object | null, string] {
   const jsonStartIndex = text.indexOf("{");
+
+  // assumes no nested objects:
   const jsonEndIndex = text.indexOf("}", jsonStartIndex);
 
   if (
