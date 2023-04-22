@@ -1,8 +1,6 @@
 # JS Agent JavaScript Developer
 
-An automated agent working in a Docker container.
-
-It acts as a JavaScript/TypeScript developer right now, but can be extended to other languages.
+An automated developer agent that works in a docker container. It can read files, write files and execute commands. You can adjust it for your project and use it to document code, write tests, update tests and features, etc.
 
 ## JS Agent features used
 
@@ -10,7 +8,7 @@ It acts as a JavaScript/TypeScript developer right now, but can be extended to o
 - Tool execution separation with executor running in Docker container (to prevent command line actions and file edits from affecting the host machine)
 - Agent starts with setup steps (`FixedStepsLoop`)
 - Multiple agent run properties
-- `GenerateNextStepLoop` loop with tools and custom prompt
+- `GenerateNextStepLoop` loop with tools (read file, write file, run, command, ask user) and custom prompt
 
 ## Usage
 
