@@ -70,7 +70,7 @@ Features used: text completion model (`text-davinci-003`), customized console ou
 - **typed**: Provide as much typing as possible to support discovery and ensure safety.
 - **composable**: The individual pieces should have a good separation of concerns and be easy to combine.
 - **extensible**: It should be easy for users to add their own tools, providers, actions, agent steps, etc.
-- **use functional programming for object assembly**: All objects that are immutable are assembled using functional programming. Object-orientation is only used for objects that have a changeable state (e.g. `Step` and `AgentRun`).
+- **use functional programming for assembly**: All objects that are immutable are assembled using functional programming. Object-orientation is only used for objects that have a changeable state (e.g. `Step` and `AgentRun`).
 - **support progressive refinement of agent specifications**: Agent specifications should be easy to write and every building block should provide good defaults. At the same time, it should be possible to easily override the defaults with specific settings, prompts, etc.
 - **build for production**: JS Agent will have first-class support for logging, associating LLM calls and cost tracking with agent runs, etc.
 
