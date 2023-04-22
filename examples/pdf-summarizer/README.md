@@ -1,5 +1,3 @@
-# PDF Researcher
-
 # PDF Summarizer
 
 Writes up all content regarding a topic from a PDF.
