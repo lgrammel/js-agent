@@ -57,7 +57,7 @@ importers:
         specifier: '*'
         version: link:../../packages/agent
 
-  examples/pdf-summary:
+  examples/pdf-summarizer:
     dependencies:
       commander:
         specifier: 10.0.1
