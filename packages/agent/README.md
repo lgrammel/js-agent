@@ -26,20 +26,27 @@ See the examples below for details on implementing and running an agent.
 - Supported LLM models
   - OpenAI text completion models (`text-davinci-003` etc.)
   - OpenAI chat completion models (`gpt-4`, `gpt-3.5-turbo`)
-- Prompt template creation
-  - Create templates for text prompts and chat prompts
-  - Utility functions to combine and convert prompts
 - Actions and Tools
   - Read and write file
   - Run CLI command
   - Use programmable search engine
-  - Summarize website according to topic
+  - Extract information on topic from webpage
   - Ask user for input
   - Optional agent/executor separation (e.g. run the executor in a sandbox environment such as a Docker container)
+- Prompt templates for chat and text prompts
+  - Built-in templates for quick start
+    - Available actions prompt; extract information prompts; recent steps prompt, rewrite text prompt
+  - Utility functions to combine and convert prompts
 - Text functions
-  - Extract text from webpage
+  - Extract information (extract & rewrite; extract recursively)
   - Split text into chunks
-  - Summarize text recursively
+  - Helpers: load, generate, trim
+- Data sources
+  - Webpage as HTML text
+  - File as ArrayBuffer
+- Data converters
+  - htmlToText
+  - pdfToText
 - General utils
   - LLM call retry with exponential backoff
 
@@ -63,12 +70,16 @@ JS Agent implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi).
 
 Features used: text completion model (`text-davinci-003`), customized console output, update tasks planning loop
 
+### [PDF Summarizer](https://github.com/lgrammel/js-agent/tree/main/examples/pdf-summarizer)
+
+Features used: stand-alone pipeline (no agent), pdf loading, extract-and-rewrite
+
 ## Design Principles
 
 - **typed**: Provide as much typing as possible to support discovery and ensure safety.
 - **composable**: The individual pieces should have a good separation of concerns and be easy to combine.
 - **extensible**: It should be easy for users to add their own tools, providers, actions, agent steps, etc.
-- **use functional programming for object assembly**: All objects that are immutable are assembled using functional programming. Object-orientation is only used for objects that have a changeable state (e.g. `Step` and `AgentRun`).
+- **use functional programming for assembly**: All objects that are immutable are assembled using functional programming. Object-orientation is only used for objects that have a changeable state (e.g. `Step` and `AgentRun`).
 - **support progressive refinement of agent specifications**: Agent specifications should be easy to write and every building block should provide good defaults. At the same time, it should be possible to easily override the defaults with specific settings, prompts, etc.
 - **build for production**: JS Agent will have first-class support for logging, associating LLM calls and cost tracking with agent runs, etc.
 
@@ -107,7 +118,7 @@ export async function runWikipediaAgent({
     });
 
   const readWikipediaArticleAction =
-    $.tool.summarizeWebpage<WikipediaAgentRunProperties>({
+    $.tool.extractInformationFromWebpage<WikipediaAgentRunProperties>({
       id: "read-wikipedia-article",
       description:
         "Read a wikipedia article and summarize it considering the query.",
@@ -115,23 +126,21 @@ export async function runWikipediaAgent({
         url: "https://en.wikipedia.org/wiki/Artificial_intelligence",
         topic: "{query that you are answering}",
       },
-      execute: $.tool.executeSummarizeWebpage({
-        extractText: $.text.extractWebpageTextFromHtml(),
-        summarize: $.text.summarizeRecursively({
+      execute: $.tool.executeExtractInformationFromWebpage({
+        extract: $.text.extractRecursively({
           split: $.text.splitRecursivelyAtCharacter({
             maxCharactersPerChunk: 2048 * 4, // needs to fit into a gpt-3.5-turbo prompt
           }),
-          summarize: $.text.generate({
+          extract: $.text.generateText({
             id: "summarize-wikipedia-article-chunk",
-            prompt: $.text.SummarizeChatPrompt,
+            prompt: $.prompt.extractChatPrompt(),
             model: chatGpt,
-            processOutput: async (output) => output.trim(),
           }),
         }),
       }),
     });
 
-  return $.runAgent<{ task: string }>({
+  return $.runAgent<WikipediaAgentRunProperties>({
     properties: { task },
     agent: $.step.generateNextStepLoop({
       actions: [searchWikipediaAction, readWikipediaArticleAction],
@@ -144,11 +153,10 @@ export async function runWikipediaAgent({
 You are an knowledge worker that answers questions using Wikipedia content. You speak perfect JSON.
 
 ## CONSTRAINTS
-Make sure all facts for your answer are from Wikipedia articles that you have read.`,
-          },
-          {
-            role: "user",
-            content: `## TASK\n${task}`,
+All facts for your answer must be from Wikipedia articles that you have read.
+
+## TASK
+${task}`,
           },
         ],
         $.prompt.availableActionsChatPrompt(),

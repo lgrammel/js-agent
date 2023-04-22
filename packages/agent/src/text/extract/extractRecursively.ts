@@ -1,32 +1,32 @@
 import { RunContext } from "../../agent/RunContext";
 import { SplitFunction } from "../split";
-import { SummarizeFunction } from "./SummarizeFunction";
+import { ExtractFunction } from "./ExtractFunction";
 
-export const summarizeRecursively =
+export const extractRecursively =
   ({
-    summarize,
     split,
+    extract,
   }: {
-    summarize: SummarizeFunction;
     split: SplitFunction;
-  }): SummarizeFunction =>
+    extract: ExtractFunction;
+  }): ExtractFunction =>
   async ({ text, topic }, context: RunContext) =>
-    _summarizeRecursively({
+    _extractRecursively({
       text,
       topic,
-      summarize,
+      extract,
       split,
       context,
     });
 
-async function _summarizeRecursively({
-  summarize,
+async function _extractRecursively({
+  extract,
   split,
   text,
   topic,
   context,
 }: {
-  summarize: SummarizeFunction;
+  extract: ExtractFunction;
   split: SplitFunction;
   text: string;
   topic: string;
@@ -34,21 +34,21 @@ async function _summarizeRecursively({
 }): Promise<string> {
   const chunks = await split({ text });
 
-  const chunkSummaries = [];
+  const extractedTexts = [];
   for (const chunk of chunks) {
-    chunkSummaries.push(await summarize({ text: chunk, topic }, context));
+    extractedTexts.push(await extract({ text: chunk, topic }, context));
   }
 
-  if (chunkSummaries.length === 1) {
-    return chunkSummaries[0];
+  if (extractedTexts.length === 1) {
+    return extractedTexts[0];
   }
 
   // recursive summarization: will split joined summaries as needed to stay
   // within the allowed size limit of the splitter.
-  return _summarizeRecursively({
-    text: chunkSummaries.join("\n\n"),
+  return _extractRecursively({
+    text: extractedTexts.join("\n\n"),
     topic,
-    summarize,
+    extract,
     split,
     context,
   });

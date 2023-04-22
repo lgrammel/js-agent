@@ -30,7 +30,7 @@ export async function runWikipediaAgent({
     });
 
   const readWikipediaArticleAction =
-    $.tool.summarizeWebpage<WikipediaAgentRunProperties>({
+    $.tool.extractInformationFromWebpage<WikipediaAgentRunProperties>({
       id: "read-wikipedia-article",
       description:
         "Read a wikipedia article and summarize it considering the query.",
@@ -38,23 +38,21 @@ export async function runWikipediaAgent({
         url: "https://en.wikipedia.org/wiki/Artificial_intelligence",
         topic: "{query that you are answering}",
       },
-      execute: $.tool.executeSummarizeWebpage({
-        extractText: $.text.extractWebpageTextFromHtml(),
-        summarize: $.text.summarizeRecursively({
+      execute: $.tool.executeExtractInformationFromWebpage({
+        extract: $.text.extractRecursively({
           split: $.text.splitRecursivelyAtCharacter({
             maxCharactersPerChunk: 2048 * 4, // needs to fit into a gpt-3.5-turbo prompt
           }),
-          summarize: $.text.generate({
+          extract: $.text.generateText({
             id: "summarize-wikipedia-article-chunk",
-            prompt: $.text.SummarizeChatPrompt,
+            prompt: $.prompt.extractChatPrompt(),
             model: chatGpt,
-            processOutput: async (output) => output.trim(),
           }),
         }),
       }),
     });
 
-  return $.runAgent<{ task: string }>({
+  return $.runAgent<WikipediaAgentRunProperties>({
     properties: { task },
     agent: $.step.generateNextStepLoop({
       actions: [searchWikipediaAction, readWikipediaArticleAction],
@@ -67,11 +65,10 @@ export async function runWikipediaAgent({
 You are an knowledge worker that answers questions using Wikipedia content. You speak perfect JSON.
 
 ## CONSTRAINTS
-Make sure all facts for your answer are from Wikipedia articles that you have read.`,
-          },
-          {
-            role: "user",
-            content: `## TASK\n${task}`,
+All facts for your answer must be from Wikipedia articles that you have read.
+
+## TASK
+${task}`,
           },
         ],
         $.prompt.availableActionsChatPrompt(),

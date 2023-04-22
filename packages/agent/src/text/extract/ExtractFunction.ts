@@ -1,7 +1,7 @@
 import { RunContext } from "../../agent/RunContext";
 
-export type SummarizeFunction = (
-  {}: {
+export type ExtractFunction = (
+  options: {
     text: string;
     topic: string;
   },

@@ -1,6 +1,7 @@
-import { RunContext } from "../../agent/RunContext";
-import { Prompt } from "../../prompt/Prompt";
-import { retryWithExponentialBackoff } from "../../util/retryWithExponentialBackoff";
+import { RunContext } from "../agent/RunContext";
+import { Prompt } from "../prompt/Prompt";
+import { retryWithExponentialBackoff } from "../util/retryWithExponentialBackoff";
+import { trim } from "./trim";
 
 export type GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT> = {
   vendor: string;
@@ -76,4 +77,23 @@ export function generate<
 
     return processOutput(extractedOutput);
   };
+}
+
+export function generateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>({
+  id,
+  prompt,
+  model,
+  processOutput = trim(),
+}: {
+  id: string;
+  prompt: Prompt<INPUT, PROMPT_TYPE>;
+  model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, string>;
+  processOutput?: (output: string) => PromiseLike<string>;
+}) {
+  return generate({
+    id,
+    prompt,
+    model,
+    processOutput,
+  });
 }

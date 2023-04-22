@@ -1,4 +1,4 @@
-import { GeneratorModel } from "../../text/generate/generate";
+import { GeneratorModel } from "../../text/generate";
 import {
   OpenAITextCompletion,
   OpenAITextCompletionModel,

@@ -1,10 +1,7 @@
 import { Run } from "../agent";
 import { RunContext } from "../agent/RunContext";
 import { Prompt } from "../prompt/Prompt";
-import {
-  GeneratorModel,
-  generate as generateFunction,
-} from "../text/generate/generate";
+import { GeneratorModel, generate as generateFunction } from "../text/generate";
 import { Step } from "./Step";
 import { StepResult } from "./StepResult";
 

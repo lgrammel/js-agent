@@ -4,10 +4,7 @@ import { ActionFormat } from "../action/format/ActionFormat";
 import { Run } from "../agent/Run";
 import { RunContext } from "../agent/RunContext";
 import { Prompt } from "../prompt/Prompt";
-import {
-  GeneratorModel,
-  generate as generateFunction,
-} from "../text/generate/generate";
+import { GeneratorModel, generate as generateFunction } from "../text/generate";
 import { ErrorStep } from "./ErrorStep";
 import { Loop } from "./Loop";
 import { NoopStep } from "./NoopStep";
