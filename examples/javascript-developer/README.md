@@ -35,14 +35,16 @@ pnpm run-agent `cat examples/helloworld/task.txt` # or any other instruction
 
 The `drive` folder contains the shared files between the host and the docker container.
 
-## How to use the js-agent developer for your own project
+## How to use the JS Agent developer in your own project
 
 1. Clone the git repository that the agent should work on into the drive folder, e.g.,
    `git clone https://github.com/lgrammel/js-agent.git drive`
 
-2. Configure the Dockerfile to install any libraries that you need
+2. Configure the Dockerfile to install any libraries that you need for your project.
+   There are existing examples for JS-Agent in the the Dockerfile.
 
-3. Update agent.mjs with project-specific instructions and setup steps
+3. Update ` src/main.ts` with project-specific instructions and setup command.
+   There are existing examples for JS-Agent in the the `src/main.ts` file.
 
 4. Build & run the docker container
 
