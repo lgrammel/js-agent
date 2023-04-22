@@ -4,9 +4,9 @@
 
 JS Agent is a composable and extensible framework for creating GPT agents with JavaScript and TypeScript.
 
-While creating an agent prototype is easy, increasing its reliability and robustness is difficult and requires considerable experimentation. JS Agent provides robust building blocks and tooling to help you develop rock-solid agents faster.
+While creating an agent prototype is easy, increasing its reliability and robustness is complex and requires considerable experimentation. JS Agent provides robust building blocks and tooling to help you develop rock-solid agents faster.
 
-**⚠️ JS Agent is currently in its initial experimental phase. Prior to reaching version 0.1, there may breaking changes in each release.**
+**⚠️ JS Agent is currently in its initial experimental phase. Before reaching version 0.1, there may breaking changes in each release.**
 
 ## Quick Start
 
@@ -14,7 +14,7 @@ While creating an agent prototype is easy, increasing its reliability and robust
 npm install js-agent
 ```
 
-See examples below for details on how to implement and run an agent.
+See the examples below for details on implementing and running an agent.
 
 ## Features
 
