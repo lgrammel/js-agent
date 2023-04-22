@@ -47,16 +47,23 @@ See the examples below for details on implementing and running an agent.
 
 ## Examples
 
-**[BabyAGI](https://github.com/lgrammel/js-agent/tree/main/examples/babyagi)**:
+### [Wikipedia Question-Answering](https://github.com/lgrammel/js-agent/tree/main/examples/wikipedia)
+
+An agent that has access to a wikipedia search engine and can read wikipedia articles. You can use it to answer questions about wikipedia content.
+
+Used features: `gpt-3.5-turbo`, custom tools (search wikipedia, read wikipedia article), generate next step loop, max steps run controller, cost calculation after agent run
+
+### [JavaScript/TypeScript developer](https://github.com/lgrammel/js-agent/tree/main/examples/javascript-developer)
+
+An automated developer agent that works in a docker container. It can read files, write files and execute commands. You can adjust it for your project and use it to document code, write tests, update tests and features, etc.
+
+Used features: `gpt-4`, tool execution in Docker container, agent with fixed setup steps, multiple agent run properties, generate next step loop, tools (read file, write file, run, command, ask user)
+
+### [BabyAGI](https://github.com/lgrammel/js-agent/tree/main/examples/babyagi)
+
 JS Agent implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi).
 
-**[JavaScript/TypeScript developer](https://github.com/lgrammel/js-agent/tree/main/examples/javascript-developer)**:
-An automated developer agent that works in a docker container.
-It can read files, write files and execute commands.
-You can use it to document code, write tests, update tests and features, etc.
-
-**[Wikipedia Question-Answering](https://github.com/lgrammel/js-agent/tree/main/examples/wikipedia)**:
-An agent that has access to a wikipedia search engine and can read wikipedia articles. You can use it to answer questions about wikipedia content.
+Features used: text completion model (`text-davinci-003`), customized console output, update tasks planning loop
 
 ## Design Principles
 
