@@ -1,6 +1,6 @@
 ---
-sidebar_position: 1
-title: Tutorial - Wikipedia QA Agent
+sidebar_position: 2
+title: Tutorial - Wikipedia Agent
 ---
 
 # Overview
