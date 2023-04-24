@@ -10,15 +10,13 @@ title: Create agent.ts
 ```typescript
 const task = process.argv.slice(2).join(" ");
 
-runWikipediaAgent({
-  task,
-})
+runWikipediaAgent()
   .then(() => {})
   .catch((error) => {
     console.error(error);
   });
 
-async function runWikipediaAgent({ task }: { task: string }) {
+async function runWikipediaAgent() {
   console.log(task);
 }
 ```

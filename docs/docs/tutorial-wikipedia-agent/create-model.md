@@ -19,22 +19,13 @@ if (!openAiApiKey) {
   throw new Error("OPENAI_API_KEY is not set");
 }
 
-runWikipediaAgent({
-  task,
-  openAiApiKey,
-})
+runWikipediaAgent()
   .then(() => {})
   .catch((error) => {
     console.error(error);
   });
 
-async function runWikipediaAgent({
-  task,
-  openAiApiKey,
-}: {
-  task: string;
-  openAiApiKey: string;
-}) {
+async function runWikipediaAgent() {
   console.log(openAiApiKey);
   console.log(task);
 }
@@ -94,22 +85,13 @@ if (!openAiApiKey) {
   throw new Error("OPENAI_API_KEY is not set");
 }
 
-runWikipediaAgent({
-  task,
-  openAiApiKey,
-})
+runWikipediaAgent()
   .then(() => {})
   .catch((error) => {
     console.error(error);
   });
 
-async function runWikipediaAgent({
-  task,
-  openAiApiKey,
-}: {
-  task: string;
-  openAiApiKey: string;
-}) {
+async function runWikipediaAgent() {
   const chatGpt = $.provider.openai.chatModel({
     apiKey: openAiApiKey,
     model: "gpt-3.5-turbo",
