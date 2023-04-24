@@ -2,6 +2,8 @@
 
 Answers questions using Wikipedia articles. It searches using a Programmable Search Engine set up for en.wikipedia.org and reads (summarizes) articles to find the answer.
 
+[Full tutorial](https://js-agent.ai/docs/tutorial-wikipedia-agent/)
+
 ## JS Agent features used
 
 - OpenAI chat completion model (`gpt-3.5-turbo`)

@@ -1,20 +1,16 @@
-# JS Agent: Build GPT Agents with JS & TS
+# JS Agent: Build AI Agents with JS & TS
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/lgrammel?style=social)](https://twitter.com/intent/follow?screen_name=lgrammel)
 
-JS Agent is a composable and extensible framework for creating GPT agents with JavaScript and TypeScript.
+JS Agent is a composable and extensible framework for creating AI agents with JavaScript and TypeScript.
 
 While creating an agent prototype is easy, increasing its reliability and robustness is complex and requires considerable experimentation. JS Agent provides robust building blocks and tooling to help you develop rock-solid agents faster.
 
 **⚠️ JS Agent is currently in its initial experimental phase. Before reaching version 0.1, there may breaking changes in each release.**
 
-## Quick Start
+## Documentation
 
-```sh
-npm install js-agent
-```
-
-See the examples below for details on implementing and running an agent.
+[Full documentation & tutorials](https://js-agent.ai/docs/intro)
 
 ## Features
 
@@ -84,6 +80,14 @@ Features used: stand-alone pipeline (no agent), pdf loading, extract-and-rewrite
 - **use functional programming for assembly**: All objects that are immutable are assembled using functional programming. Object-orientation is only used for objects that have a changeable state (e.g. `Step` and `AgentRun`).
 - **support progressive refinement of agent specifications**: Agent specifications should be easy to write and every building block should provide good defaults. At the same time, it should be possible to easily override the defaults with specific settings, prompts, etc.
 - **build for production**: JS Agent will have first-class support for logging, associating LLM calls and cost tracking with agent runs, etc.
+
+## Quick Install
+
+```sh
+npm install js-agent
+```
+
+See the [examples](https://github.com/lgrammel/js-agent/tree/main/examples/) and [documentation](https://js-agent.ai/docs/intro) to learn how to create an agent.
 
 ## Example Agent
 
