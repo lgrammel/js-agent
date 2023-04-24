@@ -14,10 +14,16 @@ A basic agent works like this:
 
 ```mermaid
 graph LR;
-    Task-->Call_LLM;
-    Call_LLM-->Use_Tool;
-    Call_LLM-->Done;
-    Use_Tool-->Call_LLM;
+
+TASK["task"];
+CALL_LLM["call LLM"];
+USE_TOOL["use tool"];
+DONE["done"];
+
+TASK-->CALL_LLM;
+CALL_LLM-->USE_TOOL;
+CALL_LLM-->DONE;
+USE_TOOL-->CALL_LLM;
 ```
 
 The critical piece is that **the language model response determines what tool to use**.
@@ -28,12 +34,20 @@ Here is the same diagram with a bit more detail:
 
 ```mermaid
 graph LR;
-    Task-->Create_LLM_Prompt
-    Create_LLM_Prompt-->Call_LLM;
-    Call_LLM-->Parse_LLM_Response;
-    Parse_LLM_Response-->Use_Tool;
-    Parse_LLM_Response-->Done;
-    Use_Tool-->Create_LLM_Prompt;
+
+TASK["task"];
+CREATE_LLM_PROMPT["create LLM prompt"];
+CALL_LLM["call LLM"];
+PARSE_LLM_RESPONSE["parse LLM response"];
+USE_TOOL["use tool"];
+DONE["done"];
+
+TASK-->CREATE_LLM_PROMPT
+CREATE_LLM_PROMPT-->CALL_LLM;
+CALL_LLM-->PARSE_LLM_RESPONSE;
+PARSE_LLM_RESPONSE-->USE_TOOL;
+PARSE_LLM_RESPONSE-->DONE;
+USE_TOOL-->CREATE_LLM_PROMPT;
 ```
 
 There are other variants of agents that are much more complex and involve self-calls, planning, memory, and more.
