@@ -3,17 +3,15 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node src/main.ts",
+    "start": "pnpm js-agent-server -f .build/agent",
     "build": "tsc"
   },
   "private": true,
   "dependencies": {
-    "chalk": "^4",
     "js-agent": "*",
-    "dotenv": "16.0.3"
+    "zod": "3.21.4"
   },
   "devDependencies": {
-    "ts-node": "10.9.1",
     "typescript": "5.0.2"
   }
 }
