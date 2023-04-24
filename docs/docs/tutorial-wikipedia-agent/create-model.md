@@ -3,11 +3,11 @@ sidebar_position: 3
 title: Create the LLM model
 ---
 
-# Create agent loop
+# Create the LLM model
 
 Next we'll setup the LLM model and create the agent loop with a basic prompt.
 
-## Load OpenAI API key from Environment
+## Load OpenAI API key
 
 Update the code to load the OpenAI API key from the environment and inject it into the agent:
 
