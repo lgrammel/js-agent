@@ -1,9 +1,9 @@
 ---
 sidebar_position: 3
-title: Create LLM model
+title: Setup LLM model
 ---
 
-# Create the LLM model
+# Setup the LLM model
 
 Next we'll setup the LLM model and create the agent loop with a basic prompt.
 
