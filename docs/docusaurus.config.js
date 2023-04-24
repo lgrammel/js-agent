@@ -47,10 +47,10 @@ const config = {
           sidebarPath: require.resolve("./sidebars.js"),
           editUrl: "https://github.com/lgrammel/js-agent/tree/main/docs/docs/",
         },
-        blog: {
-          showReadingTime: true,
-          editUrl: "https://github.com/lgrammel/js-agent/tree/main/docs/blog/",
-        },
+        // blog: {
+        //   showReadingTime: true,
+        //   editUrl: "https://github.com/lgrammel/js-agent/tree/main/docs/blog/",
+        // },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
