@@ -2,46 +2,59 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Getting Started
 
-Let's discover **Docusaurus in less than 5 minutes**.
+Let's discover **JS Agent in less than 5 minutes**.
 
-## Getting Started
+## What is an agent?
 
-Get started by **creating a new site**.
+An agent solves a users task in a flexible way by using large language models (LLM), memory (embeddings), and tools (e.g. search, analyzing data, etc.).
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+A basic agent works like this:
+
+```mermaid
+graph LR;
+    Task-->Call_LLM;
+    Call_LLM-->Use_Tool;
+    Call_LLM-->Done;
+    Use_Tool-->Call_LLM;
+```
+
+The key piece is that **the language model response determines what tool to use**.
+This enables the agent to be flexible and solve a wide variety of tasks.
+
+Calling the LLM requires creating a prompt and parsing its response.
+Here is the same diagram with a bit more detail:
+
+```mermaid
+graph LR;
+    Task-->Create_LLM_Prompt
+    Create_LLM_Prompt-->Call_LLM;
+    Call_LLM-->Parse_LLM_Response;
+    Parse_LLM_Response-->Use_Tool;
+    Parse_LLM_Response-->Done;
+    Use_Tool-->Create_LLM_Prompt;
+```
+
+There are other variants of agents that are much more complex and involve self-calls, planning, memory, and more.
+
+## JS Agent
+
+JS Agent is a composable and extensible framework for creating agents with JavaScript and TypeScript.
+
+While creating an agent prototype is easy, increasing its reliability and robustness is complex and requires considerable experimentation.
+JS Agent provides robust building blocks and tooling to help you develop rock-solid agents faster.
+
+**JS Agent is currently in its initial experimental phase. Before reaching version 0.1, there may breaking changes in each release.**
+
+## Installing JS Agent
+
+```bash
+npm install js-agent
+```
 
 ### What you'll need
 
-- [Node.js](https://nodejs.org/en/download/) version 16.14 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
-
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+- [Node.js](https://nodejs.org/en/download/) version 18 or above
+- [OpenAI API access](https://platform.openai.com/overview)
+  - We'll support add other model providers.
