@@ -8,7 +8,7 @@ Let's discover **JS Agent in less than 5 minutes**.
 
 ## What is an agent?
 
-An agent solves a users task in a flexible way by using large language models (LLM), memory (embeddings), and tools (e.g. search, analyzing data, etc.).
+An agent flexibly solves a user's task by using large language models (LLM), memory (embeddings), and tools (e.g., search, analyzing data, etc.).
 
 A basic agent works like this:
 
@@ -20,7 +20,7 @@ graph LR;
     Use_Tool-->Call_LLM;
 ```
 
-The key piece is that **the language model response determines what tool to use**.
+The critical piece is that **the language model response determines what tool to use**.
 This enables the agent to be flexible and solve a wide variety of tasks.
 
 Calling the LLM requires creating a prompt and parsing its response.
@@ -57,4 +57,4 @@ npm install js-agent
 
 - [Node.js](https://nodejs.org/en/download/) version 18 or above
 - [OpenAI API access](https://platform.openai.com/overview)
-  - We'll support add other model providers.
+  - We'll add support for other model providers.
