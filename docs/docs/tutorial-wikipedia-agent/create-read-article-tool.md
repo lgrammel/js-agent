@@ -36,8 +36,8 @@ Input examples help with guiding the LLM to take the right action.
 Every tool has a default input example that can be overridden.
 
 The page is then summarized using text extraction.
-It is split recursively until the chunks are small enough for Chat GPT to handle.
-Chat GPT is used to generate a summary for each chunk and the concatenated summaries.
+It is split recursively until the chunks are small enough for `gpt-3.5-turbo` to handle.
+`gpt-3.5-turbo` is used to generate a summary for each chunk and the concatenated summaries.
 
 `$.prompt.extractChatPrompt()`, which is part of JS Agent, contains the following prompt:
 
