@@ -5,7 +5,7 @@ title: Create agent.ts
 
 # Create agent.ts
 
-`src/agent.ts` will contain the wikipedia agent. To get started, add the following content:
+`src/agent.ts` will contain the Wikipedia agent. To get started, add the following content:
 
 ```typescript
 const task = process.argv.slice(2).join(" ");

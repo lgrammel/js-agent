@@ -5,7 +5,7 @@ title: Setup LLM model
 
 # Setup the LLM model
 
-Next we'll setup the LLM model and create the agent loop with a basic prompt.
+Next, we'll set up the LLM model and create the agent loop with a basic prompt.
 
 ## Load OpenAI API key
 
@@ -73,7 +73,7 @@ const output = await chatGpt.extractOutput(fullResponse);
 console.log(output);
 ```
 
-Putting this together , this is the current code:
+Putting this together, this is the current code:
 
 ```typescript
 import * as $ from "js-agent";

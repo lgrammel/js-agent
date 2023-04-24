@@ -78,7 +78,7 @@ return $.runAgent<...>({
   }),
 ```
 
-The loop is configured with out earlier prompt function and the `chatGpt` model.
+The loop is configured with our earlier prompt function and the `chatGpt` model.
 This prompt is used when calling the `chatGpt` model generate function.
 We'll configure and talk about the actions later.
 
@@ -90,7 +90,7 @@ return $.runAgent<...>({
   controller: $.agent.controller.maxSteps(3),
 ```
 
-And finally we use an observer that outputs the agent's run to the console:
+And finally, we use an observer that outputs the agent's run to the console:
 
 ```typescript
 return $.runAgent<...>({

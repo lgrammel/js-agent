@@ -33,13 +33,13 @@ const readWikipediaArticleAction = $.tool.extractInformationFromWebpage<{
 });
 ```
 
-In addition to the `id` and the `description`, the action also has an `inputExample` that will be shown to the LLM.
-Input examples can help with guiding the LLM to take the right action.
+In addition to the `id` and the `description`, the action has an `inputExample` that will be shown to the LLM.
+Input examples help with guiding the LLM to take the right action.
 Every tool has a default input example that can be overridden.
 
 The page is then summarized using text extraction.
 It is split recursively until the chunks are small enough for Chat GPT to handle.
-For each chunk and for the concatenated summaries, Chat GPT is used to generate a summary.
+Chat GPT is used to generate a summary for each chunk and the concatenated summaries.
 
 `$.prompt.extractChatPrompt()`, which is part of JS Agent, contains the following prompt:
 

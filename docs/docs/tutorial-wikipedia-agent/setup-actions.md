@@ -23,7 +23,7 @@ It is specifically designed for ChatGPT, which tends to output the JSON object i
 
 ## Create a better prompt
 
-The agent is not aware of the actions yet, and it does not know that it should read Wikipedia articles.
+The agent has yet to be made aware of the actions and it does not know that it should read Wikipedia articles.
 Let's improve the agent prompt.
 
 ```typescript
@@ -49,8 +49,7 @@ ${task}`,
 ```
 
 Let's dissect the prompt.
-We first tell the model about it general role.
-Then we instruct it to always read Wikipedia articles to find the answer, and give it the task.
+We first tell the model about its general role, and then we instruct it always to read Wikipedia articles to find the answer and give it the task.
 
 ```
 ## ROLE
@@ -64,8 +63,8 @@ ${task}
 ```
 
 The next part informs the model about the available actions.
-After that we make sure to include the last steps that the model took in the prompt for the next iteration.
-This provides some very basic memory is required for moving the agent forward in its task.
+After that, we ensure to include the last steps the model took in the prompt for the next iteration.
+This provides some basic memory required for moving the agent forward in its task.
 
 ```typescript
 return $.runAgent<...>({

@@ -7,7 +7,7 @@ title: Setup project
 
 ## Pre-requisites
 
-This tutorial assumed that you have Node.js (v18 or newer) installed.
+This tutorial assumes that you have Node.js (v18 or newer) installed.
 You also need access to the OpenAI API.
 
 ## Create a new Node.js project
