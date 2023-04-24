@@ -9,6 +9,7 @@ An automated developer agent that works in a docker container. It can read files
 - Agent starts with setup steps (`FixedStepsLoop`)
 - Multiple agent run properties
 - `GenerateNextStepLoop` loop with tools (read file, write file, run, command, ask user) and custom prompt
+- Cost calculation and extracting information from LLM calls after the run
 
 ## Usage
 

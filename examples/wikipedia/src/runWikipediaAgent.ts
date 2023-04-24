@@ -73,25 +73,6 @@ ${task}`,
       model: chatGpt,
     }),
     controller: $.agent.controller.maxSteps(20),
-    observer: $.agent.observer.combineObservers(
-      $.agent.observer.showRunInConsole({ name: "Wikipedia Agent" }),
-      {
-        async onRunFinished({ run }) {
-          const runCostInMillicent = await $.agent.calculateRunCostInMillicent({
-            run,
-          });
-
-          console.log(
-            `Run cost: $${(runCostInMillicent / 1000 / 100).toFixed(2)}`
-          );
-
-          console.log(
-            `LLM calls: ${
-              run.recordedCalls.filter((call) => call.success).length
-            }`
-          );
-        },
-      }
-    ),
+    observer: $.agent.observer.showRunInConsole({ name: "Wikipedia Agent" }),
   });
 }
