@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-title: Create the LLM model
+title: Create LLM model
 ---
 
 # Create the LLM model
