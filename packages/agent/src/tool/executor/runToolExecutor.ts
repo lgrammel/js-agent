@@ -4,13 +4,13 @@ import pino from "pino";
 import zod from "zod";
 import { gracefullyShutdownOnSigTermAndSigInt } from "../../util/gracefullyShutdownOnSigTermAndSigInt";
 import { ToolAction } from "../ToolAction";
-import { createToolPlugin } from "./toolPlugin";
 import { ToolRegistry } from "./ToolRegistry";
+import { createToolPlugin } from "./toolPlugin";
 
-export const runToolExecutor = async <RUN_PROPERTIES>({
+export const runToolExecutor = async ({
   tools,
 }: {
-  tools: Array<ToolAction<any, any, RUN_PROPERTIES>>;
+  tools: Array<ToolAction<any, any>>;
 }) => {
   const environmentSchema = zod.object({
     WORKSPACE: zod.string(),

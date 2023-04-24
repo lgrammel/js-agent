@@ -2,7 +2,7 @@ import { Run } from "../agent";
 import { Step } from "./Step";
 import { StepResult } from "./StepResult";
 
-export class NoopStep<RUN_PROPERTIES> extends Step<RUN_PROPERTIES> {
+export class NoopStep<RUN_STATE> extends Step<RUN_STATE> {
   readonly summary: string;
   private readonly _isDoneStep: boolean;
 
@@ -13,7 +13,7 @@ export class NoopStep<RUN_PROPERTIES> extends Step<RUN_PROPERTIES> {
     isDoneStep = false,
   }: {
     type?: string;
-    run: Run<RUN_PROPERTIES>;
+    run: Run<RUN_STATE>;
     summary: string;
     isDoneStep?: boolean;
   }) {

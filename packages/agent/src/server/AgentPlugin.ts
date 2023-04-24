@@ -10,13 +10,13 @@ import { loadEnvironment } from "../agent/env/loadEnvironment";
 export const AgentPlugin = <
   ENVIRONMENT extends Record<string, string>,
   INPUT,
-  RUN_PROPERTIES extends INPUT
+  RUN_STATE extends INPUT
 >({
   name,
   agent,
 }: {
   name: string;
-  agent: Agent<ENVIRONMENT, INPUT, RUN_PROPERTIES>;
+  agent: Agent<ENVIRONMENT, INPUT, RUN_STATE>;
 }) =>
   async function plugin(server: FastifyInstance) {
     const typedServer = server.withTypeProvider<ZodTypeProvider>();
@@ -24,7 +24,7 @@ export const AgentPlugin = <
     const environment = await loadEnvironment<ENVIRONMENT>(agent.environment);
     const createRootStep = await agent.execute({ environment });
 
-    const runs = new Map<string, Run<RUN_PROPERTIES>>();
+    const runs = new Map<string, Run<RUN_STATE>>();
 
     // create agent run (POST /agent/:agent)
     typedServer.route({
@@ -36,9 +36,9 @@ export const AgentPlugin = <
       async handler(request, reply) {
         const runId = nextId();
 
-        const run = new Run<RUN_PROPERTIES>({
+        const run = new Run<RUN_STATE>({
           controller: agent.controller ?? noLimit(),
-          properties: await agent.init({
+          initialState: await agent.init({
             environment,
             input: request.body as INPUT,
           }),

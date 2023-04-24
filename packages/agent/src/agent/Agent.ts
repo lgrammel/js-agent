@@ -6,16 +6,16 @@ import { LoadEnvironmentKeyFunction } from "./env/LoadEnvironmentKeyFunction";
 export type Agent<
   ENVIRONMENT extends Record<string, string>,
   INPUT,
-  RUN_PROPERTIES extends INPUT
+  RUN_STATE extends INPUT
 > = {
   environment: Record<keyof ENVIRONMENT, LoadEnvironmentKeyFunction>;
   inputSchema: zod.ZodSchema<INPUT>;
   init: (options: {
     input: INPUT;
     environment: ENVIRONMENT;
-  }) => Promise<RUN_PROPERTIES>;
+  }) => Promise<RUN_STATE>;
   execute: (options: {
     environment: ENVIRONMENT;
-  }) => Promise<StepFactory<RUN_PROPERTIES>>;
-  controller?: RunController<RUN_PROPERTIES>;
+  }) => Promise<StepFactory<RUN_STATE>>;
+  controller?: RunController<RUN_STATE>;
 };

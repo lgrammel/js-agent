@@ -6,14 +6,14 @@ import { RunObserver } from "./RunObserver";
 
 const log = console.log;
 
-export const showRunInConsole = <RUN_PROPERTIES>({
+export const showRunInConsole = <RUN_STATE>({
   name,
 }: {
   name: string;
-}): RunObserver<RUN_PROPERTIES> => ({
-  onRunStarted({ run }: { run: Run<RUN_PROPERTIES> }) {
+}): RunObserver<RUN_STATE> => ({
+  onRunStarted({ run }: { run: Run<RUN_STATE> }) {
     log(chalk.green(`### ${name} ###`));
-    log(run.properties);
+    log(run.state);
     log();
   },
 
@@ -35,14 +35,14 @@ export const showRunInConsole = <RUN_PROPERTIES>({
     log();
   },
 
-  onStepExecutionStarted({ step }: { step: Step<RUN_PROPERTIES> }) {
+  onStepExecutionStarted({ step }: { step: Step<RUN_STATE> }) {
     if (step instanceof ToolStep) {
       log(chalk.gray(`Executing ${step.type}…`));
       return;
     }
   },
 
-  onStepExecutionFinished({ step }: { step: Step<RUN_PROPERTIES> }) {
+  onStepExecutionFinished({ step }: { step: Step<RUN_STATE> }) {
     if (step instanceof ToolStep) {
       const result = step.state;
       const resultType = result.type;

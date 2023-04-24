@@ -1,8 +1,8 @@
-import zod from "zod";
-import { createToolAction } from "../ToolAction";
-import { ExecuteToolFunction } from "../ExecuteToolFunction";
-import { FormatResultFunction } from "../../action";
 import readline from "readline";
+import zod from "zod";
+import { FormatResultFunction } from "../../action";
+import { ExecuteToolFunction } from "../ExecuteToolFunction";
+import { createToolAction } from "../ToolAction";
 
 export type AskUserInput = {
   query: string;
@@ -12,7 +12,7 @@ export type AskUserOutput = {
   response: string;
 };
 
-export const askUser = <RUN_PROPERTIES>({
+export const askUser = ({
   id = "ask-user",
   description = "Ask the user for input or to take an action.",
   inputExample = {
@@ -25,7 +25,7 @@ export const askUser = <RUN_PROPERTIES>({
   id?: string;
   description?: string;
   inputExample?: AskUserInput;
-  execute: ExecuteToolFunction<AskUserInput, AskUserOutput, RUN_PROPERTIES>;
+  execute: ExecuteToolFunction<AskUserInput, AskUserOutput>;
   formatResult?: FormatResultFunction<AskUserInput, AskUserOutput>;
 }) =>
   createToolAction({
@@ -43,11 +43,7 @@ export const askUser = <RUN_PROPERTIES>({
   });
 
 export const executeAskUser =
-  <RUN_PROPERTIES>(): ExecuteToolFunction<
-    AskUserInput,
-    AskUserOutput,
-    RUN_PROPERTIES
-  > =>
+  <RUN_STATE>(): ExecuteToolFunction<AskUserInput, AskUserOutput> =>
   async ({ input: { query } }) => {
     const userInput = readline.createInterface({
       input: process.stdin,

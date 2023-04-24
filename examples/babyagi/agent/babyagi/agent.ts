@@ -81,7 +81,7 @@ Start the task list with number 1.`;
           run,
           input: { task },
           async prompt({ task }) {
-            return `You are an AI who performs one task based on the following objective: ${run.properties.objective}.
+            return `You are an AI who performs one task based on the following objective: ${run.state.objective}.
 Your task: ${task}
 Response:`;
           },

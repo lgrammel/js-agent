@@ -16,7 +16,7 @@ export type ExtractInformationFromWebpageOutput = {
   extractedInformation: string;
 };
 
-export const extractInformationFromWebpage = <RUN_PROPERTIES>({
+export const extractInformationFromWebpage = ({
   id = "extract-information-from-webpage",
   description = "Extract information from a webpage considering a topic.",
   inputExample = {
@@ -32,8 +32,7 @@ export const extractInformationFromWebpage = <RUN_PROPERTIES>({
   inputExample?: ExtractInformationFromWebpageInput;
   execute: ExecuteToolFunction<
     ExtractInformationFromWebpageInput,
-    ExtractInformationFromWebpageOutput,
-    RUN_PROPERTIES
+    ExtractInformationFromWebpageOutput
   >;
   formatResult?: FormatResultFunction<
     ExtractInformationFromWebpageInput,
@@ -56,7 +55,7 @@ export const extractInformationFromWebpage = <RUN_PROPERTIES>({
   });
 
 export const executeExtractInformationFromWebpage =
-  <RUN_PROPERTIES>({
+  <RUN_STATE>({
     loadText = load({
       from: webpageAsHtmlText(),
       convert: htmlToText(),
@@ -67,8 +66,7 @@ export const executeExtractInformationFromWebpage =
     extract: ExtractFunction;
   }): ExecuteToolFunction<
     ExtractInformationFromWebpageInput,
-    ExtractInformationFromWebpageOutput,
-    RUN_PROPERTIES
+    ExtractInformationFromWebpageOutput
   > =>
   async (
     { input: { topic, url } }: { input: ExtractInformationFromWebpageInput },

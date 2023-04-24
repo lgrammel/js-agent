@@ -3,14 +3,14 @@ import { RunContext } from "../agent/RunContext";
 import { StepResult } from "./StepResult";
 import { StepState } from "./StepState";
 
-export abstract class Step<RUN_PROPERTIES> {
+export abstract class Step<RUN_STATE> {
   readonly id: string;
   readonly type: string;
-  readonly run: Run<RUN_PROPERTIES>;
+  readonly run: Run<RUN_STATE>;
 
   state: StepState;
 
-  constructor({ type, run }: { type: string; run: Run<RUN_PROPERTIES> }) {
+  constructor({ type, run }: { type: string; run: Run<RUN_STATE> }) {
     if (type == null) {
       throw new Error(`Step type is required`);
     }

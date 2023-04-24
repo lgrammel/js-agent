@@ -2,10 +2,10 @@ import { ActionRegistry } from "../action";
 import { chatPromptFromTextPrompt } from "./chatPromptFromTextPrompt";
 import { sectionsTextPrompt } from "./sectionsPrompt";
 
-export const availableActionsSections = async <RUN_PROPERTIES>({
+export const availableActionsSections = async ({
   actions,
 }: {
-  actions: ActionRegistry<RUN_PROPERTIES>;
+  actions: ActionRegistry;
 }) => [
   {
     title: "Available Actions",

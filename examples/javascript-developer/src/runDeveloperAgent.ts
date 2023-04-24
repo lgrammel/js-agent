@@ -52,9 +52,7 @@ export async function runDeveloperAgent({
           prompt: $.prompt.concatChatPrompts(
             $.prompt.sectionsChatPrompt({
               role: "system",
-              getSections: async ({
-                runProperties: { projectInstructions },
-              }) => [
+              getSections: async ({ runState: { projectInstructions } }) => [
                 {
                   title: "role",
                   content: `You are a software developer that creates and modifies JavaScript programs.
@@ -70,7 +68,7 @@ You are working in a Linux environment.`,
             $.prompt.availableActionsChatPrompt(),
             $.prompt.sectionsChatPrompt({
               role: "user",
-              getSections: async ({ runProperties: { task } }) => [
+              getSections: async ({ runState: { task } }) => [
                 { title: "Task", content: task },
               ],
             }),

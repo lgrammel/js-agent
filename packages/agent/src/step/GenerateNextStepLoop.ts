@@ -11,15 +11,15 @@ import { NoopStep } from "./NoopStep";
 import { Step } from "./Step";
 import { StepFactory } from "./StepFactory";
 
-export type GenerateNextStepLoopContext<RUN_PROPERTIES> = {
-  runProperties: RUN_PROPERTIES;
-  actions: ActionRegistry<RUN_PROPERTIES>;
-  completedSteps: Array<Step<RUN_PROPERTIES>>;
+export type GenerateNextStepLoopContext<RUN_STATE> = {
+  runState: RUN_STATE;
+  actions: ActionRegistry;
+  completedSteps: Array<Step<RUN_STATE>>;
   generatedTextsByStepId: Map<string, string>;
 };
 
 export const generateNextStepLoop =
-  <PROMPT_TYPE, RUN_PROPERTIES>({
+  <PROMPT_TYPE, RUN_STATE>({
     type,
     actions,
     actionFormat,
@@ -28,12 +28,12 @@ export const generateNextStepLoop =
     model,
   }: {
     type?: string;
-    doneAction?: AnyAction<RUN_PROPERTIES>;
-    actions: AnyAction<RUN_PROPERTIES>[];
+    doneAction?: AnyAction;
+    actions: AnyAction[];
     actionFormat: ActionFormat;
-    prompt: Prompt<GenerateNextStepLoopContext<RUN_PROPERTIES>, PROMPT_TYPE>;
+    prompt: Prompt<GenerateNextStepLoopContext<RUN_STATE>, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, any, string>;
-  }): StepFactory<RUN_PROPERTIES> =>
+  }): StepFactory<RUN_STATE> =>
   async (run) =>
     new GenerateNextStepLoop({
       type,
@@ -44,19 +44,19 @@ export const generateNextStepLoop =
       model,
     });
 
-type NextStepLoopGenerateTextFunction<RUN_PROPERTIES> = (
-  _0: GenerateNextStepLoopContext<RUN_PROPERTIES>,
+type NextStepLoopGenerateTextFunction<RUN_STATE> = (
+  _0: GenerateNextStepLoopContext<RUN_STATE>,
   _1: RunContext
 ) => PromiseLike<string>;
 
 export class GenerateNextStepLoop<
   PROMPT_TYPE,
-  RUN_PROPERTIES
-> extends Loop<RUN_PROPERTIES> {
+  RUN_STATE
+> extends Loop<RUN_STATE> {
   private readonly generatedTextsByStepId = new Map<string, string>();
 
-  readonly actionRegistry: ActionRegistry<RUN_PROPERTIES>;
-  readonly generateText: NextStepLoopGenerateTextFunction<RUN_PROPERTIES>;
+  readonly actionRegistry: ActionRegistry;
+  readonly generateText: NextStepLoopGenerateTextFunction<RUN_STATE>;
 
   constructor({
     type = "loop.generate-next-step",
@@ -68,11 +68,11 @@ export class GenerateNextStepLoop<
     model,
   }: {
     type?: string;
-    run: Run<RUN_PROPERTIES>;
-    doneAction?: AnyAction<RUN_PROPERTIES>;
-    actions: AnyAction<RUN_PROPERTIES>[];
+    run: Run<RUN_STATE>;
+    doneAction?: AnyAction;
+    actions: AnyAction[];
     actionFormat: ActionFormat;
-    prompt: Prompt<GenerateNextStepLoopContext<RUN_PROPERTIES>, PROMPT_TYPE>;
+    prompt: Prompt<GenerateNextStepLoopContext<RUN_STATE>, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, any, string>;
   }) {
     super({ type, run });
@@ -102,12 +102,12 @@ export class GenerateNextStepLoop<
     return !lastStep?.isDoneStep();
   }
 
-  async getNextStep(): Promise<Step<RUN_PROPERTIES>> {
+  async getNextStep(): Promise<Step<RUN_STATE>> {
     this.run.onStepGenerationStarted();
 
     const generatedText = await this.generateText(
       {
-        runProperties: this.run.properties,
+        runState: this.run.state,
         actions: this.actionRegistry,
         completedSteps: this.completedSteps,
         generatedTextsByStepId: this.generatedTextsByStepId,
@@ -117,7 +117,7 @@ export class GenerateNextStepLoop<
 
     const actionParameters = this.actionRegistry.format.parse(generatedText);
 
-    let step: Step<RUN_PROPERTIES>;
+    let step: Step<RUN_STATE>;
     if (actionParameters.action == null) {
       step = new NoopStep({
         type: "thought",

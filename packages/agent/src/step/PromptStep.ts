@@ -5,11 +5,7 @@ import { GeneratorModel, generate as generateFunction } from "../text/generate";
 import { Step } from "./Step";
 import { StepResult } from "./StepResult";
 
-export class PromptStep<
-  INPUT,
-  PROMPT_TYPE,
-  RUN_PROPERTIES
-> extends Step<RUN_PROPERTIES> {
+export class PromptStep<INPUT, PROMPT_TYPE, RUN_STATE> extends Step<RUN_STATE> {
   private readonly generateText: (
     _0: INPUT,
     _1: RunContext
@@ -24,7 +20,7 @@ export class PromptStep<
     input,
   }: {
     type?: string;
-    run: Run<RUN_PROPERTIES>;
+    run: Run<RUN_STATE>;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, any, string>;
     input: INPUT;

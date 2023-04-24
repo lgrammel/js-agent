@@ -8,29 +8,29 @@ import { RunObserver } from "./observer/RunObserver";
 
 export type PrimitiveRecord = Record<string, string | boolean | number | null>;
 
-export class Run<PROPERTIES> {
-  private readonly observer?: RunObserver<PROPERTIES>;
+export class Run<RUN_STATE> {
+  private readonly observer?: RunObserver<RUN_STATE>;
   private readonly nextId = createNextId(1);
 
-  readonly controller: RunController<PROPERTIES>;
-  readonly properties: PROPERTIES;
+  readonly controller: RunController<RUN_STATE>;
+  readonly state: RUN_STATE;
 
   readonly recordedCalls: GenerateCall[] = [];
 
-  root: Step<PROPERTIES> | undefined;
+  root: Step<RUN_STATE> | undefined;
 
   constructor({
     controller,
     observer,
-    properties,
+    initialState,
   }: {
-    controller: RunController<PROPERTIES>;
-    observer?: RunObserver<PROPERTIES>;
-    properties: PROPERTIES;
+    controller: RunController<RUN_STATE>;
+    observer?: RunObserver<RUN_STATE>;
+    initialState: RUN_STATE;
   }) {
     this.controller = controller;
     this.observer = observer;
-    this.properties = properties;
+    this.state = initialState;
   }
 
   generateId({ type }: { type: string }) {
@@ -45,7 +45,7 @@ export class Run<PROPERTIES> {
     console.error(error); // TODO logger
   }
 
-  onLoopIterationStarted({ loop }: { loop: Loop<PROPERTIES> }) {
+  onLoopIterationStarted({ loop }: { loop: Loop<RUN_STATE> }) {
     try {
       this.observer?.onLoopIterationStarted?.({ run: this, loop });
     } catch (error) {
@@ -53,7 +53,7 @@ export class Run<PROPERTIES> {
     }
   }
 
-  onLoopIterationFinished({ loop }: { loop: Loop<PROPERTIES> }) {
+  onLoopIterationFinished({ loop }: { loop: Loop<RUN_STATE> }) {
     try {
       this.observer?.onLoopIterationFinished?.({ run: this, loop });
     } catch (error) {
@@ -61,7 +61,7 @@ export class Run<PROPERTIES> {
     }
   }
 
-  onStepExecutionStarted({ step }: { step: Step<PROPERTIES> }) {
+  onStepExecutionStarted({ step }: { step: Step<RUN_STATE> }) {
     try {
       this.observer?.onStepExecutionStarted?.({ run: this, step });
     } catch (error) {
@@ -73,7 +73,7 @@ export class Run<PROPERTIES> {
     step,
     result,
   }: {
-    step: Step<PROPERTIES>;
+    step: Step<RUN_STATE>;
     result: StepResult;
   }) {
     try {
@@ -112,7 +112,7 @@ export class Run<PROPERTIES> {
     step,
   }: {
     generatedText: string;
-    step: Step<PROPERTIES>;
+    step: Step<RUN_STATE>;
   }) {
     try {
       this.observer?.onStepGenerationFinished?.({

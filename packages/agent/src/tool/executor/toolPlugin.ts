@@ -1,12 +1,12 @@
 import { FastifyInstance } from "fastify";
-import { ToolRegistry } from "./ToolRegistry";
 import { pino } from "pino";
+import { ToolRegistry } from "./ToolRegistry";
 
-export function createToolPlugin<RUN_PROPERTIES>({
+export function createToolPlugin({
   toolRegistry,
   logger,
 }: {
-  toolRegistry: ToolRegistry<RUN_PROPERTIES>;
+  toolRegistry: ToolRegistry;
   logger: pino.Logger;
 }) {
   return async function toolPlugin(fastify: FastifyInstance) {

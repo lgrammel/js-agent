@@ -3,9 +3,9 @@ import { Run } from "../agent";
 import { Step } from "../step/Step";
 import { ActionParameters } from "./ActionParameters";
 
-export type AnyAction<RUN_PROPERTIES> = Action<any, any, RUN_PROPERTIES>;
+export type AnyAction = Action<any, any>;
 
-export type Action<INPUT extends ActionParameters, OUTPUT, RUN_PROPERTIES> = {
+export type Action<INPUT extends ActionParameters, OUTPUT> = {
   readonly id: string;
   readonly description: string;
 
@@ -14,11 +14,11 @@ export type Action<INPUT extends ActionParameters, OUTPUT, RUN_PROPERTIES> = {
 
   readonly outputSchema: zod.Schema<OUTPUT>;
 
-  createStep({
+  createStep<RUN_STATE>({
     run,
     input,
   }: {
-    run: Run<RUN_PROPERTIES>;
+    run: Run<RUN_STATE>;
     input: INPUT;
-  }): Promise<Step<RUN_PROPERTIES>>;
+  }): Promise<Step<RUN_STATE>>;
 };

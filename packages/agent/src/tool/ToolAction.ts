@@ -6,19 +6,18 @@ import { Run } from "../agent/Run.js";
 import { ExecuteToolFunction } from "./ExecuteToolFunction.js";
 import { ToolStep } from "./ToolStep.js";
 
-export type ToolAction<
-  INPUT extends ActionParameters,
-  OUTPUT,
-  RUN_PROPERTIES
-> = Action<INPUT, OUTPUT, RUN_PROPERTIES> & {
-  execute: ExecuteToolFunction<INPUT, OUTPUT, RUN_PROPERTIES>;
+export type ToolAction<INPUT extends ActionParameters, OUTPUT> = Action<
+  INPUT,
+  OUTPUT
+> & {
+  execute: ExecuteToolFunction<INPUT, OUTPUT>;
   formatResult: FormatResultFunction<INPUT, OUTPUT>;
 };
 
 export const createToolAction = <
   INPUT extends ActionParameters,
   OUTPUT,
-  RUN_PROPERTIES
+  RUN_STATE
 >({
   id,
   description,
@@ -33,9 +32,9 @@ export const createToolAction = <
   inputSchema: zod.Schema<INPUT>;
   inputExample: INPUT;
   outputSchema: zod.Schema<OUTPUT>;
-  execute: ExecuteToolFunction<INPUT, OUTPUT, RUN_PROPERTIES>;
+  execute: ExecuteToolFunction<INPUT, OUTPUT>;
   formatResult: FormatResultFunction<INPUT, OUTPUT>;
-}): ToolAction<INPUT, OUTPUT, RUN_PROPERTIES> => ({
+}): ToolAction<INPUT, OUTPUT> => ({
   id,
   description,
   inputSchema,
@@ -43,13 +42,13 @@ export const createToolAction = <
   outputSchema,
   execute,
   formatResult,
-  async createStep({
+  async createStep<RUN_STATE>({
     input,
     run,
   }: {
     input: INPUT;
-    run: Run<RUN_PROPERTIES>;
-  }): Promise<ToolStep<INPUT, OUTPUT, RUN_PROPERTIES>> {
+    run: Run<RUN_STATE>;
+  }): Promise<ToolStep<INPUT, OUTPUT, RUN_STATE>> {
     return new ToolStep({
       action: this,
       input,

@@ -14,7 +14,7 @@ export type WriteFileOutput = {
   content: string;
 };
 
-export const writeFile = <RUN_PROPERTIES>({
+export const writeFile = ({
   id = "write-file",
   description = "Write file content.",
   inputExample = {
@@ -28,7 +28,7 @@ export const writeFile = <RUN_PROPERTIES>({
   id?: string;
   description?: string;
   inputExample?: WriteFileInput;
-  execute: ExecuteToolFunction<WriteFileInput, WriteFileOutput, RUN_PROPERTIES>;
+  execute: ExecuteToolFunction<WriteFileInput, WriteFileOutput>;
   formatResult?: FormatResultFunction<WriteFileInput, WriteFileOutput>;
 }) =>
   createToolAction({
@@ -47,11 +47,11 @@ export const writeFile = <RUN_PROPERTIES>({
   });
 
 export const executeWriteFile =
-  <RUN_PROPERTIES>({
+  <RUN_STATE>({
     workspacePath,
   }: {
     workspacePath: string;
-  }): ExecuteToolFunction<WriteFileInput, WriteFileOutput, RUN_PROPERTIES> =>
+  }): ExecuteToolFunction<WriteFileInput, WriteFileOutput> =>
   async ({ input: { filePath, content } }) => {
     // TODO try-catch
     const fullPath = path.join(workspacePath, filePath);

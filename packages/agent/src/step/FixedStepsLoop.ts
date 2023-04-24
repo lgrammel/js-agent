@@ -4,13 +4,13 @@ import { Step } from "./Step";
 import { StepFactory } from "./StepFactory";
 
 export const createFixedStepsLoop =
-  <RUN_PROPERTIES>({
+  <RUN_STATE>({
     type,
     steps: stepFactories,
   }: {
     type?: string;
-    steps: Array<StepFactory<RUN_PROPERTIES>>;
-  }): StepFactory<RUN_PROPERTIES> =>
+    steps: Array<StepFactory<RUN_STATE>>;
+  }): StepFactory<RUN_STATE> =>
   async (run) => {
     const steps = [];
     for (const factory of stepFactories) {
@@ -20,8 +20,8 @@ export const createFixedStepsLoop =
     return new FixedStepsLoop({ type, run, steps });
   };
 
-export class FixedStepsLoop<RUN_PROPERTIES> extends Loop<RUN_PROPERTIES> {
-  readonly steps: Array<Step<RUN_PROPERTIES>> = [];
+export class FixedStepsLoop<RUN_STATE> extends Loop<RUN_STATE> {
+  readonly steps: Array<Step<RUN_STATE>> = [];
   currentStep = 0;
 
   constructor({
@@ -30,8 +30,8 @@ export class FixedStepsLoop<RUN_PROPERTIES> extends Loop<RUN_PROPERTIES> {
     steps,
   }: {
     type?: string;
-    run: Run<RUN_PROPERTIES>;
-    steps: Array<Step<RUN_PROPERTIES>>;
+    run: Run<RUN_STATE>;
+    steps: Array<Step<RUN_STATE>>;
   }) {
     super({ type, run });
     this.steps = steps;

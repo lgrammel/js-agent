@@ -16,7 +16,7 @@ export type ProgrammableGoogleSearchEngineOutput = {
   }>;
 };
 
-export const programmableGoogleSearchEngineAction = <RUN_PROPERTIES>({
+export const programmableGoogleSearchEngineAction = ({
   id = "search",
   description = "Search programmable Google search engine.",
   inputExample = {
@@ -35,8 +35,7 @@ export const programmableGoogleSearchEngineAction = <RUN_PROPERTIES>({
   inputExample?: ProgrammableGoogleSearchEngineInput;
   execute: ExecuteToolFunction<
     ProgrammableGoogleSearchEngineInput,
-    ProgrammableGoogleSearchEngineOutput,
-    RUN_PROPERTIES
+    ProgrammableGoogleSearchEngineOutput
   >;
   formatResult?: FormatResultFunction<
     ProgrammableGoogleSearchEngineInput,
@@ -64,7 +63,7 @@ export const programmableGoogleSearchEngineAction = <RUN_PROPERTIES>({
   });
 
 export const executeProgrammableGoogleSearchEngineAction =
-  <RUN_PROPERTIES>({
+  <RUN_STATE>({
     key,
     cx,
     maxResults = 5,
@@ -74,8 +73,7 @@ export const executeProgrammableGoogleSearchEngineAction =
     maxResults?: number;
   }): ExecuteToolFunction<
     ProgrammableGoogleSearchEngineInput,
-    ProgrammableGoogleSearchEngineOutput,
-    RUN_PROPERTIES
+    ProgrammableGoogleSearchEngineOutput
   > =>
   async ({ input: { query } }) => {
     const result = await axios.get(
