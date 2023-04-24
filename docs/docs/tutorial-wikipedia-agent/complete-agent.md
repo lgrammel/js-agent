@@ -40,9 +40,7 @@ async function runWikipediaAgent({
     model: "gpt-3.5-turbo",
   });
 
-  const searchWikipediaAction = $.tool.programmableGoogleSearchEngineAction<{
-    task: string;
-  }>({
+  const searchWikipediaAction = $.tool.programmableGoogleSearchEngineAction({
     id: "search-wikipedia",
     description:
       "Search wikipedia using a search term. Returns a list of pages.",
@@ -52,9 +50,7 @@ async function runWikipediaAgent({
     }),
   });
 
-  const readWikipediaArticleAction = $.tool.extractInformationFromWebpage<{
-    task: string;
-  }>({
+  const readWikipediaArticleAction = $.tool.extractInformationFromWebpage({
     id: "read-wikipedia-article",
     description:
       "Read a wikipedia article and summarize it considering the query.",

@@ -8,9 +8,7 @@ title: Create read article tool
 The read article action is implemented using the JS Agent `extractInformationFromWebpage` tool:
 
 ```typescript
-const readWikipediaArticleAction = $.tool.extractInformationFromWebpage<{
-  task: string;
-}>({
+const readWikipediaArticleAction = $.tool.extractInformationFromWebpage({
   id: "read-wikipedia-article",
   description:
     "Read a wikipedia article and summarize it considering the query.",

@@ -23,9 +23,7 @@ Tools are actions that run (potentially external) code in some fashion. They don
 :::
 
 ```typescript
-const searchWikipediaAction = $.tool.programmableGoogleSearchEngineAction<{
-  task: string;
-}>({
+const searchWikipediaAction = $.tool.programmableGoogleSearchEngineAction({
   id: "search-wikipedia",
   description: "Search wikipedia using a search term. Returns a list of pages.",
   execute: $.tool.executeProgrammableGoogleSearchEngineAction({
