@@ -1,18 +1,14 @@
-# JS Agent: Build GPT Agents with JS & TS
+# JS Agent: Build AI Agents with JS & TS
 
-JS Agent is a composable and extensible framework for creating GPT agents with JavaScript and TypeScript.
+JS Agent is a composable and extensible framework for creating AI agents with JavaScript and TypeScript.
 
 While creating an agent prototype is easy, increasing its reliability and robustness is complex and requires considerable experimentation. JS Agent provides robust building blocks and tooling to help you develop rock-solid agents faster.
 
 **⚠️ JS Agent is currently in its initial experimental phase. Before reaching version 0.1, there may breaking changes in each release.**
 
-## Quick Start
+## Documentation
 
-```sh
-npm install js-agent
-```
-
-See the examples below for details on implementing and running an agent.
+[Full documentation & tutorials](https://js-agent.ai/docs/intro)
 
 ## Features
 
@@ -54,15 +50,17 @@ See the examples below for details on implementing and running an agent.
 
 ### [Wikipedia Question-Answering](https://github.com/lgrammel/js-agent/tree/main/examples/wikipedia)
 
+[Tutorial](https://js-agent.ai/docs/tutorial-wikipedia-agent/)
+
 An agent that has access to a wikipedia search engine and can read wikipedia articles. You can use it to answer questions about wikipedia content.
 
-Used features: `gpt-3.5-turbo`, custom tools (search wikipedia, read wikipedia article), generate next step loop, max steps run controller, cost calculation after agent run
+Used features: `gpt-3.5-turbo`, custom tools (search wikipedia, read wikipedia article), generate next step loop, max steps run controller
 
 ### [JavaScript/TypeScript developer](https://github.com/lgrammel/js-agent/tree/main/examples/javascript-developer)
 
 An automated developer agent that works in a docker container. It can read files, write files and execute commands. You can adjust it for your project and use it to document code, write tests, update tests and features, etc.
 
-Used features: `gpt-4`, tool execution in Docker container, agent with fixed setup steps, multiple agent run properties, generate next step loop, tools (read file, write file, run, command, ask user)
+Used features: `gpt-4`, tool execution in Docker container, agent with fixed setup steps, multiple agent run properties, generate next step loop, tools (read file, write file, run, command, ask user), cost calculation after agent run
 
 ### [BabyAGI](https://github.com/lgrammel/js-agent/tree/main/examples/babyagi)
 
@@ -83,6 +81,14 @@ Features used: stand-alone pipeline (no agent), pdf loading, extract-and-rewrite
 - **support progressive refinement of agent specifications**: Agent specifications should be easy to write and every building block should provide good defaults. At the same time, it should be possible to easily override the defaults with specific settings, prompts, etc.
 - **build for production**: JS Agent will have first-class support for logging, associating LLM calls and cost tracking with agent runs, etc.
 
+## Quick Install
+
+```sh
+npm install js-agent
+```
+
+See the [examples](https://github.com/lgrammel/js-agent/tree/main/examples/) and [documentation](https://js-agent.ai/docs/intro) to learn how to create an agent.
+
 ## Example Agent
 
 ```ts
@@ -99,54 +105,50 @@ export async function runWikipediaAgent({
   wikipediaSearchCx: string;
   task: string;
 }) {
-  type WikipediaAgentRunProperties = { task: string };
-
   const chatGpt = $.provider.openai.chatModel({
     apiKey: openAiApiKey,
     model: "gpt-3.5-turbo",
   });
 
-  const searchWikipediaAction =
-    $.tool.programmableGoogleSearchEngineAction<WikipediaAgentRunProperties>({
-      id: "search-wikipedia",
-      description:
-        "Search wikipedia using a search term. Returns a list of pages.",
-      execute: $.tool.executeProgrammableGoogleSearchEngineAction({
-        key: wikipediaSearchKey,
-        cx: wikipediaSearchCx,
-      }),
-    });
+  const searchWikipediaAction = $.tool.programmableGoogleSearchEngineAction({
+    id: "search-wikipedia",
+    description:
+      "Search wikipedia using a search term. Returns a list of pages.",
+    execute: $.tool.executeProgrammableGoogleSearchEngineAction({
+      key: wikipediaSearchKey,
+      cx: wikipediaSearchCx,
+    }),
+  });
 
-  const readWikipediaArticleAction =
-    $.tool.extractInformationFromWebpage<WikipediaAgentRunProperties>({
-      id: "read-wikipedia-article",
-      description:
-        "Read a wikipedia article and summarize it considering the query.",
-      inputExample: {
-        url: "https://en.wikipedia.org/wiki/Artificial_intelligence",
-        topic: "{query that you are answering}",
-      },
-      execute: $.tool.executeExtractInformationFromWebpage({
-        extract: $.text.extractRecursively({
-          split: $.text.splitRecursivelyAtCharacter({
-            maxCharactersPerChunk: 2048 * 4, // needs to fit into a gpt-3.5-turbo prompt
-          }),
-          extract: $.text.generateText({
-            id: "summarize-wikipedia-article-chunk",
-            prompt: $.prompt.extractChatPrompt(),
-            model: chatGpt,
-          }),
+  const readWikipediaArticleAction = $.tool.extractInformationFromWebpage({
+    id: "read-wikipedia-article",
+    description:
+      "Read a wikipedia article and summarize it considering the query.",
+    inputExample: {
+      url: "https://en.wikipedia.org/wiki/Artificial_intelligence",
+      topic: "{query that you are answering}",
+    },
+    execute: $.tool.executeExtractInformationFromWebpage({
+      extract: $.text.extractRecursively({
+        split: $.text.splitRecursivelyAtCharacter({
+          maxCharactersPerChunk: 2048 * 4, // needs to fit into a gpt-3.5-turbo prompt
+        }),
+        extract: $.text.generateText({
+          id: "summarize-wikipedia-article-chunk",
+          prompt: $.prompt.extractChatPrompt(),
+          model: chatGpt,
         }),
       }),
-    });
+    }),
+  });
 
-  return $.runAgent<WikipediaAgentRunProperties>({
+  return $.runAgent<{ task: string }>({
     properties: { task },
     agent: $.step.generateNextStepLoop({
       actions: [searchWikipediaAction, readWikipediaArticleAction],
       actionFormat: $.action.format.flexibleJson(),
       prompt: $.prompt.concatChatPrompts(
-        async ({ runProperties: { task } }) => [
+        async ({ runState: { task } }) => [
           {
             role: "system",
             content: `## ROLE
@@ -165,26 +167,7 @@ ${task}`,
       model: chatGpt,
     }),
     controller: $.agent.controller.maxSteps(20),
-    observer: $.agent.observer.combineObservers(
-      $.agent.observer.showRunInConsole({ name: "Wikipedia Agent" }),
-      {
-        async onRunFinished({ run }) {
-          const runCostInMillicent = await $.agent.calculateRunCostInMillicent({
-            run,
-          });
-
-          console.log(
-            `Run cost: $${(runCostInMillicent / 1000 / 100).toFixed(2)}`
-          );
-
-          console.log(
-            `LLM calls: ${
-              run.recordedCalls.filter((call) => call.success).length
-            }`
-          );
-        },
-      }
-    ),
+    observer: $.agent.observer.showRunInConsole({ name: "Wikipedia Agent" }),
   });
 }
 ```
