@@ -4,7 +4,7 @@
 
 rm -f .build/gptagent-executor.js
 mkdir -p .build
-npx esbuild executor.mjs --bundle --platform=node --outfile=.build/gptagent-executor.js
+npx esbuild executor.mjs --bundle --platform=node --loader:.node=file --outfile=.build/gptagent-executor.js
 
 if [[ $(uname -m) == "aarch64" ]]; then
 docker build --platform linux/arm64 -t gptagent-javascript-developer .

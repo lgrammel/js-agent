@@ -1,8 +1,9 @@
-import * as pdfjs from "pdfjs-dist/legacy/build/pdf";
-
 export const pdfToText = () =>
   async function pdfToText(data: ArrayBuffer) {
-    const pdf = await pdfjs.getDocument({
+    // only load when needed (otherwise this can cause node canvas setup issues when you don't need PDFs):
+    const PdfJs = await import("pdfjs-dist/legacy/build/pdf");
+
+    const pdf = await PdfJs.getDocument({
       data,
       useSystemFonts: true, // https://github.com/mozilla/pdf.js/issues/4244#issuecomment-1479534301
     }).promise;
