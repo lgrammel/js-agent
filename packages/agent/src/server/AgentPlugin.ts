@@ -64,7 +64,7 @@ export const AgentPlugin = <
           runId: zod.string(),
         }),
         body: zod.object({
-          reason: zod.string(),
+          reason: zod.string().optional(),
         }),
       },
       async handler(request, reply) {

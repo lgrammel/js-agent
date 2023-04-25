@@ -7,7 +7,7 @@ export const cancellable = <RUN_STATE>(): RunController<RUN_STATE> & {
   let cancelReason: string | undefined = undefined;
 
   return {
-    cancel({ reason }: { reason: string }) {
+    cancel({ reason }: { reason?: string } = {}) {
       cancelReason = reason;
     },
 

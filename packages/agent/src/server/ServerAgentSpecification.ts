@@ -3,9 +3,10 @@ import { StepFactory } from "../step/StepFactory";
 import { RunController } from "../agent/controller/RunController";
 import { LoadEnvironmentKeyFunction } from "../agent/env/LoadEnvironmentKeyFunction";
 import { RunObserver } from "../agent/observer";
+import { Run } from "../agent";
 
 export type DataProvider<RUN_STATE, DATA> = RunObserver<RUN_STATE> & {
-  getData(): Promise<DATA>;
+  getData({ run }: { run: Run<RUN_STATE> }): Promise<DATA>;
 };
 
 export type ServerAgentSpecification<

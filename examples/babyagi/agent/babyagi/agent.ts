@@ -156,14 +156,24 @@ Response:`;
         }
       },
 
-      async getData() {
-        return { log };
+      async getData({ run }) {
+        const runCostInMillicent = await $.agent.calculateRunCostInMillicent({
+          run,
+        });
+
+        return {
+          log,
+          cost: `$${(runCostInMillicent / 1000 / 100).toFixed(2)}`,
+        };
       },
-    } as $.agent.DataProvider<{ objective: string }, { log: string[] }>;
+    } as $.agent.DataProvider<
+      { objective: string },
+      { log: string[]; cost: string }
+    >;
   },
 } satisfies $.server.ServerAgentSpecification<
   { openAiApiKey: string },
   { objective: string },
   { objective: string },
-  { log: string[] }
+  { log: string[]; cost: string }
 >;

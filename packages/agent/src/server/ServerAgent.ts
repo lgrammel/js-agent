@@ -120,7 +120,7 @@ export class ServerAgent<
     setTimeout(async () => run.start(), 0);
   }
 
-  cancelRun({ runId, reason }: { runId: string; reason: string }) {
+  cancelRun({ runId, reason }: { runId: string; reason?: string }) {
     const run = this.runs.get(runId);
 
     if (run == null) {
@@ -147,7 +147,7 @@ class ManagedRun<INPUT, RUN_STATE, DATA> {
   readonly run: Run<RUN_STATE>;
   readonly dataProvider: DataProvider<RUN_STATE, DATA>;
   readonly cancelController: {
-    cancel(options: { reason: string }): void;
+    cancel(options: { reason?: string }): void;
   };
 
   constructor({
@@ -178,7 +178,7 @@ class ManagedRun<INPUT, RUN_STATE, DATA> {
     this.run.onFinish({ result });
   }
 
-  cancel({ reason }: { reason: string }) {
+  cancel({ reason }: { reason?: string }) {
     this.cancelController.cancel({ reason });
   }
 
@@ -187,7 +187,9 @@ class ManagedRun<INPUT, RUN_STATE, DATA> {
       id: this.id,
       input: this.input,
       state: this.run.root!.state,
-      data: await this.dataProvider.getData(),
+      data: await this.dataProvider.getData({
+        run: this.run,
+      }),
     };
   }
 }

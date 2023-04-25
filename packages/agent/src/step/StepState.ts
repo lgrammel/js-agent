@@ -4,7 +4,7 @@ export type StepState =
     }
   | {
       type: "cancelled";
-      reason: string;
+      reason?: string;
     }
   | {
       type: "succeeded";
