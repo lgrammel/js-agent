@@ -30,7 +30,7 @@ Let's improve the agent prompt.
 return $.runAgent<...>({
   // ...
   prompt: $.prompt.concatChatPrompts(
-    async ({ runProperties: { task } }) => [
+    async ({ runState: { task } }) => [
       {
         role: "system",
         content: `## ROLE

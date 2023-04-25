@@ -18,7 +18,7 @@ return $.runAgent<{ task: string }>({
   agent: $.step.generateNextStepLoop({
     actions: [],
     actionFormat: $.action.format.flexibleJson(),
-    prompt: async ({ runProperties: { task } }) => [
+    prompt: async ({ runState: { task } }) => [
       { role: "user" as const, content: `${task}` },
     ],
     model: chatGpt,
@@ -71,7 +71,7 @@ return $.runAgent<...>({
   agent: $.step.generateNextStepLoop({
     actions: [],
     actionFormat: $.action.format.flexibleJson(),
-    prompt: async ({ runProperties: { task } }) => [
+    prompt: async ({ runState: { task } }) => [
       { role: "user" as const, content: `${task}` },
     ],
     model: chatGpt,

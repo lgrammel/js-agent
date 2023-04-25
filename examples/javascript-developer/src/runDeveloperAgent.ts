@@ -20,7 +20,7 @@ export async function runDeveloperAgent({
     baseUrl: "http://localhost:3001",
   }) as any;
 
-  type RunProperties = {
+  type RunState = {
     task: string;
     projectInstructions: string;
   };
@@ -36,7 +36,7 @@ export async function runDeveloperAgent({
               $.tool.runCommand({ execute: executeRemote }).createStep({
                 input: { command },
                 run,
-              }) as Promise<$.step.Step<RunProperties>>
+              }) as Promise<$.step.Step<RunState>>
           ),
         }),
         $.step.generateNextStepLoop({

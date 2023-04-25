@@ -78,7 +78,7 @@ async function runWikipediaAgent({
       actions: [searchWikipediaAction, readWikipediaArticleAction],
       actionFormat: $.action.format.flexibleJson(),
       prompt: $.prompt.concatChatPrompts(
-        async ({ runProperties: { task } }) => [
+        async ({ runState: { task } }) => [
           {
             role: "system",
             content: `## ROLE
