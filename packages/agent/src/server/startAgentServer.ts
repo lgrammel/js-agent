@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import accepts from "@fastify/accepts";
 import websocket from "@fastify/websocket";
 import { Command, Option } from "commander";
 import dotenv from "dotenv";
@@ -86,6 +87,7 @@ process.on("uncaughtException", (error) => {
   });
 
   await server.register(websocket);
+  await server.register(accepts);
 
   server.setValidatorCompiler(validatorCompiler);
   server.setSerializerCompiler(serializerCompiler);

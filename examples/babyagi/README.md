@@ -21,13 +21,27 @@ It is implemented as a single planner step and does not use memory or actions. T
 OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 ```
 
+2. Build the project:
+
 ```sh
 # in root folder:
 pnpm install
 pnpm nx run-many --target=build
 
 # in examples/babyagi folder:
-pnpm start "solve world hunger"
+pnpm build
+```
+
+3. Start the server:
+
+```sh
+pnpm start
+```
+
+4. Create an agent run:
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"objective":"solve world hunger"}' http://127.0.0.1:30800/agent/babyagi
 ```
 
 ## Example Output

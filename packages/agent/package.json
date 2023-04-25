@@ -28,10 +28,12 @@
     "test": "jest src/"
   },
   "devDependencies": {
+    "@types/accepts": "^1.3.5",
     "@types/html-to-text": "^9.0.0",
     "@types/ws": "^8.5.4"
   },
   "dependencies": {
+    "@fastify/accepts": "4.1.0",
     "@fastify/websocket": "7.2.0",
     "axios": "1.3.4",
     "chalk": "^4",

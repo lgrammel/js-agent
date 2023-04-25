@@ -92,33 +92,42 @@ export const AgentPlugin = <
         }),
       },
       async handler(request, reply) {
-        const run = runs.get(request.params.runId);
+        const runId = request.params.runId;
+        const run = runs.get(runId);
 
         if (!run) {
-          reply.code(404).send({ error: "Run not found" });
+          reply.code(404).send({ error: `Run ${runId} not found` });
           return;
         }
 
         const state = run.root!.state;
 
-        reply.send({ state });
+        const accept = request.accepts();
+        switch (accept.type(["json", "html"])) {
+          case "json": {
+            reply.header("Content-Type", "application/json");
+            reply.send({ state });
+            break;
+          }
+          case "html": {
+            reply.header("Content-Type", "text/html");
+            reply.send(`
+              <html>
+                <head>
+                  <title>Run ${runId}</title>
+                </head>
+                <body>
+                  <pre>${JSON.stringify(state, null, 2)}</pre>
+                </body>
+              </html>
+            `);
+            break;
+          }
+          default: {
+            reply.code(406).send({ error: "Not Acceptable" });
+            break;
+          }
+        }
       },
-      // async wsHandler(connection, request) {
-      //   const run = runs.get(request.params.runId);
-
-      //   if (!run) {
-      //     connection.socket.write(JSON.stringify({ error: "Run not found" }));
-      //     connection.socket.end();
-      //     return;
-      //   }
-
-      //   const state = run.root!.state;
-
-      //   connection.socket.write(JSON.stringify({ state }));
-
-      //   run.onStateChange((state) => {
-      //     connection.socket.write(JSON.stringify({ state }));
-      //   });
-      // },
     });
   };
