@@ -7,6 +7,7 @@ import {
   DataProvider,
   ServerAgentSpecification,
 } from "./ServerAgentSpecification";
+import { all, cancellable } from "../agent/controller";
 
 const nextId = hyperid({ urlSafe: true });
 
@@ -78,8 +79,13 @@ export class ServerAgent<
   async createRun({ input }: { input: INPUT }) {
     const dataProvider = this.specification.createDataProvider();
 
+    const cancelController = cancellable<RUN_STATE>();
+
     const run = new Run<RUN_STATE>({
-      controller: this.specification.controller ?? noLimit(),
+      controller: all<RUN_STATE>(
+        this.specification.controller ?? noLimit(),
+        cancelController
+      ),
       initialState: await this.specification.init({
         environment: this.environment,
         input,
@@ -95,6 +101,7 @@ export class ServerAgent<
       input,
       run,
       dataProvider,
+      cancelController,
     });
 
     this.runs.set(managedRun.id, managedRun);
@@ -113,6 +120,16 @@ export class ServerAgent<
     setTimeout(async () => run.start(), 0);
   }
 
+  cancelRun({ runId, reason }: { runId: string; reason: string }) {
+    const run = this.runs.get(runId);
+
+    if (run == null) {
+      throw new Error(`Run ${runId} not found`);
+    }
+
+    run.cancel({ reason });
+  }
+
   async getRunState({ runId }: { runId: string }) {
     const run = this.runs.get(runId);
 
@@ -129,28 +146,40 @@ class ManagedRun<INPUT, RUN_STATE, DATA> {
   readonly input: INPUT;
   readonly run: Run<RUN_STATE>;
   readonly dataProvider: DataProvider<RUN_STATE, DATA>;
+  readonly cancelController: {
+    cancel(options: { reason: string }): void;
+  };
 
   constructor({
     id,
     input,
     run,
     dataProvider,
+    cancelController,
   }: {
     id: string;
     input: INPUT;
     run: Run<RUN_STATE>;
     dataProvider: DataProvider<RUN_STATE, DATA>;
+    cancelController: {
+      cancel(options: { reason: string }): void;
+    };
   }) {
     this.id = id;
     this.input = input;
     this.run = run;
     this.dataProvider = dataProvider;
+    this.cancelController = cancelController;
   }
 
   async start() {
     this.run.onStart();
     const result = await this.run.root!.execute();
     this.run.onFinish({ result });
+  }
+
+  cancel({ reason }: { reason: string }) {
+    this.cancelController.cancel({ reason });
   }
 
   async getState() {

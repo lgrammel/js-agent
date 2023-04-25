@@ -123,45 +123,47 @@ Response:`;
     });
   },
   createDataProvider: () => {
-    let log = "";
+    let log: string[] = [];
 
     return {
       onAgentRunStarted({ run }: { run: $.agent.Run<{ objective: string }> }) {
-        log += "*****BABY AGI *****\n\n";
-        log += "*****OBJECTIVE*****\n";
-        log += run.state.objective;
-        log += "\n\n";
+        log.push("*****BABY AGI *****\n\n");
+        log.push("*****OBJECTIVE*****\n");
+        log.push(run.state.objective);
+        log.push("\n\n");
       },
 
       onLoopIterationStarted({ loop }) {
         if (loop.type === "main" && loop instanceof $.step.UpdateTasksLoop) {
-          log += "*****TASK LIST*****\n";
-          log += `${loop.tasks
-            .map((task, index) => `${index + 1}: ${task}`)
-            .join("\n")}\n`;
+          log.push("*****TASK LIST*****\n");
+          log.push(
+            `${loop.tasks
+              .map((task, index) => `${index + 1}: ${task}`)
+              .join("\n")}\n`
+          );
 
           const nextTask = loop.tasks[0];
-          log += "*****NEXT TASK*****\n";
-          log += `${nextTask}\n`;
+          log.push("*****NEXT TASK*****\n");
+          log.push(`${nextTask}\n`);
         }
       },
 
       onStepExecutionFinished({ step }) {
         if (step.state.type === "succeeded" || step.state.type === "failed") {
-          log += "*****TASK RESULT*****\n";
-          log += step.state.summary;
-          log += "\n\n";
+          log.push("*****TASK RESULT*****\n");
+          log.push(step.state.summary);
+          log.push("\n\n");
         }
       },
 
       async getData() {
         return { log };
       },
-    } as $.agent.DataProvider<{ objective: string }, { log: string }>;
+    } as $.agent.DataProvider<{ objective: string }, { log: string[] }>;
   },
 } satisfies $.server.ServerAgentSpecification<
   { openAiApiKey: string },
   { objective: string },
   { objective: string },
-  {}
+  { log: string[] }
 >;

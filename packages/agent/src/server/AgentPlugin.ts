@@ -49,9 +49,31 @@ export const AgentPlugin = <
         }),
       },
       async handler(request, reply) {
-        const { runId } = request.params;
+        const runId = request.params.runId;
         serverAgent.startRunWithoutWaiting({ runId });
         reply.code(201).send({ runId });
+      },
+    });
+
+    // cancel agent run (POST /agent/:agent/run/:runId/cancel)
+    typedServer.route({
+      method: "POST",
+      url: `/agent/${name}/run/:runId/cancel`,
+      schema: {
+        params: zod.object({
+          runId: zod.string(),
+        }),
+        body: zod.object({
+          reason: zod.string(),
+        }),
+      },
+      async handler(request, reply) {
+        serverAgent.cancelRun({
+          runId: request.params.runId,
+          reason: request.body.reason,
+        });
+
+        reply.code(201).send({ runId: request.params.runId });
       },
     });
 
