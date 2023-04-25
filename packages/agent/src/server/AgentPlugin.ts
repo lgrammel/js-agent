@@ -1,11 +1,8 @@
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
-import hyperid from "hyperid";
 import zod from "zod";
-import { Agent } from "../agent/Agent";
-import { Run } from "../agent/Run";
-import { noLimit } from "../agent/controller/noLimit";
-import { loadEnvironment } from "../agent/env/loadEnvironment";
+import { ServerAgent } from "./ServerAgent";
+import { ServerAgentSpecification } from "./ServerAgentSpecification";
 
 export const AgentPlugin = <
   ENVIRONMENT extends Record<string, string>,
@@ -13,42 +10,27 @@ export const AgentPlugin = <
   RUN_STATE extends INPUT
 >({
   name,
-  agent,
+  specification,
 }: {
   name: string;
-  agent: Agent<ENVIRONMENT, INPUT, RUN_STATE>;
+  specification: ServerAgentSpecification<ENVIRONMENT, INPUT, RUN_STATE>;
 }) =>
   async function plugin(server: FastifyInstance) {
-    const typedServer = server.withTypeProvider<ZodTypeProvider>();
-    const nextId = hyperid({ urlSafe: true });
-    const environment = await loadEnvironment<ENVIRONMENT>(agent.environment);
-    const createRootStep = await agent.execute({ environment });
+    const serverAgent = await ServerAgent.create({
+      specification,
+    });
 
-    const runs = new Map<string, Run<RUN_STATE>>();
+    const typedServer = server.withTypeProvider<ZodTypeProvider>();
 
     // create agent run (POST /agent/:agent)
     typedServer.route({
       method: "POST",
       url: `/agent/${name}`,
       schema: {
-        body: agent.inputSchema,
+        body: specification.inputSchema,
       },
       async handler(request, reply) {
-        const runId = nextId();
-
-        const run = new Run<RUN_STATE>({
-          controller: agent.controller ?? noLimit(),
-          initialState: await agent.init({
-            environment,
-            input: request.body as INPUT,
-          }),
-        });
-
-        const rootStep = await createRootStep(run);
-        run.root = rootStep;
-
-        runs.set(runId, run);
-
+        const runId = serverAgent.createRun({ input: request.body as INPUT });
         reply.code(201).send({ runId });
       },
     });
@@ -64,20 +46,7 @@ export const AgentPlugin = <
       },
       async handler(request, reply) {
         const { runId } = request.params;
-        const run = runs.get(runId);
-
-        if (!run) {
-          reply.code(404).send({ error: "Run not found" });
-          return;
-        }
-
-        // run asynchronously:
-        setTimeout(async () => {
-          run.onStart();
-          const result = await run.root!.execute();
-          run.onFinish({ result });
-        }, 0);
-
+        serverAgent.startRunWithoutWaiting({ runId });
         reply.code(201).send({ runId });
       },
     });
@@ -93,14 +62,7 @@ export const AgentPlugin = <
       },
       async handler(request, reply) {
         const runId = request.params.runId;
-        const run = runs.get(runId);
-
-        if (!run) {
-          reply.code(404).send({ error: `Run ${runId} not found` });
-          return;
-        }
-
-        const state = run.root!.state;
+        const state = serverAgent.getRunState({ runId });
 
         const accept = request.accepts();
         switch (accept.type(["json", "html"])) {

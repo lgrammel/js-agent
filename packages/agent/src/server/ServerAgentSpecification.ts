@@ -1,9 +1,9 @@
 import zod from "zod";
 import { StepFactory } from "../step/StepFactory";
-import { RunController } from "./controller/RunController";
-import { LoadEnvironmentKeyFunction } from "./env/LoadEnvironmentKeyFunction";
+import { RunController } from "../agent/controller/RunController";
+import { LoadEnvironmentKeyFunction } from "../agent/env/LoadEnvironmentKeyFunction";
 
-export type Agent<
+export type ServerAgentSpecification<
   ENVIRONMENT extends Record<string, string>,
   INPUT,
   RUN_STATE extends INPUT

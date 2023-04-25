@@ -1,4 +1,4 @@
-export * from "./Agent";
+export * from "../server/ServerAgentSpecification";
 export * from "./GenerateCall";
 export * from "./Run";
 export * from "./RunContext";

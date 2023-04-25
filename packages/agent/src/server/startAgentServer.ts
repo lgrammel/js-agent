@@ -123,7 +123,7 @@ process.on("uncaughtException", (error) => {
     server.register(
       AgentPlugin({
         name: agentName,
-        agent: (await import(agentDefinitionPath)).default,
+        specification: (await import(agentDefinitionPath)).default,
       })
     );
   }
