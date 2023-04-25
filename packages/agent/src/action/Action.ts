@@ -1,5 +1,5 @@
 import zod from "zod";
-import { Run } from "../agent";
+import { Run } from "../agent/Run";
 import { Step } from "../step/Step";
 import { ActionParameters } from "./ActionParameters";
 

@@ -31,7 +31,7 @@ export const updateTasksLoop =
 
 export type updateTaskList<RUN_STATE> = (
   _: {
-    runProperties: RUN_STATE;
+    runState: RUN_STATE;
     completedTask: string;
     completedTaskResult: string;
     remainingTasks: string[];
@@ -97,7 +97,7 @@ export class UpdateTasksLoop<RUN_STATE> extends Loop<RUN_STATE> {
   }) {
     this.tasks = await this.updateTaskList(
       {
-        runProperties: this.run.state,
+        runState: this.run.state,
         completedTask: this.currentTask!,
         completedTaskResult: result.summary,
         remainingTasks: this.tasks,

@@ -4,6 +4,7 @@ export * from "./agent/runAgent";
 export * as convert from "./convert";
 export * as prompt from "./prompt";
 export * as provider from "./provider";
+export * as server from "./server";
 export * as source from "./source";
 export * as step from "./step";
 export * as text from "./text";

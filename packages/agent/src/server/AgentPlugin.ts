@@ -7,13 +7,14 @@ import { ServerAgentSpecification } from "./ServerAgentSpecification";
 export const AgentPlugin = <
   ENVIRONMENT extends Record<string, string>,
   INPUT,
-  RUN_STATE extends INPUT
+  RUN_STATE extends INPUT,
+  DATA
 >({
   name,
   specification,
 }: {
   name: string;
-  specification: ServerAgentSpecification<ENVIRONMENT, INPUT, RUN_STATE>;
+  specification: ServerAgentSpecification<ENVIRONMENT, INPUT, RUN_STATE, DATA>;
 }) =>
   async function plugin(server: FastifyInstance) {
     const serverAgent = await ServerAgent.create({
@@ -30,7 +31,10 @@ export const AgentPlugin = <
         body: specification.inputSchema,
       },
       async handler(request, reply) {
-        const runId = serverAgent.createRun({ input: request.body as INPUT });
+        const runId = await serverAgent.createRun({
+          input: request.body as INPUT,
+        });
+
         reply.code(201).send({ runId });
       },
     });
@@ -62,7 +66,7 @@ export const AgentPlugin = <
       },
       async handler(request, reply) {
         const runId = request.params.runId;
-        const state = serverAgent.getRunState({ runId });
+        const state = await serverAgent.getRunState({ runId });
 
         const accept = request.accepts();
         switch (accept.type(["json", "html"])) {

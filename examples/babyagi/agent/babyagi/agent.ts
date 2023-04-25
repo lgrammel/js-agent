@@ -95,7 +95,7 @@ Response:`;
       },
       async updateTaskList(
         {
-          runProperties: { objective },
+          runState: { objective },
           completedTask,
           completedTaskResult,
           remainingTasks,
@@ -122,8 +122,46 @@ Response:`;
       },
     });
   },
-} satisfies $.agent.Agent<
+  createDataProvider: () => {
+    let log = "";
+
+    return {
+      onAgentRunStarted({ run }: { run: $.agent.Run<{ objective: string }> }) {
+        log += "*****BABY AGI *****\n\n";
+        log += "*****OBJECTIVE*****\n";
+        log += run.state.objective;
+        log += "\n\n";
+      },
+
+      onLoopIterationStarted({ loop }) {
+        if (loop.type === "main" && loop instanceof $.step.UpdateTasksLoop) {
+          log += "*****TASK LIST*****\n";
+          log += `${loop.tasks
+            .map((task, index) => `${index + 1}: ${task}`)
+            .join("\n")}\n`;
+
+          const nextTask = loop.tasks[0];
+          log += "*****NEXT TASK*****\n";
+          log += `${nextTask}\n`;
+        }
+      },
+
+      onStepExecutionFinished({ step }) {
+        if (step.state.type === "succeeded" || step.state.type === "failed") {
+          log += "*****TASK RESULT*****\n";
+          log += step.state.summary;
+          log += "\n\n";
+        }
+      },
+
+      async getData() {
+        return { log };
+      },
+    } as $.agent.DataProvider<{ objective: string }, { log: string }>;
+  },
+} satisfies $.server.ServerAgentSpecification<
   { openAiApiKey: string },
   { objective: string },
-  { objective: string }
+  { objective: string },
+  {}
 >;
