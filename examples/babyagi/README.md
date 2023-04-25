@@ -4,6 +4,8 @@ JS Agent implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi) b
 
 It is implemented as a single planner step and does not use memory or actions. The main loop that executes the top task from a task list and then updates the task list was extracted into "UpdateTasksLoop".
 
+**⚠️ The BabyAGI implementation is currently being reworked into a server. The documentation is out of date.**
+
 ## JS Agent features used
 
 - OpenAI text completion model (`text-davinci-003`)
