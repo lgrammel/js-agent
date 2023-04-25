@@ -9,8 +9,8 @@
   },
   "private": true,
   "dependencies": {
-    "js-agent": "*",
-    "dotenv": "16.0.3"
+    "dotenv": "16.0.3",
+    "js-agent": "*"
   },
   "devDependencies": {}
 }

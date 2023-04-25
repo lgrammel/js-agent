@@ -12,19 +12,21 @@ if (!openAiApiKey) {
 
 // PROJECT INSTRUCTIONS
 // Specific to js-agent example. Adjust to fit your own project:
-const projectInstructions = `You are working on a JavaScript/TypeScript project called "js-agent".
-The project uses pnpm for package management.
-The main package is located in the "packages/agent" directory.
+// const projectInstructions = `You are working on a JavaScript/TypeScript project called "js-agent".
+// The project uses pnpm for package management.
+// The main package is located in the "packages/agent" directory.
 
-Unit tests are written using jest and have a .test.ts ending.
-Unit tests are in the same folder as the files that are tested.
-When writing tests, first read the production code and then write the tests.
-You can run the tests with "ai-bin/test-agent.sh".`;
+// Unit tests are written using jest and have a .test.ts ending.
+// Unit tests are in the same folder as the files that are tested.
+// When writing tests, first read the production code and then write the tests.
+// You can run the tests with "ai-bin/test-agent.sh".`;
+const projectInstructions = `You are working on a JavaScript/TypeScript project.`;
 
 // PROJECT SPECIFIC SETUP COMMANDS
 // These commands are executed at the start of the agent run.
 // Specific to js-agent example. Adjust to fit your own project:
-const setupCommands = ["pnpm install", "pnpm nx run agent:build"];
+// const setupCommands = ["pnpm install", "pnpm nx run agent:build"];
+const setupCommands: Array<string> = [];
 
 runDeveloperAgent({
   openAiApiKey,

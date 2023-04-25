@@ -25,9 +25,7 @@ export function calculateOpenAiCallCostInMillicent(
     }
 
     case "text-davinci-003":
-    case "text-davinci-003":
     case "text-davinci-002":
-    case "code-davinci-002":
     case "code-davinci-002":
     case "text-curie-001":
     case "text-babbage-001":
