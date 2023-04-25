@@ -19,6 +19,9 @@ While creating an agent prototype is easy, increasing its reliability and robust
   - Calculate the cost of LLM calls and agent runs
   - Stop agent runs when certain criteria are met, e.g. to limit the number of steps
   - Use several different LLM models in one agent
+- Agent HTTP Server
+  - Agent runs can be started, stopped, and observed via HTTP API
+  - Can host multiple agents
 - Supported LLM models
   - OpenAI text completion models (`text-davinci-003` etc.)
   - OpenAI chat completion models (`gpt-4`, `gpt-3.5-turbo`)
@@ -66,7 +69,7 @@ Used features: `gpt-4`, tool execution in Docker container, agent with fixed set
 
 JS Agent implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi).
 
-Features used: text completion model (`text-davinci-003`), customized console output, update tasks planning loop
+Features used: HTTP Agent server, text completion model (`text-davinci-003`), customized console output, update tasks planning loop
 
 ### [PDF Summarizer](https://github.com/lgrammel/js-agent/tree/main/examples/pdf-summarizer)
 

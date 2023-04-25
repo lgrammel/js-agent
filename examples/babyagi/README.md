@@ -61,7 +61,3 @@ curl -X POST -H "Content-Type: application/json" -d '{"objective":"solve world h
 ```bash
 ❯ curl -X POST -H "Content-Type: application/json" -d '{"reason": "need to shut down computer"}' http://127.0.0.1:30800/agent/babyagi/run/bxynsv4USkGoawtCYhte-w-0/cancel
 ```
-
-## Source Code
-
-See `agent/babyagi/agent.ts`.
