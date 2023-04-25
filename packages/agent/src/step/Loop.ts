@@ -28,9 +28,9 @@ export abstract class Loop<RUN_STATE> extends Step<RUN_STATE> {
   protected async _execute(): Promise<StepResult> {
     try {
       while (this.hasMoreSteps()) {
-        const abortCheck = this.run.checkAbort();
-        if (abortCheck.shouldAbort) {
-          return { type: "aborted", reason: abortCheck.reason };
+        const cancelCheck = this.run.checkCancel();
+        if (cancelCheck.shouldCancel) {
+          return { type: "cancelled", reason: cancelCheck.reason };
         }
 
         this.run.onLoopIterationStarted({ loop: this });
@@ -40,7 +40,7 @@ export abstract class Loop<RUN_STATE> extends Step<RUN_STATE> {
 
         this.completedSteps.push(step);
 
-        if (result.type === "aborted") {
+        if (result.type === "cancelled") {
           return result;
         }
 

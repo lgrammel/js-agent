@@ -3,7 +3,7 @@ export type StepState =
       type: "pending" | "running";
     }
   | {
-      type: "aborted";
+      type: "cancelled";
       reason: string;
     }
   | {

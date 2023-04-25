@@ -1,7 +1,7 @@
 import { Run } from "..";
 
 export type RunController<RUN_STATE> = {
-  checkAbort(
+  checkCancel(
     run: Run<RUN_STATE>
-  ): { shouldAbort: false } | { shouldAbort: true; reason: string };
+  ): { shouldCancel: false } | { shouldCancel: true; reason: string };
 };

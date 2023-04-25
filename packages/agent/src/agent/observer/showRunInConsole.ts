@@ -18,8 +18,8 @@ export const showRunInConsole = <RUN_STATE>({
   },
 
   onRunFinished({ result }: { result: StepResult }) {
-    if (result.type === "aborted") {
-      log(chalk.gray(`Aborted: ${result.reason}`));
+    if (result.type === "cancelled") {
+      log(chalk.gray(`Cancelled: ${result.reason}`));
       return;
     }
 
@@ -54,8 +54,8 @@ export const showRunInConsole = <RUN_STATE>({
           break;
         }
 
-        case "aborted": {
-          log(chalk.yellow("Aborted"));
+        case "cancelled": {
+          log(chalk.yellow("Cancelled"));
           log();
           break;
         }

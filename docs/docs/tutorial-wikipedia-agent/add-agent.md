@@ -46,7 +46,7 @@ As an AI language model, I do not have access to real-time data. However, accord
 Thinking…
 As an AI language model, I do not have access to real-time data. However, according to the latest census conducted in 2016, the population of British Columbia, Canada was approximately 4.6 million.
 
-Aborted: Maximum number of steps (3) exceeded.
+Cancelled: Maximum number of steps (3) exceeded.
 ```
 
 Let's dig into the code.

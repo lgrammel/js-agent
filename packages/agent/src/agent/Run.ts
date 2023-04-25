@@ -37,8 +37,8 @@ export class Run<RUN_STATE> {
     return `${this.nextId()}-${type}`;
   }
 
-  checkAbort() {
-    return this.controller.checkAbort(this);
+  checkCancel() {
+    return this.controller.checkCancel(this);
   }
 
   private logError(error: unknown) {
