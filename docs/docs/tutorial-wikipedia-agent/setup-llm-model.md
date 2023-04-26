@@ -31,13 +31,6 @@ async function runWikipediaAgent() {
 }
 ```
 
-You can now run it with e.g.:
-
-```bash
-export OPENAI_API_KEY="my-key"
-npx ts-node src/agent.ts "how many people live in BC, Canada?"
-```
-
 ## Create the LLM model
 
 First, import JS Agent:

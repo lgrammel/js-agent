@@ -5,7 +5,7 @@ title: Tutorial - Wikipedia Agent
 
 # Overview
 
-In this tutorial, we'll create an agent that answers questions by searching and reading [Wikipedia](https://www.wikipedia.org/) articles.
+In this tutorial, you'll learn how to create an agent that answers questions by searching and reading [Wikipedia](https://www.wikipedia.org/) articles.
 You can find the complete code in the [Wikipedia agent example](https://github.com/lgrammel/js-agent/tree/main/examples/wikipedia).
 
 The agent will use the following components:
