@@ -20,11 +20,6 @@ export async function runDeveloperAgent({
     baseUrl: "http://localhost:3001",
   }) as any;
 
-  type RunState = {
-    task: string;
-    projectInstructions: string;
-  };
-
   return $.runAgent({
     properties: { task, projectInstructions },
     agent: $.step.createFixedStepsLoop({
