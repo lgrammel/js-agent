@@ -8,11 +8,15 @@ type DoneActionInput = {
 };
 
 export const done = <RUN_STATE>({
-  id = "custom-step",
+  id = "done",
   description = "Indicate that you are done with the task.",
+  inputExample = {
+    result: "{result of the task}",
+  },
 }: {
   id?: string;
   description?: string;
+  inputExample?: DoneActionInput;
 } = {}): CustomStepAction<DoneActionInput, {}, RUN_STATE> => ({
   type: "custom-step",
   id,
@@ -20,9 +24,7 @@ export const done = <RUN_STATE>({
   inputSchema: zod.object({
     result: zod.string(),
   }),
-  inputExample: {
-    result: "{result of the task}",
-  },
+  inputExample,
   outputSchema: zod.object({}),
   createStep: async ({ input: { result }, run }) => {
     return new NoopStep({
