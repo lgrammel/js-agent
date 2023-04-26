@@ -1,15 +1,15 @@
+import { BasicToolAction } from "../action";
 import { Run } from "../agent/Run";
 import { RunContext } from "../agent/RunContext";
 import { Step } from "../step/Step";
 import { StepResult } from "../step/StepResult";
-import { ToolAction } from "./ToolAction";
 
-export class ToolStep<
+export class BasicToolStep<
   INPUT extends Record<string, string | undefined>,
   OUTPUT,
   RUN_STATE
 > extends Step<RUN_STATE> {
-  readonly action: ToolAction<INPUT, OUTPUT>;
+  readonly action: BasicToolAction<INPUT, OUTPUT>;
   readonly input: INPUT;
 
   constructor({
@@ -18,7 +18,7 @@ export class ToolStep<
     input,
   }: {
     run: Run<RUN_STATE>;
-    action: ToolAction<INPUT, OUTPUT>;
+    action: BasicToolAction<INPUT, OUTPUT>;
     input: INPUT;
   }) {
     super({ type: action.id, run });

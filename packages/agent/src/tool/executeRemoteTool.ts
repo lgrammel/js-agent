@@ -1,20 +1,20 @@
 import axios from "axios";
-import { Action } from "../action/Action";
+import { BasicToolAction } from "../action/Action";
 import { ActionParameters } from "../action/ActionParameters";
-import { ExecuteToolFunction } from "./ExecuteToolFunction";
+import { ExecuteBasicToolFunction } from "../action/ExecuteBasicToolFunction";
 
 export const executeRemoteTool =
   <INPUT extends ActionParameters, OUTPUT>({
     baseUrl,
   }: {
     baseUrl: string;
-  }): ExecuteToolFunction<INPUT, OUTPUT> =>
+  }): ExecuteBasicToolFunction<INPUT, OUTPUT> =>
   async ({
     input,
     action,
   }: {
     input: INPUT;
-    action: Action<INPUT, OUTPUT>;
+    action: BasicToolAction<INPUT, OUTPUT>;
   }): Promise<{ output: OUTPUT; summary: string }> => {
     try {
       const parametersJson = JSON.stringify(input);

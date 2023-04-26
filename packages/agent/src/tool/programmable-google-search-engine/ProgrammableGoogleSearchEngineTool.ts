@@ -1,8 +1,8 @@
 import axios from "axios";
 import zod from "zod";
 import { FormatResultFunction } from "../../action/FormatResultFunction";
-import { ExecuteToolFunction } from "../ExecuteToolFunction";
-import { createToolAction } from "../ToolAction";
+import { ExecuteBasicToolFunction } from "../../action/ExecuteBasicToolFunction";
+import { BasicToolAction } from "../../action";
 
 export type ProgrammableGoogleSearchEngineInput = {
   query: string;
@@ -33,7 +33,7 @@ export const programmableGoogleSearchEngineAction = ({
   id?: string;
   description?: string;
   inputExample?: ProgrammableGoogleSearchEngineInput;
-  execute: ExecuteToolFunction<
+  execute: ExecuteBasicToolFunction<
     ProgrammableGoogleSearchEngineInput,
     ProgrammableGoogleSearchEngineOutput
   >;
@@ -41,29 +41,32 @@ export const programmableGoogleSearchEngineAction = ({
     ProgrammableGoogleSearchEngineInput,
     ProgrammableGoogleSearchEngineOutput
   >;
-}) =>
-  createToolAction({
-    id,
-    description,
-    inputSchema: zod.object({
-      query: zod.string(),
-    }),
-    outputSchema: zod.object({
-      results: zod.array(
-        zod.object({
-          title: zod.string(),
-          link: zod.string(),
-          snippet: zod.string(),
-        })
-      ),
-    }),
-    inputExample,
-    execute,
-    formatResult,
-  });
+}): BasicToolAction<
+  ProgrammableGoogleSearchEngineInput,
+  ProgrammableGoogleSearchEngineOutput
+> => ({
+  type: "basic-tool",
+  id,
+  description,
+  inputSchema: zod.object({
+    query: zod.string(),
+  }),
+  outputSchema: zod.object({
+    results: zod.array(
+      zod.object({
+        title: zod.string(),
+        link: zod.string(),
+        snippet: zod.string(),
+      })
+    ),
+  }),
+  inputExample,
+  execute,
+  formatResult,
+});
 
 export const executeProgrammableGoogleSearchEngineAction =
-  <RUN_STATE>({
+  ({
     key,
     cx,
     maxResults = 5,
@@ -71,7 +74,7 @@ export const executeProgrammableGoogleSearchEngineAction =
     key: string;
     cx: string;
     maxResults?: number;
-  }): ExecuteToolFunction<
+  }): ExecuteBasicToolFunction<
     ProgrammableGoogleSearchEngineInput,
     ProgrammableGoogleSearchEngineOutput
   > =>

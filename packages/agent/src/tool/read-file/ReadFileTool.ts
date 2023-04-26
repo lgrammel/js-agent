@@ -2,8 +2,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import zod from "zod";
 import { FormatResultFunction } from "../../action/FormatResultFunction";
-import { ExecuteToolFunction } from "../ExecuteToolFunction";
-import { createToolAction } from "../ToolAction";
+import { ExecuteBasicToolFunction } from "../../action/ExecuteBasicToolFunction";
+import { BasicToolAction } from "../../action";
 
 export type ReadFileInput = {
   filePath: string;
@@ -29,30 +29,30 @@ export const readFile = ({
   id?: string;
   description?: string;
   inputExample?: ReadFileInput;
-  execute: ExecuteToolFunction<ReadFileInput, ReadFileOutput>;
+  execute: ExecuteBasicToolFunction<ReadFileInput, ReadFileOutput>;
   formatResult?: FormatResultFunction<ReadFileInput, ReadFileOutput>;
-}) =>
-  createToolAction({
-    id,
-    description,
-    inputSchema: zod.object({
-      filePath: zod.string(),
-    }),
-    outputSchema: zod.object({
-      content: zod.string().optional(),
-      error: zod.string().optional(),
-    }),
-    inputExample,
-    execute,
-    formatResult,
-  });
+}): BasicToolAction<ReadFileInput, ReadFileOutput> => ({
+  type: "basic-tool",
+  id,
+  description,
+  inputSchema: zod.object({
+    filePath: zod.string(),
+  }),
+  outputSchema: zod.object({
+    content: zod.string().optional(),
+    error: zod.string().optional(),
+  }),
+  inputExample,
+  execute,
+  formatResult,
+});
 
 export const executeReadFile =
-  <RUN_STATE>({
+  ({
     workspacePath,
   }: {
     workspacePath: string;
-  }): ExecuteToolFunction<ReadFileInput, ReadFileOutput> =>
+  }): ExecuteBasicToolFunction<ReadFileInput, ReadFileOutput> =>
   async ({ input: { filePath } }) => {
     const fullPath = path.join(workspacePath, filePath);
     try {

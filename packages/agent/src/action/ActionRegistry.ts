@@ -1,20 +1,20 @@
 import { AnyAction } from "./Action";
-import { done } from "./DoneAction";
+import { done } from "./done";
 import { ActionFormat } from "./format/ActionFormat";
 
-export class ActionRegistry {
+export class ActionRegistry<RUN_STATE> {
   readonly format: ActionFormat;
-  readonly doneAction: AnyAction;
+  readonly doneAction: AnyAction<RUN_STATE>;
 
-  private readonly actions: Map<string, AnyAction> = new Map();
+  private readonly actions: Map<string, AnyAction<RUN_STATE>> = new Map();
 
   constructor({
     actions,
     doneAction = done(),
     format,
   }: {
-    actions: AnyAction[];
-    doneAction?: AnyAction;
+    actions: AnyAction<RUN_STATE>[];
+    doneAction?: AnyAction<RUN_STATE>;
     format: ActionFormat;
   }) {
     for (const action of actions) {
@@ -25,7 +25,7 @@ export class ActionRegistry {
     this.format = format;
   }
 
-  register(action: AnyAction) {
+  register(action: AnyAction<RUN_STATE>) {
     if (this.actions.has(action.id)) {
       throw new Error(
         `An action with the name '${action.id}' has already been registered.`

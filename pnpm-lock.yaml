@@ -72,6 +72,15 @@ importers:
         specifier: '*'
         version: link:../../packages/agent
 
+  examples/x:
+    dependencies:
+      dotenv:
+        specifier: 16.0.3
+        version: 16.0.3
+      js-agent:
+        specifier: '*'
+        version: link:../../packages/agent
+
   packages/agent:
     dependencies:
       '@fastify/accepts':

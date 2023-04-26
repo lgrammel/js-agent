@@ -1,14 +1,14 @@
 import { OpenAIChatMessage } from "../provider/openai/OpenAIChatMessage";
 import { Step } from "../step";
-import { ToolStep } from "../tool/ToolStep";
+import { BasicToolStep } from "../tool/BasicToolStep";
 
 export const recentStepsChatPrompt =
-  <RUN_STATE>({ maxSteps = 10 }: { maxSteps?: number }) =>
+  ({ maxSteps = 10 }: { maxSteps?: number }) =>
   async ({
     completedSteps,
     generatedTextsByStepId,
   }: {
-    completedSteps: Array<Step<RUN_STATE>>;
+    completedSteps: Array<Step<unknown>>;
     generatedTextsByStepId: Map<string, string>;
   }): Promise<OpenAIChatMessage[]> => {
     const messages: OpenAIChatMessage[] = [];
@@ -32,7 +32,7 @@ export const recentStepsChatPrompt =
           break;
         }
         case "succeeded": {
-          if (step instanceof ToolStep) {
+          if (step instanceof BasicToolStep) {
             content = step.action.formatResult({
               input: stepState.input,
               output: stepState.output,

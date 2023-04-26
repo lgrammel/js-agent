@@ -2,8 +2,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import zod from "zod";
 import { FormatResultFunction } from "../../action/FormatResultFunction";
-import { ExecuteToolFunction } from "../ExecuteToolFunction";
-import { createToolAction } from "../ToolAction";
+import { ExecuteBasicToolFunction } from "../../action/ExecuteBasicToolFunction";
+import { BasicToolAction } from "../../action/Action";
 
 export type WriteFileInput = {
   filePath: string;
@@ -28,30 +28,30 @@ export const writeFile = ({
   id?: string;
   description?: string;
   inputExample?: WriteFileInput;
-  execute: ExecuteToolFunction<WriteFileInput, WriteFileOutput>;
+  execute: ExecuteBasicToolFunction<WriteFileInput, WriteFileOutput>;
   formatResult?: FormatResultFunction<WriteFileInput, WriteFileOutput>;
-}) =>
-  createToolAction({
-    id,
-    description,
-    inputSchema: zod.object({
-      filePath: zod.string(),
-      content: zod.string(),
-    }),
-    outputSchema: zod.object({
-      content: zod.string(),
-    }),
-    inputExample,
-    execute,
-    formatResult,
-  });
+}): BasicToolAction<WriteFileInput, WriteFileOutput> => ({
+  type: "basic-tool",
+  id,
+  description,
+  inputSchema: zod.object({
+    filePath: zod.string(),
+    content: zod.string(),
+  }),
+  outputSchema: zod.object({
+    content: zod.string(),
+  }),
+  inputExample,
+  execute,
+  formatResult,
+});
 
 export const executeWriteFile =
-  <RUN_STATE>({
+  ({
     workspacePath,
   }: {
     workspacePath: string;
-  }): ExecuteToolFunction<WriteFileInput, WriteFileOutput> =>
+  }): ExecuteBasicToolFunction<WriteFileInput, WriteFileOutput> =>
   async ({ input: { filePath, content } }) => {
     // TODO try-catch
     const fullPath = path.join(workspacePath, filePath);

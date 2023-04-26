@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { Step, StepResult } from "../../step";
-import { ToolStep } from "../../tool/ToolStep";
+import { BasicToolStep } from "../../tool/BasicToolStep";
 import { Run } from "../Run";
 import { RunObserver } from "./RunObserver";
 
@@ -36,14 +36,14 @@ export const showRunInConsole = <RUN_STATE>({
   },
 
   onStepExecutionStarted({ step }: { step: Step<RUN_STATE> }) {
-    if (step instanceof ToolStep) {
+    if (step instanceof BasicToolStep) {
       log(chalk.gray(`Executing ${step.type}…`));
       return;
     }
   },
 
   onStepExecutionFinished({ step }: { step: Step<RUN_STATE> }) {
-    if (step instanceof ToolStep) {
+    if (step instanceof BasicToolStep) {
       const result = step.state;
       const resultType = result.type;
 

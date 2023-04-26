@@ -10,10 +10,11 @@ import { Loop } from "./Loop";
 import { NoopStep } from "./NoopStep";
 import { Step } from "./Step";
 import { StepFactory } from "./StepFactory";
+import { createActionStep } from "./createActionStep";
 
 export type GenerateNextStepLoopContext<RUN_STATE> = {
   runState: RUN_STATE;
-  actions: ActionRegistry;
+  actions: ActionRegistry<RUN_STATE>;
   completedSteps: Array<Step<RUN_STATE>>;
   generatedTextsByStepId: Map<string, string>;
 };
@@ -28,8 +29,8 @@ export const generateNextStepLoop =
     model,
   }: {
     type?: string;
-    doneAction?: AnyAction;
-    actions: AnyAction[];
+    doneAction?: AnyAction<RUN_STATE>;
+    actions: AnyAction<RUN_STATE>[];
     actionFormat: ActionFormat;
     prompt: Prompt<GenerateNextStepLoopContext<RUN_STATE>, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, any, string>;
@@ -55,7 +56,7 @@ export class GenerateNextStepLoop<
 > extends Loop<RUN_STATE> {
   private readonly generatedTextsByStepId = new Map<string, string>();
 
-  readonly actionRegistry: ActionRegistry;
+  readonly actionRegistry: ActionRegistry<RUN_STATE>;
   readonly generateText: NextStepLoopGenerateTextFunction<RUN_STATE>;
 
   constructor({
@@ -69,8 +70,8 @@ export class GenerateNextStepLoop<
   }: {
     type?: string;
     run: Run<RUN_STATE>;
-    doneAction?: AnyAction;
-    actions: AnyAction[];
+    doneAction?: AnyAction<RUN_STATE>;
+    actions: AnyAction<RUN_STATE>[];
     actionFormat: ActionFormat;
     prompt: Prompt<GenerateNextStepLoopContext<RUN_STATE>, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, any, string>;
@@ -128,9 +129,10 @@ export class GenerateNextStepLoop<
       try {
         const action = this.actionRegistry.getAction(actionParameters.action);
 
-        step = await action.createStep({
-          run: this.run,
+        step = await createActionStep({
+          action,
           input: actionParameters,
+          run: this.run,
         });
       } catch (error: any) {
         step = new ErrorStep({ run: this.run, error });

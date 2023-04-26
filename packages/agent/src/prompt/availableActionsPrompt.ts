@@ -5,7 +5,7 @@ import { sectionsTextPrompt } from "./sectionsPrompt";
 export const availableActionsSections = async ({
   actions,
 }: {
-  actions: ActionRegistry;
+  actions: ActionRegistry<unknown>;
 }) => [
   {
     title: "Available Actions",

@@ -33,10 +33,11 @@ export async function runDeveloperAgent({
           type: "setup",
           steps: setupCommands.map(
             (command) => async (run) =>
-              $.tool.runCommand({ execute: executeRemote }).createStep({
+              $.step.createActionStep({
+                action: $.tool.runCommand({ execute: executeRemote }),
                 input: { command },
                 run,
-              }) as Promise<$.step.Step<RunState>>
+              })
           ),
         }),
         $.step.generateNextStepLoop({

@@ -1,8 +1,8 @@
 import { exec } from "child_process";
 import zod from "zod";
 import { FormatResultFunction } from "../../action/FormatResultFunction";
-import { ExecuteToolFunction } from "../ExecuteToolFunction";
-import { createToolAction } from "../ToolAction";
+import { ExecuteBasicToolFunction } from "../../action/ExecuteBasicToolFunction";
+import { BasicToolAction } from "../../action";
 
 export type RunCommandInput = {
   command: string;
@@ -35,30 +35,30 @@ export const runCommand = ({
   id?: string;
   description?: string;
   inputExample?: RunCommandInput;
-  execute: ExecuteToolFunction<RunCommandInput, RunCommandOutput>;
+  execute: ExecuteBasicToolFunction<RunCommandInput, RunCommandOutput>;
   formatResult?: FormatResultFunction<RunCommandInput, RunCommandOutput>;
-}) =>
-  createToolAction({
-    id,
-    description,
-    inputSchema: zod.object({
-      command: zod.string(),
-    }),
-    outputSchema: zod.object({
-      stdout: zod.string(),
-      stderr: zod.string(),
-    }),
-    inputExample,
-    execute,
-    formatResult,
-  });
+}): BasicToolAction<RunCommandInput, RunCommandOutput> => ({
+  type: "basic-tool",
+  id,
+  description,
+  inputSchema: zod.object({
+    command: zod.string(),
+  }),
+  outputSchema: zod.object({
+    stdout: zod.string(),
+    stderr: zod.string(),
+  }),
+  inputExample,
+  execute,
+  formatResult,
+});
 
 export const executeRunCommand =
-  <RUN_STATE>({
+  ({
     workspacePath,
   }: {
     workspacePath: string;
-  }): ExecuteToolFunction<RunCommandInput, RunCommandOutput> =>
+  }): ExecuteBasicToolFunction<RunCommandInput, RunCommandOutput> =>
   async ({ input: { command } }: { input: RunCommandInput }) => {
     const { stdout, stderr } = await new Promise<{
       stdout: string;

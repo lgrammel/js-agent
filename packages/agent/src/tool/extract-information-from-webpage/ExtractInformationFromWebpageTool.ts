@@ -4,8 +4,8 @@ import { RunContext } from "../../agent/RunContext";
 import { htmlToText } from "../../convert/htmlToText";
 import { webpageAsHtmlText } from "../../source";
 import { ExtractFunction, load } from "../../text";
-import { ExecuteToolFunction } from "../ExecuteToolFunction";
-import { createToolAction } from "../ToolAction";
+import { ExecuteBasicToolFunction } from "../../action/ExecuteBasicToolFunction";
+import { BasicToolAction } from "../../action";
 
 export type ExtractInformationFromWebpageInput = {
   topic: string;
@@ -30,7 +30,7 @@ export const extractInformationFromWebpage = ({
   id?: string;
   description?: string;
   inputExample?: ExtractInformationFromWebpageInput;
-  execute: ExecuteToolFunction<
+  execute: ExecuteBasicToolFunction<
     ExtractInformationFromWebpageInput,
     ExtractInformationFromWebpageOutput
   >;
@@ -38,24 +38,27 @@ export const extractInformationFromWebpage = ({
     ExtractInformationFromWebpageInput,
     ExtractInformationFromWebpageOutput
   >;
-}) =>
-  createToolAction({
-    id,
-    description,
-    inputSchema: zod.object({
-      topic: zod.string(),
-      url: zod.string(),
-    }),
-    outputSchema: zod.object({
-      extractedInformation: zod.string(),
-    }),
-    inputExample,
-    execute,
-    formatResult,
-  });
+}): BasicToolAction<
+  ExtractInformationFromWebpageInput,
+  ExtractInformationFromWebpageOutput
+> => ({
+  type: "basic-tool",
+  id,
+  description,
+  inputSchema: zod.object({
+    topic: zod.string(),
+    url: zod.string(),
+  }),
+  outputSchema: zod.object({
+    extractedInformation: zod.string(),
+  }),
+  inputExample,
+  execute,
+  formatResult,
+});
 
 export const executeExtractInformationFromWebpage =
-  <RUN_STATE>({
+  ({
     loadText = load({
       from: webpageAsHtmlText(),
       convert: htmlToText(),
@@ -64,7 +67,7 @@ export const executeExtractInformationFromWebpage =
   }: {
     loadText?: (options: { url: string }) => PromiseLike<string>;
     extract: ExtractFunction;
-  }): ExecuteToolFunction<
+  }): ExecuteBasicToolFunction<
     ExtractInformationFromWebpageInput,
     ExtractInformationFromWebpageOutput
   > =>

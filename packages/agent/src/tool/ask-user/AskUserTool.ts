@@ -1,8 +1,7 @@
 import readline from "readline";
 import zod from "zod";
-import { FormatResultFunction } from "../../action";
-import { ExecuteToolFunction } from "../ExecuteToolFunction";
-import { createToolAction } from "../ToolAction";
+import { BasicToolAction, FormatResultFunction } from "../../action";
+import { ExecuteBasicToolFunction } from "../../action/ExecuteBasicToolFunction";
 
 export type AskUserInput = {
   query: string;
@@ -25,25 +24,25 @@ export const askUser = ({
   id?: string;
   description?: string;
   inputExample?: AskUserInput;
-  execute: ExecuteToolFunction<AskUserInput, AskUserOutput>;
+  execute: ExecuteBasicToolFunction<AskUserInput, AskUserOutput>;
   formatResult?: FormatResultFunction<AskUserInput, AskUserOutput>;
-}) =>
-  createToolAction({
-    id,
-    description,
-    inputSchema: zod.object({
-      query: zod.string(),
-    }),
-    outputSchema: zod.object({
-      response: zod.string(),
-    }),
-    inputExample,
-    execute,
-    formatResult,
-  });
+}): BasicToolAction<AskUserInput, AskUserOutput> => ({
+  type: "basic-tool",
+  id,
+  description,
+  inputSchema: zod.object({
+    query: zod.string(),
+  }),
+  outputSchema: zod.object({
+    response: zod.string(),
+  }),
+  inputExample,
+  execute,
+  formatResult,
+});
 
 export const executeAskUser =
-  <RUN_STATE>(): ExecuteToolFunction<AskUserInput, AskUserOutput> =>
+  (): ExecuteBasicToolFunction<AskUserInput, AskUserOutput> =>
   async ({ input: { query } }) => {
     const userInput = readline.createInterface({
       input: process.stdin,

@@ -3,14 +3,14 @@ import hyperid from "hyperid";
 import pino from "pino";
 import zod from "zod";
 import { gracefullyShutdownOnSigTermAndSigInt } from "../../util/gracefullyShutdownOnSigTermAndSigInt";
-import { ToolAction } from "../ToolAction";
 import { ToolRegistry } from "./ToolRegistry";
 import { createToolPlugin } from "./toolPlugin";
+import { BasicToolAction } from "../../action/Action";
 
 export const runToolExecutor = async ({
   tools,
 }: {
-  tools: Array<ToolAction<any, any>>;
+  tools: Array<BasicToolAction<any, any>>;
 }) => {
   const environmentSchema = zod.object({
     WORKSPACE: zod.string(),
