@@ -2,6 +2,7 @@ import { ActionParameters } from "../action";
 import { AnyAction } from "../action/Action";
 import { Run } from "../agent/Run";
 import { BasicToolStep } from "../tool/BasicToolStep";
+import { ReflectiveToolStep } from "../tool/ReflectiveToolStep";
 import { NoopStep } from "./NoopStep";
 
 export async function createActionStep<RUN_STATE>({
@@ -31,7 +32,11 @@ export async function createActionStep<RUN_STATE>({
       });
     }
     case "reflective-tool": {
-      throw new Error("TODO");
+      return new ReflectiveToolStep({
+        action,
+        input,
+        run,
+      });
     }
     default: {
       const unsupportedActionType: never = actionType;
