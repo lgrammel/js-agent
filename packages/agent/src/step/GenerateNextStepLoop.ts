@@ -10,6 +10,7 @@ import { Loop } from "./Loop";
 import { NoopStep } from "./NoopStep";
 import { Step } from "./Step";
 import { StepFactory } from "./StepFactory";
+import { StepResult } from "./StepResult";
 import { createActionStep } from "./createActionStep";
 
 export type GenerateNextStepLoopContext<RUN_STATE> = {
@@ -98,9 +99,18 @@ export class GenerateNextStepLoop<
     });
   }
 
+  private get lastStep() {
+    return this.completedSteps[this.completedSteps.length - 1];
+  }
+
   protected hasMoreSteps(): boolean {
-    const lastStep = this.completedSteps[this.completedSteps.length - 1];
-    return !lastStep?.isDoneStep();
+    return !this.lastStep?.isDoneStep();
+  }
+
+  protected async getResult() {
+    return this.lastStep?.isDoneStep()
+      ? (this.lastStep.state as StepResult)
+      : super.getResult();
   }
 
   async getNextStep(): Promise<Step<RUN_STATE>> {

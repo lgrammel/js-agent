@@ -3,7 +3,6 @@ import { AnyAction } from "../action/Action";
 import { Run } from "../agent/Run";
 import { BasicToolStep } from "../tool/BasicToolStep";
 import { ReflectiveToolStep } from "../tool/ReflectiveToolStep";
-import { NoopStep } from "./NoopStep";
 
 export async function createActionStep<RUN_STATE>({
   action,
@@ -16,13 +15,8 @@ export async function createActionStep<RUN_STATE>({
 }) {
   const actionType = action.type;
   switch (actionType) {
-    case "done": {
-      return new NoopStep({
-        type: action.id,
-        run,
-        summary: input._freeText ?? "Done.",
-        isDoneStep: true,
-      });
+    case "custom-step": {
+      return action.createStep({ input, run });
     }
     case "basic-tool": {
       return new BasicToolStep({

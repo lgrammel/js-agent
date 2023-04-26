@@ -1,5 +1,5 @@
 import { OpenAIChatMessage } from "../provider/openai/OpenAIChatMessage";
-import { Step } from "../step";
+import { GenerateNextStepLoop, NoopStep, Step } from "../step";
 import { BasicToolStep } from "../tool/BasicToolStep";
 
 export const recentStepsChatPrompt =
@@ -32,14 +32,18 @@ export const recentStepsChatPrompt =
           break;
         }
         case "succeeded": {
-          if (step instanceof BasicToolStep) {
+          if (step instanceof NoopStep && step.isDoneStep()) {
+            content = stepState.summary;
+          } else if (step instanceof BasicToolStep) {
             content = step.action.formatResult({
               input: stepState.input,
               output: stepState.output,
               summary: stepState.summary,
             });
-            break;
+          } else if (step instanceof GenerateNextStepLoop) {
+            content = stepState.summary;
           }
+          break;
         }
       }
 

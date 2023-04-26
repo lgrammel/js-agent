@@ -1,4 +1,6 @@
 import zod from "zod";
+import { Run } from "../agent/Run";
+import { Step } from "../step/Step";
 import { ActionParameters } from "./ActionParameters";
 import { ExecuteBasicToolFunction } from "./ExecuteBasicToolFunction";
 import { ExecuteReflectiveToolFunction } from "./ExecuteReflectiveToolFunction";
@@ -7,7 +9,7 @@ import { FormatResultFunction } from "./FormatResultFunction";
 export type AnyAction<RUN_STATE> = Action<any, any, RUN_STATE>;
 
 export type Action<INPUT extends ActionParameters, OUTPUT, RUN_STATE> =
-  | DoneAction<INPUT, OUTPUT>
+  | CustomStepAction<INPUT, OUTPUT, RUN_STATE>
   | BasicToolAction<INPUT, OUTPUT>
   | ReflectiveToolAction<INPUT, OUTPUT, RUN_STATE>;
 
@@ -21,11 +23,16 @@ export type BaseAction<INPUT extends ActionParameters, OUTPUT> = {
   readonly outputSchema: zod.Schema<OUTPUT>;
 };
 
-export type DoneAction<INPUT extends ActionParameters, OUTPUT> = BaseAction<
-  INPUT,
-  OUTPUT
-> & {
-  readonly type: "done";
+export type CustomStepAction<
+  INPUT extends ActionParameters,
+  OUTPUT,
+  RUN_STATE
+> = BaseAction<INPUT, OUTPUT> & {
+  readonly type: "custom-step";
+  createStep: (options: {
+    input: INPUT;
+    run: Run<RUN_STATE>;
+  }) => PromiseLike<Step<RUN_STATE>>;
 };
 
 export type BasicToolAction<

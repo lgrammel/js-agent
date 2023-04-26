@@ -25,6 +25,10 @@ export abstract class Loop<RUN_STATE> extends Step<RUN_STATE> {
     return Promise.resolve();
   }
 
+  protected async getResult(): Promise<StepResult> {
+    return { type: "succeeded", summary: "Completed all tasks." };
+  }
+
   protected async _execute(): Promise<StepResult> {
     try {
       while (this.hasMoreSteps()) {
@@ -56,8 +60,7 @@ export abstract class Loop<RUN_STATE> extends Step<RUN_STATE> {
       };
     }
 
-    // TODO have a final result
-    return { type: "succeeded", summary: "Completed all tasks." };
+    return this.getResult();
   }
 
   getStepCount(): number {

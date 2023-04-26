@@ -24,6 +24,7 @@ export const showRunInConsole = <RUN_STATE>({
     }
 
     log(chalk.gray("Done"));
+    log(result);
   },
 
   onStepGenerationStarted() {
