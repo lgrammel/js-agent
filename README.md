@@ -12,6 +12,34 @@ While creating an agent prototype is easy, increasing its reliability and robust
 
 [Full documentation & tutorials](https://js-agent.ai/docs/intro)
 
+## Examples
+
+### [Wikipedia Question-Answering](https://github.com/lgrammel/js-agent/tree/main/examples/wikipedia)
+
+[Tutorial](https://js-agent.ai/docs/tutorial-wikipedia-agent/)
+
+An agent that has access to a wikipedia search engine and can read wikipedia articles. You can use it to answer questions about wikipedia content.
+
+Used features: `gpt-3.5-turbo`, custom tools (search wikipedia, read wikipedia article), generate next step loop, max steps run controller
+
+### [JavaScript/TypeScript developer](https://github.com/lgrammel/js-agent/tree/main/examples/javascript-developer)
+
+An automated developer agent that works in a docker container. It can read files, write files and execute commands. You can adjust it for your project and use it to document code, write tests, update tests and features, etc.
+
+Used features: `gpt-4`, tool execution in Docker container, agent with fixed setup steps, multiple agent run properties, generate next step loop, tools (read file, write file, run, command, ask user), cost calculation after agent run
+
+### [BabyAGI](https://github.com/lgrammel/js-agent/tree/main/examples/babyagi)
+
+JS Agent implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi).
+
+Features used: HTTP Agent server, text completion model (`text-davinci-003`), customized console output, update tasks planning loop
+
+### [PDF to Twitter Thread](https://github.com/lgrammel/js-agent/tree/main/examples/pdf-to-twitter-thread)
+
+Takes a PDF and a topic and creates a Twitter thread with all content from the PDF that is relevant to the topic.
+
+Features used: stand-alone pipeline (no agent), pdf loading, split-extract-rewrite
+
 ## Features
 
 - Agent definition and execution
@@ -55,32 +83,6 @@ While creating an agent prototype is easy, increasing its reliability and robust
   - pdfToText
 - General utils
   - LLM call retry with exponential backoff
-
-## Examples
-
-### [Wikipedia Question-Answering](https://github.com/lgrammel/js-agent/tree/main/examples/wikipedia)
-
-[Tutorial](https://js-agent.ai/docs/tutorial-wikipedia-agent/)
-
-An agent that has access to a wikipedia search engine and can read wikipedia articles. You can use it to answer questions about wikipedia content.
-
-Used features: `gpt-3.5-turbo`, custom tools (search wikipedia, read wikipedia article), generate next step loop, max steps run controller
-
-### [JavaScript/TypeScript developer](https://github.com/lgrammel/js-agent/tree/main/examples/javascript-developer)
-
-An automated developer agent that works in a docker container. It can read files, write files and execute commands. You can adjust it for your project and use it to document code, write tests, update tests and features, etc.
-
-Used features: `gpt-4`, tool execution in Docker container, agent with fixed setup steps, multiple agent run properties, generate next step loop, tools (read file, write file, run, command, ask user), cost calculation after agent run
-
-### [BabyAGI](https://github.com/lgrammel/js-agent/tree/main/examples/babyagi)
-
-JS Agent implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi).
-
-Features used: HTTP Agent server, text completion model (`text-davinci-003`), customized console output, update tasks planning loop
-
-### [PDF Summarizer](https://github.com/lgrammel/js-agent/tree/main/examples/pdf-summarizer)
-
-Features used: stand-alone pipeline (no agent), pdf loading, extract-and-rewrite
 
 ## Design Principles
 

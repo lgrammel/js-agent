@@ -2,7 +2,7 @@ import { RunContext } from "../../agent/RunContext";
 import { SplitFunction } from "../split";
 import { ExtractFunction } from "./ExtractFunction";
 
-export const extractAndRewrite =
+export const splitExtractRewrite =
   ({
     split,
     extract,

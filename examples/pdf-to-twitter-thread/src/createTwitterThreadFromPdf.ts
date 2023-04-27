@@ -1,6 +1,6 @@
 import * as $ from "js-agent";
 
-export async function summarizePdf({
+export async function createTwitterThreadFromPdf({
   topic,
   pdfPath,
   openAiApiKey,
@@ -21,7 +21,7 @@ export async function summarizePdf({
     convert: $.convert.pdfToText(),
   });
 
-  const extract = $.text.extractAndRewrite({
+  const extract = $.text.splitExtractRewrite({
     split: $.text.splitRecursivelyAtCharacter({
       maxCharactersPerChunk: 1024 * 4,
     }),
@@ -36,7 +36,24 @@ export async function summarizePdf({
     rewrite: $.text.generateText({
       id: "rewrite-extracted-information",
       model: gpt4,
-      prompt: $.prompt.rewriteChatPrompt(),
+      prompt: async ({ text, topic }: { text: string; topic: string }) => [
+        {
+          role: "user" as const,
+          content: `## TOPIC\n${topic}`,
+        },
+        {
+          role: "system" as const,
+          content: `## TASK
+Rewrite the content below into a coherent twitter thread on the topic above.
+Include all relevant information about the topic.
+Discard all irrelevant information.
+Separate each tweet with ---`,
+        },
+        {
+          role: "user" as const,
+          content: `## CONTENT\n${text}`,
+        },
+      ],
     }),
   });
 

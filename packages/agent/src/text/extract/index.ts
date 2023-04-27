@@ -1,3 +1,3 @@
 export * from "./ExtractFunction";
 export * from "./extractRecursively";
-export * from "./extractAndRewrite";
+export * from "./splitExtractRewrite";
