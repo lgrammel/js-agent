@@ -33,7 +33,12 @@ While creating an agent prototype is easy, increasing its reliability and robust
   - Use programmable search engine
   - Extract information on topic from webpage
   - Ask user for input
+  - Write to string property
+  - Call sub-agent (loop)
   - Optional agent/executor separation (e.g. run the executor in a sandbox environment such as a Docker container)
+- Agent lops
+  - BabyAGI-style update tasks planning loop
+  - Generate next step loop
 - Prompt templates for chat and text prompts
   - Built-in templates for quick start
     - Available actions prompt; extract information prompts; recent steps prompt, rewrite text prompt
