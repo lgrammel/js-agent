@@ -1,0 +1,16 @@
+{
+  "name": "@js-agent/example-x",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node src/main.ts",
+    "build": "tsc"
+  },
+  "private": true,
+  "dependencies": {
+    "js-agent": "*",
+    "dotenv": "16.0.3",
+    "zod": "3.21.4"
+  },
+  "devDependencies": {}
+}

@@ -80,6 +80,9 @@ importers:
       js-agent:
         specifier: '*'
         version: link:../../packages/agent
+      zod:
+        specifier: 3.21.4
+        version: 3.21.4
 
   packages/agent:
     dependencies:

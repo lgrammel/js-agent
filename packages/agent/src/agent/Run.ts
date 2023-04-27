@@ -127,6 +127,7 @@ export class Run<RUN_STATE> {
 
   recordCall(call: GenerateCall) {
     // TODO associate with currently active step
+    console.log(call);
     this.recordedCalls.push(call);
   }
 }
