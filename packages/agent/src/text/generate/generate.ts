@@ -58,7 +58,7 @@ export async function generate<
       error: rawOutput.error,
     });
 
-    throw rawOutput.error; // TODO wrap error
+    throw rawOutput.error;
   }
 
   const extractedOutput = await model.extractOutput(rawOutput.result);
