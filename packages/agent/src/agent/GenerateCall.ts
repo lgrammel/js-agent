@@ -2,7 +2,7 @@ export type GenerateCall = {
   type: "generate";
   input: unknown;
   metadata: {
-    id: string;
+    id?: string | undefined;
     model: {
       vendor: string;
       name: string;

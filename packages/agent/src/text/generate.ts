@@ -22,7 +22,7 @@ export function generate<
   model,
   processOutput,
 }: {
-  id: string;
+  id?: string | undefined;
   prompt: Prompt<INPUT, PROMPT_TYPE>;
   model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
   processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
@@ -85,7 +85,7 @@ export function generateText<INPUT, PROMPT_TYPE, RAW_OUTPUT>({
   model,
   processOutput = trim(),
 }: {
-  id: string;
+  id?: string | undefined;
   prompt: Prompt<INPUT, PROMPT_TYPE>;
   model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, string>;
   processOutput?: (output: string) => PromiseLike<string>;
