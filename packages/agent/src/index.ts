@@ -2,6 +2,7 @@ export * as action from "./action";
 export * as agent from "./agent";
 export * from "./agent/runAgent";
 export * as convert from "./convert";
+export * as embedding from "./embedding";
 export * as prompt from "./prompt";
 export * as provider from "./provider";
 export * as server from "./server";
