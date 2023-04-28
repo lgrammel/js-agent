@@ -6,7 +6,7 @@ JS Agent is a composable and extensible framework for creating AI agents with Ja
 
 While creating an agent prototype is easy, increasing its reliability and robustness is complex and requires considerable experimentation. JS Agent provides robust building blocks and tooling to help you develop rock-solid agents faster.
 
-**⚠️ JS Agent is currently in its initial experimental phase. Before reaching version 0.1, there may breaking changes in each release.**
+**⚠️ JS Agent is currently in its initial experimental phase. Before reaching version 0.1, there may be breaking changes in each release.**
 
 ## Documentation
 
