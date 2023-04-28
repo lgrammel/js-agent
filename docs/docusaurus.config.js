@@ -44,7 +44,11 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
+          routeBasePath: "docs",
+          path: "docs",
           sidebarPath: require.resolve("./sidebars.js"),
+          lastVersion: "current",
+          onlyIncludeVersions: ["current"],
           editUrl: "https://github.com/lgrammel/js-agent/tree/main/docs/docs/",
         },
         // blog: {
@@ -55,6 +59,18 @@ const config = {
           customCss: require.resolve("./src/css/custom.css"),
         },
       }),
+    ],
+  ],
+
+  plugins: [
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "concepts",
+        path: "concepts",
+        routeBasePath: "concepts",
+        sidebarPath: require.resolve("./sidebars.js"),
+      },
     ],
   ],
 
@@ -83,6 +99,12 @@ const config = {
             sidebarId: "tutorialSidebar",
             position: "left",
             label: "Tutorial",
+          },
+          {
+            to: "/concepts/",
+            label: "Concepts",
+            position: "left",
+            activeBaseRegex: `/concepts/`,
           },
           // { to: "/blog", label: "Blog", position: "left" },
           {

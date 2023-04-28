@@ -38,7 +38,13 @@ Features used: HTTP Agent server, text completion model (`text-davinci-003`), cu
 
 Takes a PDF and a topic and creates a Twitter thread with all content from the PDF that is relevant to the topic.
 
-Features used: stand-alone pipeline (no agent), pdf loading, split-extract-rewrite
+Features used: function composition (no agent), pdf loading, split-extract-rewrite
+
+### [Split and Embed Text](https://github.com/lgrammel/js-agent/tree/main/examples/split-and-embed-text)
+
+Splits a text into chunks and generates embeddings.
+
+Features used: direct function calls (no agent), split text, generate embeddings
 
 ## Features
 

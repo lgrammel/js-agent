@@ -51,7 +51,19 @@ importers:
         specifier: '*'
         version: link:../../packages/agent
 
-  examples/pdf-summarizer:
+  examples/pdf-to-twitter-thread:
+    dependencies:
+      commander:
+        specifier: 10.0.1
+        version: 10.0.1
+      dotenv:
+        specifier: 16.0.3
+        version: 16.0.3
+      js-agent:
+        specifier: '*'
+        version: link:../../packages/agent
+
+  examples/split-and-embed:
     dependencies:
       commander:
         specifier: 10.0.1
@@ -64,15 +76,6 @@ importers:
         version: link:../../packages/agent
 
   examples/wikipedia:
-    dependencies:
-      dotenv:
-        specifier: 16.0.3
-        version: 16.0.3
-      js-agent:
-        specifier: '*'
-        version: link:../../packages/agent
-
-  examples/x:
     dependencies:
       dotenv:
         specifier: 16.0.3
