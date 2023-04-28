@@ -28,7 +28,7 @@ export async function generateChatCompletion({
   frequencyPenalty?: number;
 }): Promise<OpenAIChatCompletion> {
   const response = await axios.post(
-    `${baseUrl}/completions`,
+    `${baseUrl}/chat/completions`,
     JSON.stringify({
       model,
       messages,
