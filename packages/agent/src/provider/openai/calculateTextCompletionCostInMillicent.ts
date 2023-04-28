@@ -16,8 +16,8 @@ const tokenCostInMillicent = {
 
 export const calculateTextCompletionCostInMillicent = ({
   model,
-  completion,
+  output,
 }: {
   model: OpenAITextCompletionModel;
-  completion: OpenAITextCompletion;
-}) => tokenCostInMillicent[model] * completion.usage.total_tokens;
+  output: OpenAITextCompletion;
+}) => tokenCostInMillicent[model] * output.usage.total_tokens;

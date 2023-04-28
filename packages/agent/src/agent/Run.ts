@@ -2,6 +2,7 @@ import { Loop } from "../step/Loop";
 import { Step } from "../step/Step";
 import { StepResult } from "../step/StepResult";
 import { createNextId } from "../util/createNextId";
+import { EmbedCall } from "./EmbedCall";
 import { GenerateCall } from "./GenerateCall";
 import { RunController } from "./controller/RunController";
 import { RunObserver } from "./observer/RunObserver";
@@ -15,7 +16,7 @@ export class Run<RUN_STATE> {
   readonly controller: RunController<RUN_STATE>;
   readonly state: RUN_STATE;
 
-  readonly recordedCalls: GenerateCall[] = [];
+  readonly recordedCalls: Array<GenerateCall | EmbedCall> = [];
 
   root: Step<RUN_STATE> | undefined;
 
@@ -125,7 +126,7 @@ export class Run<RUN_STATE> {
     }
   }
 
-  recordCall(call: GenerateCall) {
+  recordCall(call: GenerateCall | EmbedCall) {
     // TODO associate with currently active step
     this.recordedCalls.push(call);
   }

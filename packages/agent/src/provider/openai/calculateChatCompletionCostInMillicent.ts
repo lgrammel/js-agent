@@ -16,10 +16,10 @@ const completionTokenCostInMillicent = {
 
 export const calculateChatCompletionCostInMillicent = ({
   model,
-  completion,
+  output,
 }: {
   model: OpenAIChatCompletionModel;
-  completion: OpenAIChatCompletion;
+  output: OpenAIChatCompletion;
 }) =>
-  completion.usage.prompt_tokens * promptTokenCostInMillicent[model] +
-  completion.usage.completion_tokens * completionTokenCostInMillicent[model];
+  output.usage.prompt_tokens * promptTokenCostInMillicent[model] +
+  output.usage.completion_tokens * completionTokenCostInMillicent[model];
