@@ -13,9 +13,10 @@ You can use all almost all helper functions in JS Agent directly. This includes 
 Here is an example of splitting a text into chunks and using the OpenAI embedding API directly to get the embedding of each chunk ([full example](https://github.com/lgrammel/js-agent/tree/main/examples/split-and-embed-text)):
 
 ```typescript
-const chunks = $.text.splitRecursivelyAtCharacter({
+const chunks = await $.text.splitRecursivelyAtToken({
   text,
-  maxCharactersPerChunk: 1024 * 4,
+  tokenizer: $.provider.openai.gptTokenizer(),
+  maxChunkSize: 128,
 });
 
 const embeddings = [];
@@ -44,7 +45,7 @@ Here is the example that creates a Twitter thread on a topic using the content o
 ```typescript
 const rewriteAsTwitterThread = $.text.splitExtractRewrite.asExtractFunction({
   split: $.text.splitRecursivelyAtCharacter.asSplitFunction({
-    maxCharactersPerChunk: 1024 * 4,
+    maxChunkSize: 1024 * 4,
   }),
   extract: $.text.generateText.asFunction({
     model: gpt4,

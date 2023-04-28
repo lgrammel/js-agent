@@ -1,7 +1,7 @@
 import * as $ from "js-agent";
 import fs from "node:fs/promises";
 
-export async function splitAndEmbed({
+export async function splitAndEmbedText({
   textFilePath,
   openAiApiKey,
 }: {
@@ -10,9 +10,10 @@ export async function splitAndEmbed({
 }) {
   const text = await fs.readFile(textFilePath, "utf8");
 
-  const chunks = $.text.splitRecursivelyAtCharacter({
+  const chunks = await $.text.splitRecursivelyAtToken({
     text,
-    maxCharactersPerChunk: 1024 * 4,
+    tokenizer: $.provider.openai.gptTokenizer(),
+    maxChunkSize: 128,
   });
 
   const embeddings = [];

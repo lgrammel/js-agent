@@ -18,9 +18,10 @@ export async function createTwitterThreadFromPdf({
 
   const rewriteAsTwitterThread = $.text.splitExtractRewrite.asExtractFunction({
     split: $.text.splitRecursivelyAtCharacter.asSplitFunction({
-      maxCharactersPerChunk: 1024 * 4,
+      maxChunkSize: 1024 * 4,
     }),
     extract: $.text.generateText.asFunction({
+      id: "extract",
       model: gpt4,
       prompt: $.prompt.extractAndExcludeChatPrompt({
         excludeKeyword: "IRRELEVANT",
@@ -28,6 +29,7 @@ export async function createTwitterThreadFromPdf({
     }),
     include: (text) => text !== "IRRELEVANT",
     rewrite: $.text.generateText.asFunction({
+      id: "rewrite",
       model: gpt4,
       prompt: async ({ text, topic }) => [
         {

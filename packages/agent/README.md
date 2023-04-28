@@ -42,7 +42,7 @@ Features used: function composition (no agent), pdf loading, split-extract-rewri
 
 Splits a text into chunks and generates embeddings.
 
-Features used: direct function calls (no agent), split text, generate embeddings
+Features used: direct function calls (no agent), split text (gpt3-tokenizer), generate embeddings
 
 ## Features
 
@@ -78,7 +78,8 @@ Features used: direct function calls (no agent), split text, generate embeddings
   - Utility functions to combine and convert prompts
 - Text functions
   - Extract information (extract & rewrite; extract recursively)
-  - Split text into chunks
+  - Splitters: split text into chunks
+    - By character, by token (GPT3-tokenizer)
   - Helpers: load, generate
 - Data sources
   - Webpage as HTML text
@@ -148,8 +149,9 @@ export async function runWikipediaAgent({
     },
     execute: $.tool.executeExtractInformationFromWebpage({
       extract: $.text.extractRecursively.asExtractFunction({
-        split: $.text.splitRecursivelyAtCharacter.asSplitFunction({
-          maxCharactersPerChunk: 2048 * 4, // needs to fit into a gpt-3.5-turbo prompt
+        split: $.text.splitRecursivelyAtToken.asSplitFunction({
+          tokenizer: $.provider.openai.gptTokenizer(),
+          maxChunkSize: 2048, // needs to fit into a gpt-3.5-turbo prompt
         }),
         extract: $.text.generateText.asFunction({
           prompt: $.prompt.extractChatPrompt(),

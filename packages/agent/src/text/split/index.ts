@@ -1,2 +1,2 @@
-export * from "./splitRecursivelyAtCharacter";
+export * from "./splitRecursively";
 export * from "./SplitFunction";

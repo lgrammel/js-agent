@@ -36,8 +36,9 @@ export async function runWikipediaAgent({
     },
     execute: $.tool.executeExtractInformationFromWebpage({
       extract: $.text.extractRecursively.asExtractFunction({
-        split: $.text.splitRecursivelyAtCharacter.asSplitFunction({
-          maxCharactersPerChunk: 2048 * 4, // needs to fit into a gpt-3.5-turbo prompt
+        split: $.text.splitRecursivelyAtToken.asSplitFunction({
+          tokenizer: $.provider.openai.gptTokenizer(),
+          maxChunkSize: 2048, // needs to fit into a gpt-3.5-turbo prompt
         }),
         extract: $.text.generateText.asFunction({
           prompt: $.prompt.extractChatPrompt(),

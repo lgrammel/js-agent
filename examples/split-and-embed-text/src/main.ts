@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import dotenv from "dotenv";
-import { splitAndEmbed } from "./splitAndEmbed";
+import { splitAndEmbedText } from "./splitAndEmbedText";
 
 dotenv.config();
 
@@ -19,7 +19,7 @@ if (!openAiApiKey) {
   throw new Error("OPENAI_API_KEY is not set");
 }
 
-splitAndEmbed({
+splitAndEmbedText({
   textFilePath: file,
   openAiApiKey,
 })
