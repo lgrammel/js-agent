@@ -1,9 +1,6 @@
 import { EmbeddingModel } from "../../embedding/embed";
-import {
-  OpenAIEmbedding,
-  OpenAIEmbeddingModel,
-  generateEmbedding,
-} from "./api";
+import { OpenAIEmbedding, OpenAIEmbeddingModel } from "./OpenAIEmbedding";
+import { generateEmbedding } from "./api/generateEmbedding";
 
 export const embeddingModel = ({
   baseUrl,

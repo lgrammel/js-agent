@@ -1,8 +1,8 @@
-import { GenerateCall } from "../../agent";
-import { EmbedCall } from "../../agent/EmbedCall";
-import { OpenAIEmbeddingSchema } from "./api";
-import { OpenAIChatCompletionSchema } from "./api/generateChatCompletion";
-import { OpenAITextCompletionSchema } from "./api/generateTextCompletion";
+import { EmbedCall } from "../../../agent/EmbedCall";
+import { GenerateCall } from "../../../agent/GenerateCall";
+import { OpenAIChatCompletionSchema } from "../OpenAIChatCompletion";
+import { OpenAIEmbeddingSchema } from "../OpenAIEmbedding";
+import { OpenAITextCompletionSchema } from "../OpenAITextCompletion";
 import { calculateChatCompletionCostInMillicent } from "./calculateChatCompletionCostInMillicent";
 import { calculateEmbeddingCostInMillicent } from "./calculateEmbeddingCostInMillicent";
 import { calculateTextCompletionCostInMillicent } from "./calculateTextCompletionCostInMillicent";

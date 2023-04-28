@@ -1,4 +1,4 @@
-import { OpenAIChatMessage } from "../provider/openai/OpenAIChatMessage";
+import { OpenAIChatMessage } from "../provider/openai/OpenAIChatCompletion";
 import { ChatPrompt } from "./Prompt";
 
 // Convenience function overloads for combining multiple chat prompts into one.

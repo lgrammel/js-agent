@@ -1,4 +1,4 @@
-import { OpenAIEmbedding, OpenAIEmbeddingModel } from "./api";
+import { OpenAIEmbedding, OpenAIEmbeddingModel } from "../OpenAIEmbedding";
 
 // see https://openai.com/pricing
 const tokenCostInMillicent = {
