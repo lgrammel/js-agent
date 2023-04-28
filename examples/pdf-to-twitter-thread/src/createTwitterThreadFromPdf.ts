@@ -16,7 +16,41 @@ export async function createTwitterThreadFromPdf({
     model: "gpt-4",
   });
 
-  return $.text.splitExtractRewrite(
+  const rewriteAsTwitterThread = $.text.splitExtractRewrite.asExtractFunction({
+    split: $.text.splitRecursivelyAtCharacter.asSplitFunction({
+      maxCharactersPerChunk: 1024 * 4,
+    }),
+    extract: $.text.generateText.asFunction({
+      model: gpt4,
+      prompt: $.prompt.extractAndExcludeChatPrompt({
+        excludeKeyword: "IRRELEVANT",
+      }),
+    }),
+    include: (text) => text !== "IRRELEVANT",
+    rewrite: $.text.generateText.asFunction({
+      model: gpt4,
+      prompt: async ({ text, topic }) => [
+        {
+          role: "user" as const,
+          content: `## TOPIC\n${topic}`,
+        },
+        {
+          role: "system" as const,
+          content: `## TASK
+Rewrite the content below into a coherent twitter thread on the topic above.
+Include all relevant information about the topic.
+Discard all irrelevant information.
+Separate each tweet with ---`,
+        },
+        {
+          role: "user" as const,
+          content: `## CONTENT\n${text}`,
+        },
+      ],
+    }),
+  });
+
+  return rewriteAsTwitterThread(
     {
       text: await $.text.load({
         from: { path: pdfPath },
@@ -24,39 +58,6 @@ export async function createTwitterThreadFromPdf({
         convert: $.convert.pdfToText.asFunction(),
       }),
       topic,
-      split: $.text.splitRecursivelyAtCharacter.asSplitFunction({
-        maxCharactersPerChunk: 1024 * 4,
-      }),
-      extract: $.text.generateText.asFunction({
-        id: "extract-information",
-        model: gpt4,
-        prompt: $.prompt.extractAndExcludeChatPrompt({
-          excludeKeyword: "IRRELEVANT",
-        }),
-      }),
-      include: (text) => text !== "IRRELEVANT",
-      rewrite: $.text.generateText.asFunction({
-        id: "rewrite-extracted-information",
-        model: gpt4,
-        prompt: async ({ text, topic }: { text: string; topic: string }) => [
-          {
-            role: "user" as const,
-            content: `## TOPIC\n${topic}`,
-          },
-          {
-            role: "system" as const,
-            content: `## TASK
-Rewrite the content below into a coherent twitter thread on the topic above.
-Include all relevant information about the topic.
-Discard all irrelevant information.
-Separate each tweet with ---`,
-          },
-          {
-            role: "user" as const,
-            content: `## CONTENT\n${text}`,
-          },
-        ],
-      }),
     },
     context
   );
