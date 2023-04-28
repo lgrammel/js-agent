@@ -30,6 +30,7 @@ export type OpenAIChatCompletion = zod.infer<typeof OpenAIChatCompletionSchema>;
 export type OpenAIChatCompletionModel = "gpt-4" | "gpt-3.5-turbo";
 
 export async function generateChatCompletion({
+  baseUrl = "https://api.openai.com/v1",
   apiKey,
   model,
   messages,
@@ -39,6 +40,7 @@ export async function generateChatCompletion({
   presencePenalty,
   frequencyPenalty,
 }: {
+  baseUrl?: string;
   apiKey: string;
   messages: Array<OpenAIChatMessage>;
   model: OpenAIChatCompletionModel;
@@ -49,7 +51,7 @@ export async function generateChatCompletion({
   frequencyPenalty?: number;
 }): Promise<OpenAIChatCompletion> {
   const response = await axios.post(
-    "https://api.openai.com/v1/chat/completions",
+    `${baseUrl}/completions`,
     JSON.stringify({
       model,
       messages,

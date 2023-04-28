@@ -24,16 +24,18 @@ export type OpenAIEmbedding = zod.infer<typeof OpenAIEmbeddingSchema>;
 export type OpenAIEmbeddingModel = "text-embedding-ada-002";
 
 export async function generateEmbedding({
+  baseUrl = "https://api.openai.com/v1",
   apiKey,
   model,
   input,
 }: {
+  baseUrl?: string;
   apiKey: string;
   model: OpenAIEmbeddingModel;
   input: string;
 }): Promise<OpenAIEmbedding> {
   const response = await axios.post(
-    "https://api.openai.com/v1/embeddings",
+    `${baseUrl}/embeddings`,
     JSON.stringify({
       model,
       input,

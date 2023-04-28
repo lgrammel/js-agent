@@ -6,11 +6,13 @@ import {
 } from "./api/generateTextCompletion";
 
 export const completionModel = ({
+  baseUrl,
   apiKey,
   model,
   temperature = 0,
   maxTokens,
 }: {
+  baseUrl?: string;
   apiKey: string;
   model: OpenAITextCompletionModel;
   temperature?: number;
@@ -20,6 +22,7 @@ export const completionModel = ({
   name: model,
   generate: async (input: string): Promise<OpenAITextCompletion> =>
     generateTextCompletion({
+      baseUrl,
       apiKey,
       prompt: input,
       model,

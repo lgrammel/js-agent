@@ -7,11 +7,13 @@ import {
 } from "./api/generateChatCompletion";
 
 export const chatModel = ({
+  baseUrl,
   apiKey,
   model,
   temperature = 0,
   maxTokens,
 }: {
+  baseUrl?: string;
   apiKey: string;
   model: OpenAIChatCompletionModel;
   temperature?: number;
@@ -21,6 +23,7 @@ export const chatModel = ({
   name: model,
   generate: async (input: OpenAIChatMessage[]): Promise<OpenAIChatCompletion> =>
     generateChatCompletion({
+      baseUrl,
       apiKey,
       messages: input,
       model,

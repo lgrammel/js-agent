@@ -37,6 +37,7 @@ export type OpenAITextCompletionModel =
   | "ada";
 
 export async function generateTextCompletion({
+  baseUrl = "https://api.openai.com/v1",
   apiKey,
   prompt,
   model,
@@ -46,6 +47,7 @@ export async function generateTextCompletion({
   presencePenalty,
   frequencyPenalty,
 }: {
+  baseUrl?: string;
   apiKey: string;
   prompt: string;
   model: OpenAITextCompletionModel;
@@ -56,7 +58,7 @@ export async function generateTextCompletion({
   frequencyPenalty?: number;
 }): Promise<OpenAITextCompletion> {
   const response = await axios.post(
-    "https://api.openai.com/v1/completions",
+    `${baseUrl}/completions`,
     JSON.stringify({
       model,
       prompt,
