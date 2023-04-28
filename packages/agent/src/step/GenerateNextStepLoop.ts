@@ -4,7 +4,8 @@ import { ActionFormat } from "../action/format/ActionFormat";
 import { Run } from "../agent/Run";
 import { RunContext } from "../agent/RunContext";
 import { Prompt } from "../prompt/Prompt";
-import { GeneratorModel, generate as generateFunction } from "../text/generate";
+import { GeneratorModel } from "../text/generate/GeneratorModel";
+import { generateText } from "../text/generate/generateText";
 import { ErrorStep } from "./ErrorStep";
 import { Loop } from "./Loop";
 import { NoopStep } from "./NoopStep";
@@ -91,7 +92,7 @@ export class GenerateNextStepLoop<
       actions,
       format: actionFormat,
     });
-    this.generateText = generateFunction({
+    this.generateText = generateText.asFunction({
       id: `step/${this.id}/generate-text`,
       prompt,
       model,

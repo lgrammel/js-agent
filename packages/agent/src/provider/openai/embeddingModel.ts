@@ -1,4 +1,4 @@
-import { EmbeddingModel } from "../../embedding/embed";
+import { EmbeddingModel } from "../../embedding/EmbeddingModel";
 import { OpenAIEmbedding, OpenAIEmbeddingModel } from "./OpenAIEmbedding";
 import { generateEmbedding } from "./api/generateEmbedding";
 

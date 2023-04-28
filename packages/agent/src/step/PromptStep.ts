@@ -1,7 +1,8 @@
 import { Run } from "../agent";
 import { RunContext } from "../agent/RunContext";
 import { Prompt } from "../prompt/Prompt";
-import { GeneratorModel, generate as generateFunction } from "../text/generate";
+import { generateText } from "../text/generate/generateText";
+import { GeneratorModel } from "../text/generate/GeneratorModel";
 import { Step } from "./Step";
 import { StepResult } from "./StepResult";
 
@@ -28,7 +29,7 @@ export class PromptStep<INPUT, PROMPT_TYPE, RUN_STATE> extends Step<RUN_STATE> {
     super({ type, run });
 
     this.input = input;
-    this.generateText = generateFunction({
+    this.generateText = generateText.asFunction({
       id: `step/${this.id}/generate-text`,
       prompt,
       model,

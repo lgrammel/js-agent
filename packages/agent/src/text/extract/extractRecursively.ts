@@ -2,24 +2,7 @@ import { RunContext } from "../../agent/RunContext";
 import { SplitFunction } from "../split";
 import { ExtractFunction } from "./ExtractFunction";
 
-export const extractRecursively =
-  ({
-    split,
-    extract,
-  }: {
-    split: SplitFunction;
-    extract: ExtractFunction;
-  }): ExtractFunction =>
-  async ({ text, topic }, context: RunContext) =>
-    _extractRecursively({
-      text,
-      topic,
-      extract,
-      split,
-      context,
-    });
-
-async function _extractRecursively({
+export async function extractRecursively({
   extract,
   split,
   text,
@@ -45,7 +28,7 @@ async function _extractRecursively({
 
   // recursive summarization: will split joined summaries as needed to stay
   // within the allowed size limit of the splitter.
-  return _extractRecursively({
+  return extractRecursively({
     text: extractedTexts.join("\n\n"),
     topic,
     extract,
@@ -53,3 +36,20 @@ async function _extractRecursively({
     context,
   });
 }
+
+extractRecursively.asExtractFunction =
+  ({
+    split,
+    extract,
+  }: {
+    split: SplitFunction;
+    extract: ExtractFunction;
+  }): ExtractFunction =>
+  async ({ text, topic }, context: RunContext) =>
+    extractRecursively({
+      text,
+      topic,
+      extract,
+      split,
+      context,
+    });

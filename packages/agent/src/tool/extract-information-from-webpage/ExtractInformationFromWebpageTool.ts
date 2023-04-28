@@ -59,9 +59,9 @@ export const extractInformationFromWebpage = ({
 
 export const executeExtractInformationFromWebpage =
   ({
-    loadText = load({
-      from: webpageAsHtmlText(),
-      convert: htmlToText(),
+    loadText = load.asFunction({
+      using: webpageAsHtmlText.asFunction(),
+      convert: htmlToText.asFunction(),
     }),
     extract,
   }: {

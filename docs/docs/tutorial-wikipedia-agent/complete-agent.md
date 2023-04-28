@@ -59,18 +59,16 @@ async function runWikipediaAgent({
       topic: "{query that you are answering}",
     },
     execute: $.tool.executeExtractInformationFromWebpage({
-      extract: $.text.extractRecursively({
-        split: $.text.splitRecursivelyAtCharacter({
-          maxCharactersPerChunk: 2048 * 4,
+      extract: $.text.extractRecursively.asExtractFunction({
+        split: $.text.splitRecursivelyAtCharacter.asSplitFunction({
+          maxCharactersPerChunk: 2048 * 4, // needs to fit into a gpt-3.5-turbo prompt
         }),
-        extract: $.text.generateText({
-          id: "summarize-wikipedia-article-chunk",
+        extract: $.text.generateText.asFunction({
           prompt: $.prompt.extractChatPrompt(),
           model: chatGpt,
         }),
       }),
     }),
-  });
 
   return $.runAgent<{ task: string }>({
     properties: { task },

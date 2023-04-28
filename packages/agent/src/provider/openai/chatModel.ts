@@ -1,4 +1,4 @@
-import { GeneratorModel } from "../../text/generate";
+import { GeneratorModel } from "../../text/generate/GeneratorModel";
 import {
   OpenAIChatCompletion,
   OpenAIChatCompletionModel,

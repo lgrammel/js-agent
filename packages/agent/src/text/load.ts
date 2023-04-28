@@ -1,10 +1,22 @@
-export function load<SOURCE_PARAMETERS, RAW_FORMAT>({
+export async function load<SOURCE_PARAMETERS, RAW_FORMAT>({
   from,
+  using,
   convert,
 }: {
-  from: (parameters: SOURCE_PARAMETERS) => PromiseLike<RAW_FORMAT>;
+  from: SOURCE_PARAMETERS;
+  using: (parameters: SOURCE_PARAMETERS) => PromiseLike<RAW_FORMAT>;
   convert: (rawFormat: RAW_FORMAT) => PromiseLike<string>;
 }) {
-  return async (parameters: SOURCE_PARAMETERS): Promise<string> =>
-    convert(await from(parameters));
+  return convert(await using(from));
 }
+
+load.asFunction =
+  <SOURCE_PARAMETERS, RAW_FORMAT>({
+    using,
+    convert,
+  }: {
+    using: (parameters: SOURCE_PARAMETERS) => PromiseLike<RAW_FORMAT>;
+    convert: (rawFormat: RAW_FORMAT) => PromiseLike<string>;
+  }) =>
+  async (from: SOURCE_PARAMETERS) =>
+    load({ from, using, convert });

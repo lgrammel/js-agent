@@ -1,18 +1,6 @@
 import { SplitFunction } from "./SplitFunction";
 
-export const splitRecursivelyAtCharacter =
-  ({
-    maxCharactersPerChunk,
-  }: {
-    maxCharactersPerChunk: number;
-  }): SplitFunction =>
-  async ({ text }) =>
-    _splitRecursivelyAtCharacter({
-      maxCharactersPerChunk,
-      text,
-    });
-
-function _splitRecursivelyAtCharacter({
+export function splitRecursivelyAtCharacter({
   maxCharactersPerChunk,
   text,
 }: {
@@ -28,7 +16,16 @@ function _splitRecursivelyAtCharacter({
   const right = text.substring(half);
 
   return [
-    ..._splitRecursivelyAtCharacter({ text: left, maxCharactersPerChunk }),
-    ..._splitRecursivelyAtCharacter({ text: right, maxCharactersPerChunk }),
+    ...splitRecursivelyAtCharacter({ text: left, maxCharactersPerChunk }),
+    ...splitRecursivelyAtCharacter({ text: right, maxCharactersPerChunk }),
   ];
 }
+
+splitRecursivelyAtCharacter.asSplitFunction =
+  ({
+    maxCharactersPerChunk,
+  }: {
+    maxCharactersPerChunk: number;
+  }): SplitFunction =>
+  async ({ text }: { text: string }) =>
+    splitRecursivelyAtCharacter({ maxCharactersPerChunk, text });

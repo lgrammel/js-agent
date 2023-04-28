@@ -16,51 +16,47 @@ export async function createTwitterThreadFromPdf({
     model: "gpt-4",
   });
 
-  const loadPdf = $.text.load({
-    from: $.source.fileAsArrayBuffer(),
-    convert: $.convert.pdfToText(),
-  });
-
-  const extract = $.text.splitExtractRewrite({
-    split: $.text.splitRecursivelyAtCharacter({
-      maxCharactersPerChunk: 1024 * 4,
-    }),
-    extract: $.text.generateText({
-      id: "extract-information",
-      model: gpt4,
-      prompt: $.prompt.extractAndExcludeChatPrompt({
-        excludeKeyword: "IRRELEVANT",
+  return $.text.splitExtractRewrite(
+    {
+      text: await $.text.load({
+        from: { path: pdfPath },
+        using: $.source.fileAsArrayBuffer.asFunction(),
+        convert: $.convert.pdfToText.asFunction(),
       }),
-    }),
-    include: (text) => text !== "IRRELEVANT",
-    rewrite: $.text.generateText({
-      id: "rewrite-extracted-information",
-      model: gpt4,
-      prompt: async ({ text, topic }: { text: string; topic: string }) => [
-        {
-          role: "user" as const,
-          content: `## TOPIC\n${topic}`,
-        },
-        {
-          role: "system" as const,
-          content: `## TASK
+      topic,
+      split: $.text.splitRecursivelyAtCharacter.asSplitFunction({
+        maxCharactersPerChunk: 1024 * 4,
+      }),
+      extract: $.text.generateText.asFunction({
+        id: "extract-information",
+        model: gpt4,
+        prompt: $.prompt.extractAndExcludeChatPrompt({
+          excludeKeyword: "IRRELEVANT",
+        }),
+      }),
+      include: (text) => text !== "IRRELEVANT",
+      rewrite: $.text.generateText.asFunction({
+        id: "rewrite-extracted-information",
+        model: gpt4,
+        prompt: async ({ text, topic }: { text: string; topic: string }) => [
+          {
+            role: "user" as const,
+            content: `## TOPIC\n${topic}`,
+          },
+          {
+            role: "system" as const,
+            content: `## TASK
 Rewrite the content below into a coherent twitter thread on the topic above.
 Include all relevant information about the topic.
 Discard all irrelevant information.
 Separate each tweet with ---`,
-        },
-        {
-          role: "user" as const,
-          content: `## CONTENT\n${text}`,
-        },
-      ],
-    }),
-  });
-
-  return await extract(
-    {
-      text: await loadPdf({ path: pdfPath }),
-      topic,
+          },
+          {
+            role: "user" as const,
+            content: `## CONTENT\n${text}`,
+          },
+        ],
+      }),
     },
     context
   );

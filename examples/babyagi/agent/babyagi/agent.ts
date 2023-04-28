@@ -10,7 +10,7 @@ export default {
   }),
   init: async ({ input }) => input,
   execute: async ({ environment: { openAiApiKey } }) => {
-    const generateNewTasks = $.text.generate({
+    const generateNewTasks = $.text.generate.asFunction({
       id: "generate-new-tasks",
       async prompt({
         objective,
@@ -39,7 +39,7 @@ Return the tasks as an array.`;
       processOutput: async (output) => output.trim().split("\n"),
     });
 
-    const prioritizeTasks = $.text.generate({
+    const prioritizeTasks = $.text.generate.asFunction({
       id: "prioritize-tasks",
       async prompt({
         tasks,

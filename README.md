@@ -74,7 +74,7 @@ Features used: stand-alone pipeline (no agent), pdf loading, split-extract-rewri
 - Text functions
   - Extract information (extract & rewrite; extract recursively)
   - Split text into chunks
-  - Helpers: load, generate, trim
+  - Helpers: load, generate
 - Data sources
   - Webpage as HTML text
   - File as ArrayBuffer
@@ -141,12 +141,11 @@ export async function runWikipediaAgent({
       topic: "{query that you are answering}",
     },
     execute: $.tool.executeExtractInformationFromWebpage({
-      extract: $.text.extractRecursively({
-        split: $.text.splitRecursivelyAtCharacter({
+      extract: $.text.extractRecursively.asExtractFunction({
+        split: $.text.splitRecursivelyAtCharacter.asSplitFunction({
           maxCharactersPerChunk: 2048 * 4, // needs to fit into a gpt-3.5-turbo prompt
         }),
-        extract: $.text.generateText({
-          id: "summarize-wikipedia-article-chunk",
+        extract: $.text.generateText.asFunction({
           prompt: $.prompt.extractChatPrompt(),
           model: chatGpt,
         }),
