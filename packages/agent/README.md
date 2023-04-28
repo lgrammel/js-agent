@@ -4,55 +4,11 @@ JS Agent is a composable and extensible framework for creating AI agents with Ja
 
 While creating an agent prototype is easy, increasing its reliability and robustness is complex and requires considerable experimentation. JS Agent provides robust building blocks and tooling to help you develop rock-solid agents faster.
 
-**⚠️ JS Agent is currently in its initial experimental phase. Before reaching version 0.1, there may breaking changes in each release.**
+**⚠️ JS Agent is currently in its initial experimental phase. Before reaching version 0.1, there may be breaking changes in each release.**
 
 ## Documentation
 
 [Full documentation & tutorials](https://js-agent.ai/docs/intro)
-
-## Features
-
-- Agent definition and execution
-  - Configurable agent run properties that can be accessed by prompts
-  - Observe agent runs (to support console output, UIs, server runs, webapps, etc.)
-  - Record all LLM calls of an agent run
-  - Calculate the cost of LLM calls and agent runs
-  - Stop agent runs when certain criteria are met, e.g. to limit the number of steps
-  - Use several different LLM models in one agent
-- Agent HTTP Server
-  - Agent runs can be started, stopped, and observed via HTTP API
-  - Can host multiple agents
-- Supported LLM models
-  - OpenAI text completion models (`text-davinci-003` etc.)
-  - OpenAI chat completion models (`gpt-4`, `gpt-3.5-turbo`)
-- Actions and Tools
-  - Read and write file
-  - Run CLI command
-  - Use programmable search engine
-  - Extract information on topic from webpage
-  - Ask user for input
-  - Write to string property
-  - Call sub-agent (loop)
-  - Optional agent/executor separation (e.g. run the executor in a sandbox environment such as a Docker container)
-- Agent lops
-  - BabyAGI-style update tasks planning loop
-  - Generate next step loop
-- Prompt templates for chat and text prompts
-  - Built-in templates for quick start
-    - Available actions prompt; extract information prompts; recent steps prompt, rewrite text prompt
-  - Utility functions to combine and convert prompts
-- Text functions
-  - Extract information (extract & rewrite; extract recursively)
-  - Split text into chunks
-  - Helpers: load, generate, trim
-- Data sources
-  - Webpage as HTML text
-  - File as ArrayBuffer
-- Data converters
-  - htmlToText
-  - pdfToText
-- General utils
-  - LLM call retry with exponential backoff
 
 ## Examples
 
@@ -76,16 +32,70 @@ JS Agent implementation of [BabyAGI](https://github.com/yoheinakajima/babyagi).
 
 Features used: HTTP Agent server, text completion model (`text-davinci-003`), customized console output, update tasks planning loop
 
-### [PDF Summarizer](https://github.com/lgrammel/js-agent/tree/main/examples/pdf-summarizer)
+### [PDF to Twitter Thread](https://github.com/lgrammel/js-agent/tree/main/examples/pdf-to-twitter-thread)
 
-Features used: stand-alone pipeline (no agent), pdf loading, extract-and-rewrite
+Takes a PDF and a topic and creates a Twitter thread with all content from the PDF that is relevant to the topic.
+
+Features used: function composition (no agent), pdf loading, split-extract-rewrite
+
+### [Split and Embed Text](https://github.com/lgrammel/js-agent/tree/main/examples/split-and-embed-text)
+
+Splits a text into chunks and generates embeddings.
+
+Features used: direct function calls (no agent), split text, generate embeddings
+
+## Features
+
+- Agent definition and execution
+  - Configurable agent run properties that can be accessed by prompts
+  - Observe agent runs (to support console output, UIs, server runs, webapps, etc.)
+  - Record all LLM calls of an agent run
+  - Calculate the cost of LLM calls and agent runs
+  - Stop agent runs when certain criteria are met, e.g. to limit the number of steps
+  - Use several different LLM models in one agent
+- Agent HTTP Server
+  - Agent runs can be started, stopped, and observed via HTTP API
+  - Can host multiple agents
+- Supported LLM models and APIs
+  - OpenAI text completion models (`text-davinci-003` etc.)
+  - OpenAI chat completion models (`gpt-4`, `gpt-3.5-turbo`)
+  - OpenAI embedding model (`text-embedding-ada-002`)
+- Actions and Tools
+  - Read and write file
+  - Run CLI command
+  - Use programmable search engine
+  - Extract information on topic from webpage
+  - Ask user for input
+  - Write to string property
+  - Call sub-agent (loop)
+  - Optional agent/executor separation (e.g. run the executor in a sandbox environment such as a Docker container)
+- Agent lops
+  - BabyAGI-style update tasks planning loop
+  - Generate next step loop
+- Prompt templates for chat and text prompts
+  - Built-in templates for quick start
+    - Available actions prompt; extract information prompts; recent steps prompt, rewrite text prompt
+  - Utility functions to combine and convert prompts
+- Text functions
+  - Extract information (extract & rewrite; extract recursively)
+  - Split text into chunks
+  - Helpers: load, generate
+- Data sources
+  - Webpage as HTML text
+  - File as ArrayBuffer
+- Data converters
+  - htmlToText
+  - pdfToText
+- General utils
+  - LLM call retry with exponential backoff
 
 ## Design Principles
 
 - **typed**: Provide as much typing as possible to support discovery and ensure safety.
+- **direct function calls**: All utility functions can be called directly without an agent or creating composite functions.
 - **composable**: The individual pieces should have a good separation of concerns and be easy to combine.
 - **extensible**: It should be easy for users to add their own tools, providers, actions, agent steps, etc.
-- **use functional programming for assembly**: All objects that are immutable are assembled using functional programming. Object-orientation is only used for objects that have a changeable state (e.g. `Step` and `AgentRun`).
+- **use functional programming for composition**: All objects that are immutable are assembled using functional programming. Object-orientation is only used for objects that have a changeable state (e.g. `Step` and `AgentRun`).
 - **support progressive refinement of agent specifications**: Agent specifications should be easy to write and every building block should provide good defaults. At the same time, it should be possible to easily override the defaults with specific settings, prompts, etc.
 - **build for production**: JS Agent will have first-class support for logging, associating LLM calls and cost tracking with agent runs, etc.
 
@@ -137,12 +147,11 @@ export async function runWikipediaAgent({
       topic: "{query that you are answering}",
     },
     execute: $.tool.executeExtractInformationFromWebpage({
-      extract: $.text.extractRecursively({
-        split: $.text.splitRecursivelyAtCharacter({
+      extract: $.text.extractRecursively.asExtractFunction({
+        split: $.text.splitRecursivelyAtCharacter.asSplitFunction({
           maxCharactersPerChunk: 2048 * 4, // needs to fit into a gpt-3.5-turbo prompt
         }),
-        extract: $.text.generateText({
-          id: "summarize-wikipedia-article-chunk",
+        extract: $.text.generateText.asFunction({
           prompt: $.prompt.extractChatPrompt(),
           model: chatGpt,
         }),
