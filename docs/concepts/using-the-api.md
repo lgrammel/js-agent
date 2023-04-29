@@ -9,6 +9,8 @@ You can use all almost all [JS Agent API](/api/modules) functions directly. This
 Here is an example of splitting a text into chunks and using the OpenAI embedding API directly to get the embedding of each chunk ([full example](https://github.com/lgrammel/js-agent/tree/main/examples/split-and-embed-text)):
 
 ```typescript
+import * as $ from "js-agent";
+
 const chunks = await $.text.splitRecursivelyAtToken({
   text,
   tokenizer: $.tokenizer.openai.forModel({

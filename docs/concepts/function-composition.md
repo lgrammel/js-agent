@@ -11,6 +11,10 @@ To help you compose functions more easily, many functions have `.asFunction()` o
 Here is the example that creates a Twitter thread on a topic using the content of a PDF ([full example](https://github.com/lgrammel/js-agent/tree/main/examples/pdf-to-twitter-thread)):
 
 ```typescript
+import * as $ from "js-agent";
+
+// ...
+
 const rewriteAsTwitterThread = $.text.splitExtractRewrite.asExtractFunction({
   split: $.text.splitRecursivelyAtCharacter.asSplitFunction({
     maxChunkSize: 1024 * 4,
