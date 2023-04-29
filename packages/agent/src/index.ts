@@ -8,5 +8,6 @@ export * as provider from "./provider";
 export * as server from "./server";
 export * as source from "./source";
 export * as step from "./step";
+export * as tokenizer from "./tokenizer";
 export * as text from "./text";
 export * as tool from "./tool";

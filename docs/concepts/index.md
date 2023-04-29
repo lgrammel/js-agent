@@ -1,97 +1,74 @@
 ---
-sidebar_position: 1
+sidebar_position: 0
 ---
 
-# Abstraction Levels
+# Getting Started
 
-You can use the functionality of the JS Agent library at different abstraction levels: direct function calls, function composition and agent composition.
+Let's discover **JS Agent in less than 5 minutes**.
 
-## Direct function calls
+## What is an agent?
 
-You can use all almost all helper functions in JS Agent directly. This includes functions to call language models, text splitters, data loaders and more.
+An agent flexibly solves a user's task by using large language models (LLM), memory (embeddings), and tools (e.g., search, analyzing data, etc.).
 
-Here is an example of splitting a text into chunks and using the OpenAI embedding API directly to get the embedding of each chunk ([full example](https://github.com/lgrammel/js-agent/tree/main/examples/split-and-embed-text)):
+A basic agent works like this:
 
-```typescript
-const chunks = await $.text.splitRecursivelyAtToken({
-  text,
-  tokenizer: $.provider.openai.gptTokenizer(),
-  maxChunkSize: 128,
-});
+```mermaid
+graph LR;
 
-const embeddings = [];
-for (const chunk of chunks) {
-  const response = await $.provider.openai.api.generateEmbedding({
-    model: "text-embedding-ada-002",
-    apiKey: openAiApiKey,
-    input: chunk,
-  });
+TASK["task"];
+CALL_LLM["call LLM"];
+USE_TOOL["use tool"];
+DONE["done"];
 
-  embeddings.push({
-    chunk,
-    embedding: response.data[0].embedding,
-  });
-}
+TASK-->CALL_LLM;
+CALL_LLM-->USE_TOOL;
+CALL_LLM-->DONE;
+USE_TOOL-->CALL_LLM;
 ```
 
-## Function composition
+The critical piece is that **the language model response determines what tool to use**.
+This enables the agent to be flexible and solve a wide variety of tasks.
 
-More complex functions in JS Agent are composed of other functions. You can pass in the component functions. This gives you full control while at the same time letting you benefit from the flow implemented in the composition.
+Calling the LLM requires creating a prompt and parsing its response.
+Here is the same diagram with a bit more detail:
 
-To help you compose functions more easily, many functions have `.asFunction()` or similar methods.
+```mermaid
+graph LR;
 
-Here is the example that creates a Twitter thread on a topic using the content of a PDF ([full example](https://github.com/lgrammel/js-agent/tree/main/examples/pdf-to-twitter-thread)):
+TASK["task"];
+CREATE_LLM_PROMPT["create LLM prompt"];
+CALL_LLM["call LLM"];
+PARSE_LLM_RESPONSE["parse LLM response"];
+USE_TOOL["use tool"];
+DONE["done"];
 
-```typescript
-const rewriteAsTwitterThread = $.text.splitExtractRewrite.asExtractFunction({
-  split: $.text.splitRecursivelyAtCharacter.asSplitFunction({
-    maxChunkSize: 1024 * 4,
-  }),
-  extract: $.text.generateText.asFunction({
-    model: gpt4,
-    prompt: $.prompt.extractAndExcludeChatPrompt({
-      excludeKeyword: "IRRELEVANT",
-    }),
-  }),
-  include: (text) => text !== "IRRELEVANT",
-  rewrite: $.text.generateText.asFunction({
-    model: gpt4,
-    prompt: async ({ text, topic }) => [
-      {
-        role: "user" as const,
-        content: `## TOPIC\n${topic}`,
-      },
-      {
-        role: "system" as const,
-        content: `## TASK
-Rewrite the content below into a coherent twitter thread on the topic above.
-Include all relevant information about the topic.
-Discard all irrelevant information.
-Separate each tweet with ---`,
-      },
-      {
-        role: "user" as const,
-        content: `## CONTENT\n${text}`,
-      },
-    ],
-  }),
-});
+TASK-->CREATE_LLM_PROMPT
+CREATE_LLM_PROMPT-->CALL_LLM;
+CALL_LLM-->PARSE_LLM_RESPONSE;
+PARSE_LLM_RESPONSE-->USE_TOOL;
+PARSE_LLM_RESPONSE-->DONE;
+USE_TOOL-->CREATE_LLM_PROMPT;
 ```
 
-The `rewriteAsTwitterThread` function has the following signature (and can be called directly):
+There are other variants of agents that are much more complex and involve self-calls, planning, memory, and more.
 
-```typescript
-type RewriteAsTwitterThreadFunction = (
-  options: {
-    text: string;
-    topic: string;
-  },
-  context: $.agent.RunContext
-) => PromiseLike<string>;
+## JS Agent
+
+JS Agent is a composable and extensible framework for creating agents with JavaScript and TypeScript.
+
+While creating an agent prototype is easy, increasing its reliability and robustness is complex and requires considerable experimentation.
+JS Agent provides robust building blocks and tooling to help you develop rock-solid agents faster.
+
+**JS Agent is currently in its initial experimental phase. Before reaching version 0.1, there may breaking changes in each release.**
+
+## Installing JS Agent
+
+```bash
+npm install js-agent
 ```
 
-The `context` parameter is a part of more complex functions. It records any LLM calls for cost tracking and logging.
+### What you'll need
 
-## Agent composition
-
-Agents add several new concepts like steps, tools, and runs. You can learn more in the [agent tutorials](/docs/intro).
+- [Node.js](https://nodejs.org/en/download/) version 18 or above
+- [OpenAI API access](https://platform.openai.com/overview)
+  - We'll add support for other model providers.

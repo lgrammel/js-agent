@@ -9,17 +9,8 @@ const config = {
   title: "JS Agent",
   tagline: "Build AI Agents with JavaScript & TypeScript",
   favicon: "img/favicon.ico",
-
-  // Set the production url of your site here
-  url: "https://your-docusaurus-test-site.com",
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
+  url: "https://js-agent.ai",
   baseUrl: "/",
-
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: "facebook", // Usually your GitHub org/user name.
-  projectName: "docusaurus", // Usually your repo name.
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
@@ -44,17 +35,13 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          routeBasePath: "docs",
-          path: "docs",
+          routeBasePath: "api",
+          path: "docs/namespaces",
           sidebarPath: require.resolve("./sidebars.js"),
           lastVersion: "current",
           onlyIncludeVersions: ["current"],
           editUrl: "https://github.com/lgrammel/js-agent/tree/main/docs/docs/",
         },
-        // blog: {
-        //   showReadingTime: true,
-        //   editUrl: "https://github.com/lgrammel/js-agent/tree/main/docs/blog/",
-        // },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
@@ -69,7 +56,31 @@ const config = {
         id: "concepts",
         path: "concepts",
         routeBasePath: "concepts",
-        sidebarPath: require.resolve("./sidebars.js"),
+      },
+    ],
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "tutorial",
+        path: "tutorial",
+        routeBasePath: "tutorial",
+      },
+    ],
+    [
+      "docusaurus-plugin-typedoc",
+      {
+        // typedoc options:
+        entryPoints: ["../packages/agent/src/index.ts"],
+        tsconfig: "../packages/agent/tsconfig.json",
+        defaultCategory: "Namespaces",
+        categoryOrder: ["Namespaces"],
+        // docusaurus options:
+        out: ".",
+        sidebar: {
+          categoryLabel: "API",
+          collapsed: false,
+          fullNames: true,
+        },
       },
     ],
   ],
@@ -95,18 +106,24 @@ const config = {
         // },
         items: [
           {
-            type: "docSidebar",
-            sidebarId: "tutorialSidebar",
-            position: "left",
-            label: "Tutorial",
-          },
-          {
             to: "/concepts/",
             label: "Concepts",
-            position: "left",
             activeBaseRegex: `/concepts/`,
+            sidebarId: "concepts",
+            position: "left",
           },
-          // { to: "/blog", label: "Blog", position: "left" },
+          {
+            to: "/tutorial/wikipedia-agent",
+            label: "Tutorial",
+            activeBaseRegex: `/tutorial/`,
+            position: "left",
+          },
+          {
+            to: "/api/action",
+            label: "API",
+            activeBaseRegex: `/api/`,
+            position: "left",
+          },
           {
             href: "https://github.com/lgrammel/js-agent",
             label: "GitHub",
