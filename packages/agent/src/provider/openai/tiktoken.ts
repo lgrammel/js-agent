@@ -29,7 +29,7 @@ export function tokenizerForTiktokenEncoder({
   encoder: createEncoder,
 }: {
   encoder: () => Tiktoken;
-}) {
+}): Tokenizer {
   const textDecoder = new TextDecoder();
   return {
     encode: async (text: string) => {
