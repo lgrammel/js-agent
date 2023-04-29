@@ -23,7 +23,7 @@ export async function extractRecursively({
   }
 
   if (extractedTexts.length === 1) {
-    return extractedTexts[0];
+    return extractedTexts[0]!;
   }
 
   // recursive summarization: will split joined summaries as needed to stay

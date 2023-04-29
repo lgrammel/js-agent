@@ -31,4 +31,7 @@ export * as step from "./step";
 export * as tokenizer from "./tokenizer";
 
 export * as text from "./text";
+export * as textStore from "./text-store";
+
 export * as tool from "./tool";
+export * as util from "./util";

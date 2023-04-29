@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "strict": true,
+    "noUncheckedIndexedAccess": true,
     "declaration": true,
     "sourceMap": true,
     "target": "es2020",

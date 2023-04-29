@@ -30,6 +30,6 @@ export const text = ({
       maxTokens,
     }),
   extractOutput: async (rawOutput: OpenAITextCompletion): Promise<string> => {
-    return rawOutput.choices[0].text;
+    return rawOutput.choices[0]!.text;
   },
 });

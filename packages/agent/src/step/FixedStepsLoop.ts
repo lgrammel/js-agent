@@ -38,7 +38,7 @@ export class FixedStepsLoop<RUN_STATE> extends Loop<RUN_STATE> {
   }
 
   protected async getNextStep() {
-    return this.steps[this.currentStep++];
+    return this.steps[this.currentStep++]!;
   }
 
   protected hasMoreSteps(): boolean {

@@ -31,6 +31,6 @@ export const chat = ({
       maxTokens,
     }),
   extractOutput: async (rawOutput: OpenAIChatCompletion): Promise<string> => {
-    return rawOutput.choices[0].message.content;
+    return rawOutput.choices[0]!.message.content;
   },
 });

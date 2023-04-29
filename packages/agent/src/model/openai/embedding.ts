@@ -24,5 +24,5 @@ export const embedding = ({
       model,
     }),
   extractEmbedding: async (rawOutput: OpenAIEmbedding): Promise<number[]> =>
-    rawOutput.data[0].embedding,
+    rawOutput.data[0]!.embedding,
 });
