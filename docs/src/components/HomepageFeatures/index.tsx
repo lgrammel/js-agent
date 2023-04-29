@@ -31,6 +31,15 @@ const FeatureList: FeatureItem[] = [
     title: "Load data",
     description: <>Loaders for reading PDFs and websites</>,
   },
+  {
+    title: "Calculate costs",
+    description: (
+      <>
+        The <a href="/api/namespaces/cost">cost package</a> contains functions
+        that help you calculate the cost of API calls and agent runs.
+      </>
+    ),
+  },
 ];
 
 function Feature({ title, description }: FeatureItem) {
