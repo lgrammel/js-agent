@@ -1,4 +1,4 @@
-# JS Agent: Build AI Agents with JS & TS
+# JS Agent: Build AI Agents & Apps with JS & TS
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/lgrammel?style=social)](https://twitter.com/intent/follow?screen_name=lgrammel)
 
@@ -8,9 +8,11 @@ While creating an agent prototype is easy, increasing its reliability and robust
 
 **⚠️ JS Agent is currently in its initial experimental phase. Before reaching version 0.1, there may be breaking changes in each release.**
 
-## Documentation
+## Documentation ([js-agent.ai](https://js-agent.ai))
 
-[Full documentation & tutorials](https://js-agent.ai/docs/intro)
+- [Concepts](https://js-agent.ai/concepts)
+- [Tutorial](https://js-agent.ai/tutorial/wikipedia-agent)
+- [API docs](https://js-agent.ai/api/modules)
 
 ## Examples
 

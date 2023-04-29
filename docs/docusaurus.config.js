@@ -7,7 +7,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "JS Agent",
-  tagline: "Build AI Agents with JavaScript & TypeScript",
+  tagline: "Build AI Agents & Apps with JavaScript & TypeScript",
   favicon: "img/favicon.ico",
   url: "https://js-agent.ai",
   baseUrl: "/",
