@@ -32,14 +32,14 @@ export async function runWikipediaAgent({
     execute: $.tool.executeExtractInformationFromWebpage({
       extract: $.text.extractRecursively.asExtractFunction({
         split: $.text.splitRecursivelyAtToken.asSplitFunction({
-          tokenizer: $.provider.openai.tokenizerForModel({
+          tokenizer: $.tokenizer.openai.forModel({
             model: "gpt-3.5-turbo",
           }),
           maxChunkSize: 2048, // needs to fit into a gpt-3.5-turbo prompt and leave room for the answer
         }),
         extract: $.text.generateText.asFunction({
           prompt: $.prompt.extractChatPrompt(),
-          model: $.provider.openai.chatModel({
+          model: $.model.openai.chat({
             apiKey: openAiApiKey,
             model: "gpt-3.5-turbo",
           }),
@@ -70,7 +70,7 @@ ${task}`,
         $.prompt.availableActionsChatPrompt(),
         $.prompt.recentStepsChatPrompt({ maxSteps: 6 })
       ),
-      model: $.provider.openai.chatModel({
+      model: $.model.openai.chat({
         apiKey: openAiApiKey,
         model: "gpt-3.5-turbo",
       }),

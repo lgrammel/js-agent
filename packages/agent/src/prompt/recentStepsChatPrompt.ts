@@ -1,4 +1,4 @@
-import { OpenAIChatMessage } from "../provider/openai/OpenAIChatCompletion";
+import { OpenAIChatMessage } from "../api/openai/OpenAIChatCompletion";
 import { GenerateNextStepLoop, NoopStep, Step } from "../step";
 import { BasicToolStep } from "../tool/BasicToolStep";
 

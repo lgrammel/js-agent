@@ -3,7 +3,7 @@ import {
   OpenAIEmbedding,
   OpenAIEmbeddingModel,
   OpenAIEmbeddingSchema,
-} from "../OpenAIEmbedding";
+} from "./OpenAIEmbedding";
 
 export async function generateEmbedding({
   baseUrl = "https://api.openai.com/v1",

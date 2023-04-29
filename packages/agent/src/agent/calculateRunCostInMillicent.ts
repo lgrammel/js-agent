@@ -1,4 +1,4 @@
-import { calculateOpenAiCallCostInMillicent } from "../provider/openai/cost/calculateOpenAiCallCostInMillicent";
+import { calculateOpenAICallCostInMillicent } from "../cost/openai/calculateOpenAICallCostInMillicent";
 import { Run } from "./Run";
 
 export const calculateRunCostInMillicent = async ({
@@ -8,7 +8,7 @@ export const calculateRunCostInMillicent = async ({
 }) => {
   const callCostsInMillicent = run.recordedCalls.map((call) => {
     if (call.success && call.metadata.model.vendor === "openai") {
-      return calculateOpenAiCallCostInMillicent(call);
+      return calculateOpenAICallCostInMillicent(call);
     }
     return undefined;
   });

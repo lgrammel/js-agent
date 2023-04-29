@@ -4,7 +4,7 @@ import {
   OpenAIChatCompletionModel,
   OpenAIChatCompletionSchema,
   OpenAIChatMessage,
-} from "../OpenAIChatCompletion";
+} from "./OpenAIChatCompletion";
 
 export async function generateChatCompletion({
   baseUrl = "https://api.openai.com/v1",

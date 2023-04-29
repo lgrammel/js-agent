@@ -11,7 +11,7 @@ export async function runDeveloperAgent({
   projectInstructions: string;
   setupCommands: string[];
 }) {
-  const model = $.provider.openai.chatModel({
+  const model = $.model.openai.chat({
     apiKey: openAiApiKey,
     model: "gpt-4",
   });

@@ -5,27 +5,23 @@ import {
   Tiktoken,
   TiktokenModel,
 } from "@dqbd/tiktoken";
-import { Tokenizer } from "../../tokenizer/Tokenizer";
+import { Tokenizer } from "./Tokenizer";
 
-export function tokenizerForModel({
-  model,
-}: {
-  model: TiktokenModel;
-}): Tokenizer {
-  return tokenizerForTiktokenEncoder({
+export function forModel({ model }: { model: TiktokenModel }): Tokenizer {
+  return forTiktokenEncoder({
     encoder: () => encoding_for_model(model),
   });
 }
 
-export function tokenizerForEncoding({
+export function forEncoding({
   encoding,
 }: {
   encoding: TiktokenEncoding;
 }): Tokenizer {
-  return tokenizerForTiktokenEncoder({ encoder: () => get_encoding(encoding) });
+  return forTiktokenEncoder({ encoder: () => get_encoding(encoding) });
 }
 
-export function tokenizerForTiktokenEncoder({
+export function forTiktokenEncoder({
   encoder: createEncoder,
 }: {
   encoder: () => Tiktoken;

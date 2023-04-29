@@ -1,13 +1,13 @@
-import { EmbedCall } from "../../../agent/EmbedCall";
-import { GenerateCall } from "../../../agent/GenerateCall";
-import { OpenAIChatCompletionSchema } from "../OpenAIChatCompletion";
-import { OpenAIEmbeddingSchema } from "../OpenAIEmbedding";
-import { OpenAITextCompletionSchema } from "../OpenAITextCompletion";
+import { EmbedCall } from "../../agent/EmbedCall";
+import { GenerateCall } from "../../agent/GenerateCall";
+import { OpenAIChatCompletionSchema } from "../../api/openai/OpenAIChatCompletion";
+import { OpenAIEmbeddingSchema } from "../../api/openai/OpenAIEmbedding";
+import { OpenAITextCompletionSchema } from "../../api/openai/OpenAITextCompletion";
 import { calculateChatCompletionCostInMillicent } from "./calculateChatCompletionCostInMillicent";
 import { calculateEmbeddingCostInMillicent } from "./calculateEmbeddingCostInMillicent";
 import { calculateTextCompletionCostInMillicent } from "./calculateTextCompletionCostInMillicent";
 
-export function calculateOpenAiCallCostInMillicent(
+export function calculateOpenAICallCostInMillicent(
   call: (GenerateCall | EmbedCall) & {
     success: true;
   }

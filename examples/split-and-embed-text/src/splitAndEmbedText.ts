@@ -12,7 +12,7 @@ export async function splitAndEmbedText({
 
   const chunks = await $.text.splitRecursivelyAtToken({
     text,
-    tokenizer: $.provider.openai.tokenizerForModel({
+    tokenizer: $.tokenizer.openai.forModel({
       model: "text-embedding-ada-002",
     }),
     maxChunkSize: 128,
@@ -20,7 +20,7 @@ export async function splitAndEmbedText({
 
   const embeddings = [];
   for (const chunk of chunks) {
-    const response = await $.provider.openai.api.generateEmbedding({
+    const response = await $.api.openai.generateEmbedding({
       model: "text-embedding-ada-002",
       apiKey: openAiApiKey,
       input: chunk,

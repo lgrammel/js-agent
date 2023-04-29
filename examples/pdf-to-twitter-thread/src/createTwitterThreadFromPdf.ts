@@ -11,7 +11,7 @@ export async function createTwitterThreadFromPdf({
   openAiApiKey: string;
   context: $.agent.RunContext;
 }) {
-  const gpt4 = $.provider.openai.chatModel({
+  const gpt4 = $.model.openai.chat({
     apiKey: openAiApiKey,
     model: "gpt-4",
   });

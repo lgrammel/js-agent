@@ -2,10 +2,10 @@ import { GeneratorModel } from "../../text/generate/GeneratorModel";
 import {
   OpenAITextCompletion,
   OpenAITextCompletionModel,
-} from "./OpenAITextCompletion";
-import { generateTextCompletion } from "./api/generateTextCompletion";
+} from "../../api/openai/OpenAITextCompletion";
+import { generateTextCompletion } from "../../api/openai/generateTextCompletion";
 
-export const completionModel = ({
+export const text = ({
   baseUrl,
   apiKey,
   model,

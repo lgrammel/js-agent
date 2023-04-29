@@ -3,7 +3,7 @@ import {
   OpenAITextCompletion,
   OpenAITextCompletionModel,
   OpenAITextCompletionSchema,
-} from "../OpenAITextCompletion";
+} from "./OpenAITextCompletion";
 
 export async function generateTextCompletion({
   baseUrl = "https://api.openai.com/v1",

@@ -19,7 +19,7 @@ const readWikipediaArticleAction = $.tool.extractInformationFromWebpage({
   execute: $.tool.executeExtractInformationFromWebpage({
     extract: $.text.extractRecursively.asExtractFunction({
       split: $.text.splitRecursivelyAtToken.asSplitFunction({
-        tokenizer: $.provider.openai.tokenizerForModel({
+        tokenizer: $.tokenizer.openai.forModel({
           model: "gpt-3.5-turbo",
         }),
         maxChunkSize: 2048, // needs to fit into a gpt-3.5-turbo prompt

@@ -72,7 +72,7 @@ const config = {
         // typedoc options:
         entryPoints: ["../packages/agent/src/index.ts"],
         tsconfig: "../packages/agent/tsconfig.json",
-        categoryOrder: ["Functions", "Variables", "*"],
+        groupOrder: ["Functions", "Variables", "*"],
         excludePrivate: true,
         name: "JS Agent",
         plugin: ["typedoc-plugin-zod"],

@@ -1,7 +1,7 @@
 import {
   OpenAIChatCompletion,
   OpenAIChatCompletionModel,
-} from "../OpenAIChatCompletion";
+} from "../../api/openai/OpenAIChatCompletion";
 
 // see https://openai.com/pricing
 const promptTokenCostInMillicent = {
