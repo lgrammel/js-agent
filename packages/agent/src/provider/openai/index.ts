@@ -1,4 +1,4 @@
-export * from "./GPTTokenizer.js";
+export * from "./tiktoken.js";
 export * from "./OpenAIChatCompletion.js";
 export * from "./OpenAIEmbedding.js";
 export * from "./OpenAITextCompletion.js";

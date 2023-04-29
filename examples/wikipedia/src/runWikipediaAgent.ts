@@ -11,11 +11,6 @@ export async function runWikipediaAgent({
   wikipediaSearchCx: string;
   task: string;
 }) {
-  const chatGpt = $.provider.openai.chatModel({
-    apiKey: openAiApiKey,
-    model: "gpt-3.5-turbo",
-  });
-
   const searchWikipediaAction = $.tool.programmableGoogleSearchEngineAction({
     id: "search-wikipedia",
     description:
@@ -37,12 +32,17 @@ export async function runWikipediaAgent({
     execute: $.tool.executeExtractInformationFromWebpage({
       extract: $.text.extractRecursively.asExtractFunction({
         split: $.text.splitRecursivelyAtToken.asSplitFunction({
-          tokenizer: $.provider.openai.gptTokenizer(),
-          maxChunkSize: 2048, // needs to fit into a gpt-3.5-turbo prompt
+          tokenizer: $.provider.openai.tokenizerForModel({
+            model: "gpt-3.5-turbo",
+          }),
+          maxChunkSize: 2048, // needs to fit into a gpt-3.5-turbo prompt and leave room for the answer
         }),
         extract: $.text.generateText.asFunction({
           prompt: $.prompt.extractChatPrompt(),
-          model: chatGpt,
+          model: $.provider.openai.chatModel({
+            apiKey: openAiApiKey,
+            model: "gpt-3.5-turbo",
+          }),
         }),
       }),
     }),
@@ -70,7 +70,10 @@ ${task}`,
         $.prompt.availableActionsChatPrompt(),
         $.prompt.recentStepsChatPrompt({ maxSteps: 6 })
       ),
-      model: chatGpt,
+      model: $.provider.openai.chatModel({
+        apiKey: openAiApiKey,
+        model: "gpt-3.5-turbo",
+      }),
     }),
     controller: $.agent.controller.maxSteps(20),
     observer: $.agent.observer.showRunInConsole({ name: "Wikipedia Agent" }),

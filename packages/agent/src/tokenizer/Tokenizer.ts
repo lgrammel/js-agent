@@ -1,7 +1,7 @@
 export type Tokenizer = {
   encode: (text: string) => PromiseLike<{
-    tokens: Array<number>;
+    tokens: Uint32Array;
     texts: Array<string>;
   }>;
-  decode: (tokens: Array<number>) => PromiseLike<string>;
+  decode: (tokens: Uint32Array) => PromiseLike<string>;
 };

@@ -12,7 +12,9 @@ export async function splitAndEmbedText({
 
   const chunks = await $.text.splitRecursivelyAtToken({
     text,
-    tokenizer: $.provider.openai.gptTokenizer(),
+    tokenizer: $.provider.openai.tokenizerForModel({
+      model: "text-embedding-ada-002",
+    }),
     maxChunkSize: 128,
   });
 
