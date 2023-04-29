@@ -36,7 +36,7 @@ const config = {
       ({
         docs: {
           routeBasePath: "api",
-          path: "docs/namespaces",
+          path: "docs",
           sidebarPath: require.resolve("./sidebars.js"),
           lastVersion: "current",
           onlyIncludeVersions: ["current"],
@@ -72,8 +72,11 @@ const config = {
         // typedoc options:
         entryPoints: ["../packages/agent/src/index.ts"],
         tsconfig: "../packages/agent/tsconfig.json",
-        defaultCategory: "Namespaces",
-        categoryOrder: ["Namespaces"],
+        categoryOrder: ["Functions", "Variables", "*"],
+        excludePrivate: true,
+        name: "JS Agent",
+        plugin: ["typedoc-plugin-zod"],
+
         // docusaurus options:
         out: ".",
         sidebar: {
@@ -119,7 +122,7 @@ const config = {
             position: "left",
           },
           {
-            to: "/api/action",
+            to: "/api/modules/",
             label: "API",
             activeBaseRegex: `/api/`,
             position: "left",
@@ -138,8 +141,16 @@ const config = {
             title: "Docs",
             items: [
               {
+                label: "Concepts",
+                to: "/concepts/",
+              },
+              {
                 label: "Tutorial",
-                to: "/docs/intro",
+                to: "/tutorial/wikipedia-agent",
+              },
+              {
+                label: "API",
+                to: "/api/modules/",
               },
             ],
           },
