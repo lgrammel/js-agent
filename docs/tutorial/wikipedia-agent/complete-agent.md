@@ -35,7 +35,7 @@ async function runWikipediaAgent({
   task: string;
   openAiApiKey: string;
 }) {
-  const chatGpt = $.model.openai.chat({
+  const chatGpt = $.provider.openai.chatModel({
     apiKey: openAiApiKey,
     model: "gpt-3.5-turbo",
   });
@@ -61,7 +61,7 @@ async function runWikipediaAgent({
     execute: $.tool.executeExtractInformationFromWebpage({
       extract: $.text.extractRecursively.asExtractFunction({
         split: $.text.splitRecursivelyAtToken.asSplitFunction({
-          tokenizer: $.tokenizer.openai.forModel({
+          tokenizer: $.provider.openai.tokenizer.forModel({
             model: "gpt-3.5-turbo",
           }),
           maxChunkSize: 2048, // needs to fit into a gpt-3.5-turbo prompt

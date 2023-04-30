@@ -1,4 +1,4 @@
-import { OpenAIChatMessage } from "../api/openai/OpenAIChatCompletion";
+import { OpenAIChatMessage } from "../provider/openai/api/OpenAIChatCompletion";
 import { ChatPrompt, TextPrompt } from "./Prompt";
 
 export const chatPromptFromTextPrompt =

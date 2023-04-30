@@ -1,5 +1,7 @@
 import * as $ from "js-agent";
 
+const openai = $.provider.openai;
+
 export async function runWikipediaAgent({
   wikipediaSearchKey,
   wikipediaSearchCx,
@@ -32,14 +34,14 @@ export async function runWikipediaAgent({
     execute: $.tool.executeExtractInformationFromWebpage({
       extract: $.text.extractRecursively.asExtractFunction({
         split: $.text.splitRecursivelyAtToken.asSplitFunction({
-          tokenizer: $.tokenizer.openai.forModel({
+          tokenizer: openai.tokenizer.forModel({
             model: "gpt-3.5-turbo",
           }),
           maxChunkSize: 2048, // needs to fit into a gpt-3.5-turbo prompt and leave room for the answer
         }),
         extract: $.text.generateText.asFunction({
           prompt: $.prompt.extractChatPrompt(),
-          model: $.model.openai.chat({
+          model: openai.chatModel({
             apiKey: openAiApiKey,
             model: "gpt-3.5-turbo",
           }),
@@ -70,7 +72,7 @@ ${task}`,
         $.prompt.availableActionsChatPrompt(),
         $.prompt.recentStepsChatPrompt({ maxSteps: 6 })
       ),
-      model: $.model.openai.chat({
+      model: openai.chatModel({
         apiKey: openAiApiKey,
         model: "gpt-3.5-turbo",
       }),

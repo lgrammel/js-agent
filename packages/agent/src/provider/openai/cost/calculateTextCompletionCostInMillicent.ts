@@ -1,7 +1,7 @@
 import {
   OpenAITextCompletion,
   OpenAITextCompletionModel,
-} from "../../api/openai/OpenAITextCompletion";
+} from "../api/OpenAITextCompletion";
 
 // see https://openai.com/pricing
 const tokenCostInMillicent = {

@@ -1,7 +1,7 @@
 {
   "name": "js-agent",
+  "description": "Build AI Agents & Apps with JS & TS",
   "version": "0.0.21",
-  "private": false,
   "homepage": "https://github.com/lgrammel/js-agent",
   "repository": {
     "type": "git",
@@ -20,6 +20,9 @@
     "openai"
   ],
   "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
   "main": ".build/js/index.js",
   "bin": {
     "js-agent-server": ".build/js/server/startAgentServer.js"

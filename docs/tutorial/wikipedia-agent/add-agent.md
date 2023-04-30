@@ -8,7 +8,7 @@ title: Add agent
 Now we're ready to create a basic agent. Let's update the `runWikipediaAgent` function with the following code:
 
 ```typescript
-const chatGpt = $.model.openai.chat({
+const chatGpt = $.provider.openai.chatModel({
   apiKey: openAiApiKey,
   model: "gpt-3.5-turbo",
 });

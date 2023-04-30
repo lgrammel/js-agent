@@ -5,7 +5,7 @@ import {
   Tiktoken,
   TiktokenModel,
 } from "@dqbd/tiktoken";
-import { Tokenizer } from "./Tokenizer";
+import { Tokenizer } from "../../tokenizer/Tokenizer";
 
 export function forModel({ model }: { model: TiktokenModel }): Tokenizer {
   return forTiktokenEncoder({

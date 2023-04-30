@@ -11,9 +11,11 @@ Here is an example of splitting a text into chunks and using the OpenAI embeddin
 ```typescript
 import * as $ from "js-agent";
 
+const openai = $.provider.openai;
+
 const chunks = await $.text.splitRecursivelyAtToken({
   text,
-  tokenizer: $.tokenizer.openai.forModel({
+  tokenizer: openai.tokenizer.forModel({
     model: "text-embedding-ada-002",
   }),
   maxChunkSize: 128,
@@ -21,7 +23,7 @@ const chunks = await $.text.splitRecursivelyAtToken({
 
 const embeddings = [];
 for (const chunk of chunks) {
-  const response = await $.api.openai.generateEmbedding({
+  const response = await openai.api.generateEmbedding({
     model: "text-embedding-ada-002",
     apiKey: openAiApiKey,
     input: chunk,

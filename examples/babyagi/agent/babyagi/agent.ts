@@ -1,6 +1,8 @@
 import * as $ from "js-agent";
 import zod from "zod";
 
+const openai = $.provider.openai;
+
 export default {
   environment: {
     openAiApiKey: $.agent.env.property("OPENAI_API_KEY"),
@@ -30,7 +32,7 @@ These are the incomplete tasks: ${existingTasks.join(", ")}.
 Based on the result, create new tasks to be completed by the AI system that do not overlap with incomplete tasks.
 Return the tasks as an array.`;
       },
-      model: $.provider.openai.completionModel({
+      model: openai.textModel({
         apiKey: openAiApiKey,
         model: "text-davinci-003",
         maxTokens: 100,
@@ -57,7 +59,7 @@ Return the result as a numbered list, like:
 #. Second task
 Start the task list with number 1.`;
       },
-      model: $.provider.openai.completionModel({
+      model: openai.textModel({
         apiKey: openAiApiKey,
         model: "text-davinci-003",
         maxTokens: 1000,
@@ -85,7 +87,7 @@ Start the task list with number 1.`;
 Your task: ${task}
 Response:`;
           },
-          model: $.provider.openai.completionModel({
+          model: openai.textModel({
             apiKey: openAiApiKey,
             model: "text-davinci-003",
             maxTokens: 2000,

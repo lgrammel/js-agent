@@ -1,4 +1,4 @@
-import { OpenAIChatMessage } from "../api/openai/OpenAIChatCompletion";
+import { OpenAIChatMessage } from "../provider/openai/api/OpenAIChatCompletion";
 
 export type GenerateChatCompletionFunction = (parameters: {
   messages: Array<OpenAIChatMessage>;

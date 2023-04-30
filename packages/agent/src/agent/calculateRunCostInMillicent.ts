@@ -1,4 +1,4 @@
-import { calculateOpenAICallCostInMillicent } from "../cost/openai/calculateOpenAICallCostInMillicent";
+import { calculateOpenAICallCostInMillicent } from "../provider/openai/cost/calculateOpenAICallCostInMillicent";
 import { Run } from "./Run";
 
 export const calculateRunCostInMillicent = async ({

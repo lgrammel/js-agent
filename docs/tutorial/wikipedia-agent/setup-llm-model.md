@@ -42,7 +42,7 @@ import * as $ from "js-agent";
 You can then create the chat model in `runWikipediaAgent`:
 
 ```typescript
-const chatGpt = $.model.openai.chat({
+const chatGpt = $.provider.openai.chatModel({
   apiKey: openAiApiKey,
   model: "gpt-3.5-turbo",
 });
@@ -85,7 +85,7 @@ runWikipediaAgent()
   });
 
 async function runWikipediaAgent() {
-  const chatGpt = $.model.openai.chat({
+  const chatGpt = $.provider.openai.chatModel({
     apiKey: openAiApiKey,
     model: "gpt-3.5-turbo",
   });

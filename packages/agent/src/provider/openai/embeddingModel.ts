@@ -1,11 +1,8 @@
-import {
-  OpenAIEmbedding,
-  OpenAIEmbeddingModel,
-} from "../../api/openai/OpenAIEmbedding";
-import { generateEmbedding } from "../../api/openai/generateEmbedding";
 import { EmbeddingModel } from "../../embedding/EmbeddingModel";
+import { OpenAIEmbedding, OpenAIEmbeddingModel } from "./api/OpenAIEmbedding";
+import { generateEmbedding } from "./api/generateEmbedding";
 
-export const embedding = ({
+export const embeddingModel = ({
   baseUrl,
   apiKey,
   model = "text-embedding-ada-002",

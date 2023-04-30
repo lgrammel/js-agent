@@ -1,6 +1,8 @@
 import * as $ from "js-agent";
 import fs from "node:fs/promises";
 
+const openai = $.provider.openai;
+
 export async function splitAndEmbedText({
   textFilePath,
   openAiApiKey,
@@ -12,7 +14,7 @@ export async function splitAndEmbedText({
 
   const chunks = await $.text.splitRecursivelyAtToken({
     text,
-    tokenizer: $.tokenizer.openai.forModel({
+    tokenizer: openai.tokenizer.forModel({
       model: "text-embedding-ada-002",
     }),
     maxChunkSize: 128,
@@ -20,7 +22,7 @@ export async function splitAndEmbedText({
 
   const embeddings = [];
   for (const chunk of chunks) {
-    const response = await $.api.openai.generateEmbedding({
+    const response = await openai.api.generateEmbedding({
       model: "text-embedding-ada-002",
       apiKey: openAiApiKey,
       input: chunk,

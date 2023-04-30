@@ -3,10 +3,10 @@ import {
   OpenAIChatCompletion,
   OpenAIChatCompletionModel,
   OpenAIChatMessage,
-} from "../../api/openai/OpenAIChatCompletion";
-import { generateChatCompletion } from "../../api/openai/generateChatCompletion";
+} from "./api/OpenAIChatCompletion";
+import { generateChatCompletion } from "./api/generateChatCompletion";
 
-export const chat = ({
+export const chatModel = ({
   baseUrl,
   apiKey,
   model,
