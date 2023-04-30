@@ -1,4 +1,4 @@
-# JS Agent: Build AI Agents with JS & TS
+# JS Agent: Build AI Agents & Apps with JS & TS
 
 JS Agent is a composable and extensible framework for creating AI agents with JavaScript and TypeScript.
 
@@ -6,9 +6,11 @@ While creating an agent prototype is easy, increasing its reliability and robust
 
 **⚠️ JS Agent is currently in its initial experimental phase. Before reaching version 0.1, there may be breaking changes in each release.**
 
-## Documentation
+## Documentation ([js-agent.ai](https://js-agent.ai))
 
-[Full documentation & tutorials](https://js-agent.ai/docs/intro)
+- [Concepts](https://js-agent.ai/concepts)
+- [Tutorial](https://js-agent.ai/tutorial/wikipedia-agent)
+- [API docs](https://js-agent.ai/api/modules)
 
 ## Examples
 
@@ -79,7 +81,8 @@ Features used: direct function calls (no agent), split text (gpt3-tokenizer), ge
 - Text functions
   - Extract information (extract & rewrite; extract recursively)
   - Splitters: split text into chunks
-    - By character, by token (GPT3-tokenizer)
+    - By character
+    - By token (using [tiktoken](https://www.npmjs.com/package/@dqbd/tiktoken) tokenizer)
   - Helpers: load, generate
 - Data sources
   - Webpage as HTML text
@@ -113,6 +116,8 @@ See the [examples](https://github.com/lgrammel/js-agent/tree/main/examples/) and
 ```ts
 import * as $ from "js-agent";
 
+const openai = $.provider.openai;
+
 export async function runWikipediaAgent({
   wikipediaSearchKey,
   wikipediaSearchCx,
@@ -124,11 +129,6 @@ export async function runWikipediaAgent({
   wikipediaSearchCx: string;
   task: string;
 }) {
-  const chatGpt = $.provider.openai.chatModel({
-    apiKey: openAiApiKey,
-    model: "gpt-3.5-turbo",
-  });
-
   const searchWikipediaAction = $.tool.programmableGoogleSearchEngineAction({
     id: "search-wikipedia",
     description:
@@ -150,12 +150,17 @@ export async function runWikipediaAgent({
     execute: $.tool.executeExtractInformationFromWebpage({
       extract: $.text.extractRecursively.asExtractFunction({
         split: $.text.splitRecursivelyAtToken.asSplitFunction({
-          tokenizer: $.provider.openai.gptTokenizer(),
-          maxChunkSize: 2048, // needs to fit into a gpt-3.5-turbo prompt
+          tokenizer: openai.tokenizer.forModel({
+            model: "gpt-3.5-turbo",
+          }),
+          maxChunkSize: 2048, // needs to fit into a gpt-3.5-turbo prompt and leave room for the answer
         }),
         extract: $.text.generateText.asFunction({
           prompt: $.prompt.extractChatPrompt(),
-          model: chatGpt,
+          model: openai.chatModel({
+            apiKey: openAiApiKey,
+            model: "gpt-3.5-turbo",
+          }),
         }),
       }),
     }),
@@ -183,7 +188,10 @@ ${task}`,
         $.prompt.availableActionsChatPrompt(),
         $.prompt.recentStepsChatPrompt({ maxSteps: 6 })
       ),
-      model: chatGpt,
+      model: openai.chatModel({
+        apiKey: openAiApiKey,
+        model: "gpt-3.5-turbo",
+      }),
     }),
     controller: $.agent.controller.maxSteps(20),
     observer: $.agent.observer.showRunInConsole({ name: "Wikipedia Agent" }),
