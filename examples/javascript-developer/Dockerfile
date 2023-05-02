@@ -16,6 +16,7 @@ USER node
 WORKDIR /home/service
 
 COPY --chown=node:node .build/gptagent-executor.js /home/service
+COPY --chown=node:node ./node_modules/@dqbd /home/service/node_modules/@dqbd
 
 WORKDIR /home/service/repository
 
