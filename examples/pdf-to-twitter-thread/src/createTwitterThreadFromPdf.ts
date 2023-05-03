@@ -26,6 +26,10 @@ export async function createTwitterThreadFromPdf({
       prompt: $.prompt.extractAndExcludeChatPrompt({
         excludeKeyword: "IRRELEVANT",
       }),
+      retry: $.util.retryWithExponentialBackoff({
+        maxTries: 5,
+        delay: 4000,
+      }),
     }),
     include: (text) => text !== "IRRELEVANT",
     rewrite: $.text.generateText.asFunction({

@@ -1,5 +1,6 @@
 import { RunContext } from "../../agent/RunContext";
 import { Prompt } from "../../prompt/Prompt";
+import { RetryFunction } from "../../util";
 import { retryWithExponentialBackoff } from "../../util/retryWithExponentialBackoff";
 import { GeneratorModel } from "./GeneratorModel";
 
@@ -16,12 +17,14 @@ export async function generate<
     input,
     model,
     processOutput,
+    retry = retryWithExponentialBackoff(),
   }: {
     id?: string | undefined;
     input: INPUT;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
+    retry?: RetryFunction;
   },
   context?: RunContext
 ): Promise<OUTPUT> {
@@ -32,9 +35,7 @@ export async function generate<
     (performance.timeOrigin + startTime) / 1000
   );
 
-  const rawOutput = await retryWithExponentialBackoff(() =>
-    model.generate(expandedPrompt)
-  );
+  const rawOutput = await retry(() => model.generate(expandedPrompt));
 
   const textGenerationDurationInMs = Math.ceil(performance.now() - startTime);
 
@@ -81,11 +82,13 @@ generate.asFunction =
     prompt,
     model,
     processOutput,
+    retry,
   }: {
     id?: string | undefined;
     prompt: Prompt<INPUT, PROMPT_TYPE>;
     model: GeneratorModel<PROMPT_TYPE, RAW_OUTPUT, GENERATED_OUTPUT>;
     processOutput: (output: GENERATED_OUTPUT) => PromiseLike<OUTPUT>;
+    retry?: RetryFunction;
   }) =>
   async (input: INPUT, context: RunContext) =>
     generate(
@@ -95,6 +98,7 @@ generate.asFunction =
         input,
         model,
         processOutput,
+        retry,
       },
       context
     );

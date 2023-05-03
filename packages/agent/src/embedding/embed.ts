@@ -1,4 +1,5 @@
 import { RunContext } from "../agent/RunContext";
+import { RetryFunction } from "../util/RetryFunction";
 import { retryWithExponentialBackoff } from "../util/retryWithExponentialBackoff";
 import { EmbeddingModel } from "./EmbeddingModel";
 
@@ -7,10 +8,12 @@ export async function embed<RAW_OUTPUT, GENERATED_OUTPUT>(
     id,
     model,
     value,
+    retry = retryWithExponentialBackoff(),
   }: {
     id?: string;
     model: EmbeddingModel<RAW_OUTPUT, GENERATED_OUTPUT>;
     value: string;
+    retry?: RetryFunction;
   },
   context: RunContext
 ) {
@@ -19,7 +22,7 @@ export async function embed<RAW_OUTPUT, GENERATED_OUTPUT>(
     (performance.timeOrigin + startTime) / 1000
   );
 
-  const rawOutput = await retryWithExponentialBackoff(() => model.embed(value));
+  const rawOutput = await retry(() => model.embed(value));
 
   const textGenerationDurationInMs = Math.ceil(performance.now() - startTime);
 

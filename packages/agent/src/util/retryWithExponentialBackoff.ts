@@ -1,10 +1,17 @@
 import axios from "axios";
+import { RetryFunction } from "./RetryFunction";
 
-export async function retryWithExponentialBackoff<T>(
+export const retryWithExponentialBackoff =
+  ({ maxTries = 5, delay = 2000 } = {}): RetryFunction =>
+  async <T>(f: () => PromiseLike<T>) =>
+    _retryWithExponentialBackoff(f, { maxTries, delay });
+
+export const retryNever = () => retryWithExponentialBackoff({ maxTries: 1 });
+
+async function _retryWithExponentialBackoff<T>(
   f: () => PromiseLike<T>,
-  maxTries = 5,
-  tryNumber = 1,
-  delay = 2000
+  { maxTries = 5, delay = 2000 } = {},
+  tryNumber = 1
 ): Promise<
   {
     tries: number;
@@ -34,7 +41,11 @@ export async function retryWithExponentialBackoff<T>(
       maxTries > tryNumber
     ) {
       await new Promise((resolve) => setTimeout(resolve, delay));
-      return retryWithExponentialBackoff(f, maxTries, tryNumber + 1, delay * 2);
+      return _retryWithExponentialBackoff(
+        f,
+        { maxTries, delay: 2 * delay },
+        tryNumber + 1
+      );
     }
 
     return {
