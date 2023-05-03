@@ -1,4 +1,5 @@
 export * from "../server/ServerAgentSpecification";
+export * from "./EmbedCall";
 export * from "./GenerateCall";
 export * from "./Run";
 export * from "./RunContext";
