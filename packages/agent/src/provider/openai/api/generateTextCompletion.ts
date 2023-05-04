@@ -1,4 +1,5 @@
 import axios from "axios";
+import { withOpenAIErrorHandler } from "./OpenAIError";
 import {
   OpenAITextCompletion,
   OpenAITextCompletionModel,
@@ -26,24 +27,26 @@ export async function generateTextCompletion({
   presencePenalty?: number;
   frequencyPenalty?: number;
 }): Promise<OpenAITextCompletion> {
-  const response = await axios.post(
-    `${baseUrl}/completions`,
-    JSON.stringify({
-      model,
-      prompt,
-      n,
-      temperature,
-      max_tokens: maxTokens,
-      presence_penalty: presencePenalty,
-      frequency_penalty: frequencyPenalty,
-    }),
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-    }
-  );
+  return withOpenAIErrorHandler(async () => {
+    const response = await axios.post(
+      `${baseUrl}/completions`,
+      JSON.stringify({
+        model,
+        prompt,
+        n,
+        temperature,
+        max_tokens: maxTokens,
+        presence_penalty: presencePenalty,
+        frequency_penalty: frequencyPenalty,
+      }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      }
+    );
 
-  return OpenAITextCompletionSchema.parse(response.data);
+    return OpenAITextCompletionSchema.parse(response.data);
+  });
 }

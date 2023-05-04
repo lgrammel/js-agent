@@ -5,6 +5,7 @@ import {
   OpenAIChatCompletionSchema,
   OpenAIChatMessage,
 } from "./OpenAIChatCompletion";
+import { withOpenAIErrorHandler } from "./OpenAIError";
 
 export async function generateChatCompletion({
   baseUrl = "https://api.openai.com/v1",
@@ -27,24 +28,26 @@ export async function generateChatCompletion({
   presencePenalty?: number;
   frequencyPenalty?: number;
 }): Promise<OpenAIChatCompletion> {
-  const response = await axios.post(
-    `${baseUrl}/chat/completions`,
-    JSON.stringify({
-      model,
-      messages,
-      n,
-      temperature,
-      max_tokens: maxTokens,
-      presence_penalty: presencePenalty,
-      frequency_penalty: frequencyPenalty,
-    }),
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-    }
-  );
+  return withOpenAIErrorHandler(async () => {
+    const response = await axios.post(
+      `${baseUrl}/chat/completions`,
+      JSON.stringify({
+        model,
+        messages,
+        n,
+        temperature,
+        max_tokens: maxTokens,
+        presence_penalty: presencePenalty,
+        frequency_penalty: frequencyPenalty,
+      }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      }
+    );
 
-  return OpenAIChatCompletionSchema.parse(response.data);
+    return OpenAIChatCompletionSchema.parse(response.data);
+  });
 }
