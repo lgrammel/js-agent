@@ -1,6 +1,7 @@
 # JS Agent: Build AI Agents & Apps with JS & TS
 
-**⚠️ JS Agent was an early library to test out ideas and is not actively developed any longer.**
+> [!WARNING]
+> JS Agent was an early library to test out ideas and is not actively developed any longer. Check out [ModelFusion](https://github.com/lgrammel/modelfusion) - a more general AI library for TypeScript that incorporates my learnings from JS Agent.
 
 JS Agent is a composable and extensible framework for creating AI agents with JavaScript and TypeScript.
 
